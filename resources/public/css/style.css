@@ -1,0 +1,124 @@
+body {
+    /* background-image: url("../pic/ufos.png"); */
+    /* background-image: url("../pic/alien.png"); */
+    background-image: url("../pic/alien-face.png");
+    /* background-size: cover; */
+    /* background-size: 100% 100%; */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: monospace;
+    /* font-size: smaller; */
+    font-size: small;
+}
+
+table {
+    width: 100%;
+    /* distance between cols */
+    /* margin-right: 4px; */
+    margin-bottom: 20px;
+    /* border: 1px; */
+    /* border-style: solid; */
+    border-collapse: collapse;
+    /* font-size: smaller; */
+    font-size: small;
+}
+
+/* Define the hover highlight color for the table row */
+.data:hover {
+    background-color: WhiteSmoke;
+}
+
+table.data tr:hover {
+    cursor: pointer;
+    /* background-color: lightblue; */
+    /* background-color: #B8B8B8; */
+    /* color: gray; */
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+tr.active {
+    /* background-color: #99FFCC; */
+    /* background-color: #E5E5E5; */
+    /* color: red; */
+    /* font-weight: bold; */
+    border: 1px;
+    border-style: solid;
+    /* text-decoration: underline; */
+}
+
+table.data td, table.data th {
+    border: 1px;
+    /* border-style: solid; */
+    /* border-color: black; */
+}
+
+td, th {
+    /* padding-right: 8px; */
+    vertical-align: top;
+    white-space: pre;
+}
+th {
+    text-align: left;
+}
+
+table.layout td, table.layout.th {
+    /* width: 33%; */
+}
+
+ul li input {
+    width: 400px;
+}
+
+ul li button {
+    margin-left: 10px;
+}
+
+span.active {
+    margin-bottom: 5px;
+    margin-right: 5px;
+    /* font-size: larger; */
+    font-weight: bold;
+    /* border: 1px; */
+    /* border-style: solid; */
+    /* border-color: black; */
+}
+
+span.line {
+    display: block;
+}
+
+span.stats {
+    float: right;
+    /* font-size: smaller; */
+    font-weight: normal;
+    /* margin-left: 50px; */
+    /* border: 1px; */
+    /* border-style: solid; */
+    /* border-color: black; */
+}
+span.sql {
+    margin-left: 5px;
+    /* border: 1px; */
+    /* border-style: solid; */
+    /* border-color: black; */
+}
+
+.table:hover {
+    background-color: whitesmoke;
+}
+
+.thead, .tbody {
+    display: table;
+    width:60%;
+}
+
+.tr, .th {
+    display: table-row;
+}
+
+.td {
+    display: table-cell;
+    /* margin-left: 5px; */
+}
