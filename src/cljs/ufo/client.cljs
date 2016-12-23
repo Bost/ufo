@@ -7,6 +7,7 @@
    [ufo.state :as state]
    [om.next :as om :refer-macros [defui]]
    [sablono.core :refer-macros [html]]
+   [cljs-time.core :as time]
 
    [goog.dom :as gdom]
    [om.dom :as dom]))
@@ -100,7 +101,24 @@
                  (om/transact! this
                                `[(points/increment ~props)]))}
           "+")
-         (threep-list-view three)]))))
+         (threep-list-view three)
+         (dom/button #js
+           {:onClick
+            (fn [e]
+              (let [fname :users
+                    tbeg (time/now)]
+                (println "read-key" fname "Searching in DB...")
+                (utils/ednxhr
+                 {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+                  :on-complete
+                  (fn [resp]
+                    ;; TODO transact the hash-map to the app-state
+                    (println ":resp"
+                             {:resp (str resp) :tbeg tbeg :tend (time/now)}))
+                  :on-error (fn [resp] (println resp))
+                  })))}
+           "fetch data")
+         ]))))
 
 (def reconciler
   (om/reconciler

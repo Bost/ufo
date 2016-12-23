@@ -10,6 +10,11 @@ $ rlwrap lein repl
 # TODO write down the command
 ```
 
+Test mysql
+```mysql
+mysql --host=localhost --user=root --password=root employees
+select * from employees where emp_no between 10001 and 10002 limit 5;
+```
 ## License
 
 Copyright © 2015 FIXME
