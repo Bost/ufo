@@ -14,6 +14,10 @@
 
 (enable-console-print!)
 
+(defui Tables
+  static om/Ident (ident [this {:keys [id]}] [:tables/by-id id])
+  static om/IQuery (query [this] '[:id :fname]))
+
 (defui TCols
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   static om/IQuery (query [this] '[:id :fname :lname]))
@@ -78,7 +82,6 @@
 (def table (om/factory Table))
 
 (defn add-person! [widget {:keys [id fname lname] :as prm}]
-  (println "prm" prm)
   (let [hm {:kws [:rows/by-id id]}]
     (om/transact! widget `[(rows/by-id
                             ;; ~ means evaluate the sexp before passing
@@ -87,11 +90,29 @@
 
 (defui RootView
   static om/IQuery
-  (query
-   [this]
-   (let [qtvals (om/get-query TCols)] `[{:list/tvals ~qtvals}]))
-
+  (query [this] `[{:list/tables ~(om/get-query Tables)}
+                  {:list/tvals ~(om/get-query TCols)}])
   Object
+  (componentWillMount
+   [this]
+   (let [{:keys [list/tables]} (om/props this)]
+     (doseq [t tables]
+       (let [fname (:fname t)
+             tbeg (time/now)]
+         (utils/ednxhr
+          {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+           :on-complete
+           (fn [resp]
+             ;; map returs a lazy sequence therefore doseq must be used
+             ;; (map #(add-person! this %) (:rows resp))
+             (doseq [p (:rows resp)]
+               (add-person! this p))
+             ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+             :on-error (fn [resp] (println resp)))})
+         ;; TODO Searching DB should be returned by ednxhr and displayed here
+         (html [:div "Searching DB..."])))))
+  #_(componentWillUpdate [this nextprops nextstate] (println "componentWillUpdate"))
+  #_(componentDidMount [this] (.log js/console "componentDidMount"))
   (render
    [this]
    #_(println "Render RootView")
@@ -99,15 +120,12 @@
      (html
       [:div
        ;; TODO transact from 'outside'
-       [:h2 "Table"]
-       (println "tvals" tvals)
        (table tvals)
        [:button
         {:onClick
          (fn [e]
            (let [fname :users
                  tbeg (time/now)]
-             (println "read-key" fname "Searching in DB...")
              (utils/ednxhr
               {:reqprm {:f fname :rowlim 4 :log t :nocache t}
                :on-complete
@@ -116,8 +134,7 @@
                  ;; (map #(add-person! this %) (:rows resp))
                  (doseq [p (:rows resp)]
                    (add-person! this p))
-                 (println ":resp"
-                            {:resp (str resp) :tbeg tbeg :tend (time/now)}))
+                 #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
                :on-error (fn [resp] (println resp))})))}
         "fetch data"]]))))
 

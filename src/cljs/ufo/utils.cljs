@@ -37,11 +37,13 @@
     (.send xhr (t/write (om/writer) (:remote m)))))
 
 (defn ednxhr [{:keys [reqprm on-complete on-error] :as prm}]
-  (let [rowlim (rowlim (:f reqprm))
+  (let [f (:f reqprm)
+        rowlim (rowlim f)
         rowlim-val (:rowlim rowlim)]
     (if (and (integer? rowlim-val)
              (pos? rowlim-val))
       (let [xhr (XhrIo.)] ;; instantiate basic class for handling XMLHttpRequests.
+        (println "Searching in DB for" f "...")
         #_(events/listen
          xhr goog.net.EventType.COMPLETE
          (fn [e]

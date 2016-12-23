@@ -16,7 +16,12 @@
 ;; (def app-state { :keyword { id real-information }})
 
 (def app-state
-  {:list/tvals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]})
+  {:list/tvals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]
+   :list/tables
+   [
+    {:id :users :fname :users}
+    ]
+   })
 
 (defonce reconciler
   (om/reconciler {:state  app-state
