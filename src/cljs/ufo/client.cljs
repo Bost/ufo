@@ -123,5 +123,5 @@
 
 (def reconciler
   (om/reconciler
-    {:state  state/init-data
+    {:state  state/app-state
      :parser (om/parser {:read state/read :mutate state/mutate})}))

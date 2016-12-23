@@ -16,16 +16,8 @@
 ;; (def app-state { :keyword { id real-information }})
 
 (def app-state
-  {
-   :rows/by-id {10001 {:id 10001 :fname "Georgi" :lname "Facello"}
-                10002 {:id 10002 :fname "Bezalel" :lname "Simmel"}}
-
-   :list/rows [{:id 10001}
-               {:id 10002}]})
+  {:list/vals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]})
 
 (defonce reconciler
   (om/reconciler {:state  app-state
                   :parser (om/parser {:read read :mutate mutate})}))
-
-(def init-data
-  {:list/vals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]})
