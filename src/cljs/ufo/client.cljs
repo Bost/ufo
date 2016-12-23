@@ -97,45 +97,6 @@
         [:tbody (map tbody-row rows)]]]))))
 (def table (om/factory Table))
 
-
-
-
-
-
-
-
-
-
-
-
-
-(defui Person
-  static om/Ident
-  (ident [this {:keys [name]}]
-         [:person/by-name name])
-  static om/IQuery
-  (query [this]
-         '[:name :points :age])
-  Object
-  (render [this]
-          #_(println "Render Person" (-> this om/props :name))
-          (let [{:keys [points name] :as props} (om/props this)]
-            (html
-             [:li
-              [:label (str name ", points: " points)]
-              [:button {:onClick
-                        (fn [e]
-                          (om/transact! this
-                                        `[(points/increment ~props)]))}
-               "+"]
-              [:button {:onClick
-                        (fn [e]
-                          (om/transact! this
-                                        `[(points/decrement ~props)]))}
-               "-"]]))))
-
-(def person (om/factory Person {:keyfn :name}))
-
 (defui ThreePListView
   Object
   (render [this]
@@ -148,18 +109,6 @@
                (map threep list)]]))))
 
 (def threep-list-view (om/factory ThreePListView))
-
-(defui ListView
-  Object
-  (render [this]
-          #_(println "Render ListView" (-> this om/path first))
-          (let [list (om/props this)]
-            (html
-             [:ul
-              (map person list)]))))
-
-(def list-view (om/factory ListView))
-
 
 (defn add-person! [widget {:keys [id fname lname] :as prm}]
   (println "prm" prm)
@@ -174,14 +123,8 @@
   static om/IQuery
   (query
    [this]
-   (let [subquery (om/get-query Person)
-         qthreep (om/get-query ThreeP)
-         qtvals (om/get-query TCols)
-         ]
-     `[{:list/one ~subquery} {:list/two ~subquery}
-       {:list/three ~qthreep}
-       {:list/tvals ~qtvals}
-       ]))
+   (let [qthreep (om/get-query ThreeP) qtvals (om/get-query TCols)]
+     `[{:list/three ~qthreep} {:list/tvals ~qtvals}]))
 
   Object
   (render
@@ -192,10 +135,6 @@
                  ]} (om/props this)]
      (html
       [:div
-       ;; [:h2 "List A"]
-       ;; (list-view one)
-       ;; [:h2 "List B"]
-       ;; (list-view two)
        [:h2 "Table ThreeP"]
        ;; TODO transact from 'outside'
        (threep-list-view three)
