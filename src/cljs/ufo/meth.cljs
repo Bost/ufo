@@ -41,3 +41,13 @@
             [:person/by-name name :points]
             #(let [n (dec %)] (if (neg? n) 0 n))))})
 
+
+(defmethod state/mutate 'fperson/by-fname
+  [{:keys [state]} _ {:keys [kws v]}]
+  {:action (fn [] (swap! state update-in kws (fn [] v)))})
+
+(defmethod state/mutate 'list/three
+  [{:keys [state]} _ {:keys [kws person]}]
+  {:action (fn [] (swap! state assoc :list/three
+                        (conj (:list/three @state) kws)))})
+

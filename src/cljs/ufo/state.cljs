@@ -35,6 +35,6 @@
               {:name "Gwen" :points 0}
               {:name "Jeff" :points 0}]
    :list/three
-   [{:fname "Georgi" :lname "Facello"}
+   [{:fname "Georgi"  :lname "Facello"}
     {:fname "Bezalel" :lname "Simmel"}
     ]})

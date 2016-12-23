@@ -23,7 +23,7 @@
          '[:fname :lname])
   Object
   (render [this]
-          (println "Render Person" (-> this om/props :fname))
+          #_(println "Render Person" (-> this om/props :fname))
           (let [{:keys [fname lname] :as props} (om/props this)]
             (html
              [:li
@@ -40,7 +40,7 @@
          '[:name :points :age])
   Object
   (render [this]
-          (println "Render Person" (-> this om/props :name))
+          #_(println "Render Person" (-> this om/props :name))
           (let [{:keys [points name] :as props} (om/props this)]
             (html
              [:li
@@ -61,7 +61,7 @@
 (defui ThreePListView
   Object
   (render [this]
-          (println "Render ThreePListView" (-> this om/path first))
+          #_(println "Render ThreePListView" (-> this om/path first))
           (let [list (om/props this)]
             (html
              [:ul
@@ -72,7 +72,7 @@
 (defui ListView
   Object
   (render [this]
-          (println "Render ListView" (-> this om/path first))
+          #_(println "Render ListView" (-> this om/path first))
           (let [list (om/props this)]
             (html
              [:ul
@@ -91,7 +91,7 @@
   Object
   (render
    [this]
-   (println "Render RootView")
+   #_(println "Render RootView")
    (let [{:keys [list/one list/two list/three]} (om/props this)]
      (html
       [:div
@@ -112,9 +112,16 @@
               {:reqprm {:f fname :rowlim 4 :log t :nocache t}
                :on-complete
                (fn [resp]
-                 ;; TODO transact the hash-map to the app-state
-                 (println ":resp"
-                          {:resp (str resp) :tbeg tbeg :tend (time/now)}))
+                 ;; ~ means evaluate the sexp before passing
+                 (om/transact! this
+                               `[(fperson/by-fname
+                                  {:kws [:fperson/by-fname ~(keyword "b")]
+                                   :v   {:fname "b" :lname "yyyyyyX"}})
+                                 (list/three
+                                  {:kws [:fperson/by-fname ~(keyword "b")]})])
+
+                 #_(println ":resp"
+                            {:resp (str resp) :tbeg tbeg :tend (time/now)}))
                :on-error (fn [resp] (println resp))})))}
         "fetch data"]]))))
 
