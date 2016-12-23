@@ -3,7 +3,7 @@
    ;; [ufo [...]] ; is not supported by clojurescript
    [ufo.state :as state]
    [ufo.utils :as utils]
-   [ufo.regexps :as re :refer [dbg dbi id]]
+   [ufo.regexps :as re :refer [dbg dbi id in?]]
    [om.next :as om]
    [cljs-time.core :as time]))
 
@@ -48,6 +48,9 @@
 
 (defmethod state/mutate 'list/three
   [{:keys [state]} _ {:keys [kws person]}]
-  {:action (fn [] (swap! state assoc :list/three
-                        (conj (:list/three @state) kws)))})
-
+  {:action
+   (fn []
+     (let [old-list (:list/three @state)]
+       (if (in? old-list kws)
+         (println "WARN: mutate list/three (in? old-list kws); :kws" kws)
+         (swap! state assoc :list/three (conj old-list kws)))))})

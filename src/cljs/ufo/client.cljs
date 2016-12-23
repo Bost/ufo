@@ -81,9 +81,10 @@
 (def list-view (om/factory ListView))
 
 
-(defn add-person [widget {:keys [fname lname]}]
+(defn add-person! [widget {:keys [fname lname]}]
   (let [hm {:kws [:fperson/by-fname (keyword fname)]}]
     (om/transact! widget `[(fperson/by-fname
+                            ;; ~ means evaluate the sexp before passing
                             ~(assoc hm :v {:fname fname :lname lname}))
                            (list/three ~hm)])))
 
@@ -119,8 +120,10 @@
               {:reqprm {:f fname :rowlim 4 :log t :nocache t}
                :on-complete
                (fn [resp]
-                 ;; ~ means evaluate the sexp before passing
-                 (add-person this {:fname "Jackie" :lname "Chan"})
+                 ;; map returs a lazy sequence therefore doseq must be used
+                 ;; (map #(add-person! this %) (:rows resp))
+                 (doseq [p (:rows resp)]
+                   (add-person! this p))
                  (println ":resp"
                             {:resp (str resp) :tbeg tbeg :tend (time/now)}))
                :on-error (fn [resp] (println resp))})))}
