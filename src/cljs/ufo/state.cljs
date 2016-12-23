@@ -37,4 +37,9 @@
    :list/three
    [{:id 10001 :fname "Georgi"  :lname "Facello"}
     {:id 10002 :fname "Bezalel" :lname "Simmel"}
-    ]})
+    ]
+
+   :list/vals
+   [{:id 10001 :fname "Jeffry" :lname "Glacons"}
+    ]
+   })

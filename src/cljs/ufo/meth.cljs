@@ -25,6 +25,10 @@
   [{:keys [state] :as env} key params]
   {:value (get-people state key)})
 
+(defmethod state/read :list/tvals
+  [{:keys [state] :as env} key params]
+  {:value (get-people state key)})
+
 (defmethod state/mutate 'points/increment
   [{:keys [state]} _ {:keys [name]}]
   {:action
@@ -54,3 +58,12 @@
        (if (in? old-list kws)
          (println "WARN: mutate list/three (in? old-list kws); :kws" kws)
          (swap! state assoc :list/three (conj old-list kws)))))})
+
+(defmethod state/mutate 'list/tvals
+  [{:keys [state]} _ {:keys [kws person]}]
+  {:action
+   (fn []
+     (let [old-list (:list/tvals @state)]
+       (if (in? old-list kws)
+         (println "WARN: mutate list/tvals (in? old-list kws); :kws" kws)
+         (swap! state assoc :list/tvals (conj old-list kws)))))})

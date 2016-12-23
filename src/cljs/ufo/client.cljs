@@ -167,7 +167,8 @@
     (om/transact! widget `[(rows/by-id
                             ;; ~ means evaluate the sexp before passing
                             ~(assoc hm :v {:id id :fname fname :lname lname}))
-                           (list/three ~hm)])))
+                           (list/three ~hm)
+                           (list/tvals ~hm)])))
 
 (defui RootView
   static om/IQuery
@@ -175,11 +176,11 @@
    [this]
    (let [subquery (om/get-query Person)
          qthreep (om/get-query ThreeP)
-         ;; qtable (om/get-query TCols)
+         qtvals (om/get-query TCols)
          ]
      `[{:list/one ~subquery} {:list/two ~subquery}
        {:list/three ~qthreep}
-       ;; {:list/table ~qtable}
+       {:list/tvals ~qtvals}
        ]))
 
   Object
@@ -187,7 +188,7 @@
    [this]
    #_(println "Render RootView")
    (let [{:keys [list/one list/two list/three
-                 ;; list/table
+                 list/tvals
                  ]} (om/props this)]
      (html
       [:div
@@ -199,7 +200,8 @@
        ;; TODO transact from 'outside'
        (threep-list-view three)
        [:h2 "Table"]
-       ;; (table table)
+       (println "tvals" tvals)
+       (table tvals)
        [:button
         {:onClick
          (fn [e]
