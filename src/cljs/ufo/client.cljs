@@ -14,27 +14,6 @@
 
 (enable-console-print!)
 
-(defui ThreeP
-  static om/Ident
-  (ident [this {:keys [id]}]
-         [:rows/by-id id])
-  static om/IQuery
-  (query [this]
-         '[:id :fname :lname])
-  Object
-  (render [this]
-          #_(println "Render Person" (-> this om/props :fname))
-          (let [{:keys [id fname lname] :as props} (om/props this)
-                style {:style {:border "1px" :borderStyle "solid"}}]
-            (html
-             [:tr
-              [:td style id]
-              [:td style fname]
-              [:td style lname]]))))
-
-(def threep (om/factory ThreeP {:keyfn :id}))
-
-
 (defui TCols
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   static om/IQuery (query [this] '[:id :fname :lname]))
@@ -55,8 +34,9 @@
   Object
   (render
    [this]
-   (let [{:keys [react-key val]} (om/props this)]
-     (html [:td (str val)]))))
+   (let [{:keys [react-key val]} (om/props this)
+         style {:style {:border "1px" :borderStyle "solid"}}]
+     (html [:td style (str val)]))))
 (def td (om/factory Td {:keyfn :react-key}))
 
 (defui THeadRow
@@ -97,47 +77,28 @@
         [:tbody (map tbody-row rows)]]]))))
 (def table (om/factory Table))
 
-(defui ThreePListView
-  Object
-  (render [this]
-          #_(println "Render ThreePListView" (-> this om/path first))
-          (let [list (om/props this)]
-            (html
-             [:table #_{:style {:border "1px" :borderStyle "solid"}}
-              #_[:thead ]
-              [:tbody
-               (map threep list)]]))))
-
-(def threep-list-view (om/factory ThreePListView))
-
 (defn add-person! [widget {:keys [id fname lname] :as prm}]
   (println "prm" prm)
   (let [hm {:kws [:rows/by-id id]}]
     (om/transact! widget `[(rows/by-id
                             ;; ~ means evaluate the sexp before passing
                             ~(assoc hm :v {:id id :fname fname :lname lname}))
-                           (list/three ~hm)
                            (list/tvals ~hm)])))
 
 (defui RootView
   static om/IQuery
   (query
    [this]
-   (let [qthreep (om/get-query ThreeP) qtvals (om/get-query TCols)]
-     `[{:list/three ~qthreep} {:list/tvals ~qtvals}]))
+   (let [qtvals (om/get-query TCols)] `[{:list/tvals ~qtvals}]))
 
   Object
   (render
    [this]
    #_(println "Render RootView")
-   (let [{:keys [list/one list/two list/three
-                 list/tvals
-                 ]} (om/props this)]
+   (let [{:keys [list/tvals]} (om/props this)]
      (html
       [:div
-       [:h2 "Table ThreeP"]
        ;; TODO transact from 'outside'
-       (threep-list-view three)
        [:h2 "Table"]
        (println "tvals" tvals)
        (table tvals)

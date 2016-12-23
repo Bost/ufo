@@ -28,18 +28,4 @@
                   :parser (om/parser {:read read :mutate mutate})}))
 
 (def init-data
-  {:list/one [{:name "JohnY" :points 0}
-              {:name "Mary" :points 0}
-              {:name "Bob"  :points 0}]
-   :list/two [{:name "Mary" :points 0 :age 27}
-              {:name "Gwen" :points 0}
-              {:name "Jeff" :points 0}]
-   :list/three
-   [{:id 10001 :fname "Georgi"  :lname "Facello"}
-    {:id 10002 :fname "Bezalel" :lname "Simmel"}
-    ]
-
-   :list/vals
-   [{:id 10001 :fname "Jeffry" :lname "Glacons"}
-    ]
-   })
+  {:list/vals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]})
