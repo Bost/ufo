@@ -42,7 +42,7 @@
             #(let [n (dec %)] (if (neg? n) 0 n))))})
 
 
-(defmethod state/mutate 'fperson/by-fname
+(defmethod state/mutate 'fperson/by-id
   [{:keys [state]} _ {:keys [kws v]}]
   {:action (fn [] (swap! state update-in kws (fn [] v)))})
 

@@ -16,22 +16,98 @@
 
 (defui ThreeP
   static om/Ident
-  (ident [this {:keys [fname]}]
-         [:fperson/by-fname fname])
+  (ident [this {:keys [id]}]
+         [:fperson/by-id id])
   static om/IQuery
   (query [this]
-         '[:fname :lname])
+         '[:id :fname :lname])
   Object
   (render [this]
           #_(println "Render Person" (-> this om/props :fname))
-          (let [{:keys [fname lname] :as props} (om/props this)
+          (let [{:keys [id fname lname] :as props} (om/props this)
                 style {:style {:border "1px" :borderStyle "solid"}}]
             (html
              [:tr
+              [:td style id]
               [:td style fname]
               [:td style lname]]))))
 
-(def threep (om/factory ThreeP {:keyfn :fname}))
+(def threep (om/factory ThreeP {:keyfn :id}))
+
+
+(defui TCols
+  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
+  static om/IQuery (query [this] '[:id :fname :lname]))
+
+(defui Th
+  "1. {:keyfn ...} can only use keys specified by (om/props this)
+2. Values stored under these keys can't be keywords"
+  Object
+  (render
+   [this]
+   (let [{:keys [val]} (om/props this)]
+     (html [:th val]))))
+(def th (om/factory Th {:keyfn :val}))
+
+(defui Td
+  "1. {:keyfn ...} can only use keys specified by (om/props this)
+2. Values stored under these keys can't be keywords"
+  Object
+  (render
+   [this]
+   (let [{:keys [react-key val]} (om/props this)]
+     (html [:td (str val)]))))
+(def td (om/factory Td {:keyfn :react-key}))
+
+(defui THeadRow
+  Object
+  (render
+   [this]
+   (let [{:keys [] :as prm} (om/props this)]
+     (html
+      [:tr (map (fn [val] (th {:val (str val)}))
+                (om/get-query TCols))]))))
+(def thead-row (om/factory THeadRow))
+
+(defui TBodyRow
+  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
+  static om/IQuery (query [this] '[:id :fname :lname])
+  Object
+  (render
+   [this]
+   (let [{:keys [id] :as row} (om/props this)]
+     (html
+      [:tr (map (fn [kw] (td {:react-key (str id "-" (name kw)) :val (kw row)}))
+                (om/get-query TCols))]))))
+(def tbody-row (om/factory TBodyRow))
+
+(defui Table
+  ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
+  ;; static om/IQuery
+  ;; (query [this] (let [qtr (om/get-query TBodyRow)]
+  ;;                 `[:id {:list/rows ~qtr}]))
+  Object
+  (render
+   [this]
+   (let [rows (om/props this)]
+     (html
+      [:div
+       [:table
+        [:thead (thead-row)]
+        [:tbody (map tbody-row rows)]]]))))
+(def table (om/factory Table))
+
+
+
+
+
+
+
+
+
+
+
+
 
 (defui Person
   static om/Ident
@@ -85,11 +161,12 @@
 (def list-view (om/factory ListView))
 
 
-(defn add-person! [widget {:keys [fname lname]}]
-  (let [hm {:kws [:fperson/by-fname (keyword fname)]}]
-    (om/transact! widget `[(fperson/by-fname
+(defn add-person! [widget {:keys [id fname lname] :as prm}]
+  (println "prm" prm)
+  (let [hm {:kws [:fperson/by-id id]}]
+    (om/transact! widget `[(fperson/by-id
                             ;; ~ means evaluate the sexp before passing
-                            ~(assoc hm :v {:fname fname :lname lname}))
+                            ~(assoc hm :v {:id id :fname fname :lname lname}))
                            (list/three ~hm)])))
 
 (defui RootView
@@ -97,23 +174,32 @@
   (query
    [this]
    (let [subquery (om/get-query Person)
-         qthreep (om/get-query ThreeP)]
-     `[{:list/one ~subquery} {:list/two ~subquery} {:list/three ~qthreep}]))
+         qthreep (om/get-query ThreeP)
+         ;; qtable (om/get-query TCols)
+         ]
+     `[{:list/one ~subquery} {:list/two ~subquery}
+       {:list/three ~qthreep}
+       ;; {:list/table ~qtable}
+       ]))
 
   Object
   (render
    [this]
    #_(println "Render RootView")
-   (let [{:keys [list/one list/two list/three]} (om/props this)]
+   (let [{:keys [list/one list/two list/three
+                 ;; list/table
+                 ]} (om/props this)]
      (html
       [:div
-       [:h2 "List A"]
-       (list-view one)
-       [:h2 "List B"]
-       (list-view two)
+       ;; [:h2 "List A"]
+       ;; (list-view one)
+       ;; [:h2 "List B"]
+       ;; (list-view two)
        [:h2 "Table ThreeP"]
        ;; TODO transact from 'outside'
        (threep-list-view three)
+       [:h2 "Table"]
+       ;; (table table)
        [:button
         {:onClick
          (fn [e]
