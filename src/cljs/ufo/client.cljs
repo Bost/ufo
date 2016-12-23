@@ -17,7 +17,7 @@
 (defui ThreeP
   static om/Ident
   (ident [this {:keys [id]}]
-         [:fperson/by-id id])
+         [:rows/by-id id])
   static om/IQuery
   (query [this]
          '[:id :fname :lname])
@@ -163,8 +163,8 @@
 
 (defn add-person! [widget {:keys [id fname lname] :as prm}]
   (println "prm" prm)
-  (let [hm {:kws [:fperson/by-id id]}]
-    (om/transact! widget `[(fperson/by-id
+  (let [hm {:kws [:rows/by-id id]}]
+    (om/transact! widget `[(rows/by-id
                             ;; ~ means evaluate the sexp before passing
                             ~(assoc hm :v {:id id :fname fname :lname lname}))
                            (list/three ~hm)])))
