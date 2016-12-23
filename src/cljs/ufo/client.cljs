@@ -24,10 +24,12 @@
   Object
   (render [this]
           #_(println "Render Person" (-> this om/props :fname))
-          (let [{:keys [fname lname] :as props} (om/props this)]
+          (let [{:keys [fname lname] :as props} (om/props this)
+                style {:style {:border "1px" :borderStyle "solid"}}]
             (html
-             [:li
-              [:label (str fname " " lname)]]))))
+             [:tr
+              [:td style fname]
+              [:td style lname]]))))
 
 (def threep (om/factory ThreeP {:keyfn :fname}))
 
@@ -64,8 +66,10 @@
           #_(println "Render ThreePListView" (-> this om/path first))
           (let [list (om/props this)]
             (html
-             [:ul
-              (map threep list)]))))
+             [:table #_{:style {:border "1px" :borderStyle "solid"}}
+              #_[:thead ]
+              [:tbody
+               (map threep list)]]))))
 
 (def threep-list-view (om/factory ThreePListView))
 
@@ -107,7 +111,7 @@
        (list-view one)
        [:h2 "List B"]
        (list-view two)
-       [:h2 "List ThreeP"]
+       [:h2 "Table ThreeP"]
        ;; TODO transact from 'outside'
        (threep-list-view three)
        [:button
