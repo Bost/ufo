@@ -80,6 +80,13 @@
 
 (def list-view (om/factory ListView))
 
+
+(defn add-person [widget {:keys [fname lname]}]
+  (let [hm {:kws [:fperson/by-fname (keyword fname)]}]
+    (om/transact! widget `[(fperson/by-fname
+                            ~(assoc hm :v {:fname fname :lname lname}))
+                           (list/three ~hm)])))
+
 (defui RootView
   static om/IQuery
   (query
@@ -113,14 +120,7 @@
                :on-complete
                (fn [resp]
                  ;; ~ means evaluate the sexp before passing
-                 (let [fname "Jim"
-                       lname "Jones"
-                       hm {:kws [:fperson/by-fname (keyword fname)]}]
-                   (om/transact!
-                    this `[(fperson/by-fname
-                            ~(assoc hm :v {:fname fname :lname lname}))
-                           (list/three ~hm)]))
-
+                 (add-person this {:fname "Jackie" :lname "Chan"})
                  (println ":resp"
                             {:resp (str resp) :tbeg tbeg :tend (time/now)}))
                :on-error (fn [resp] (println resp))})))}
