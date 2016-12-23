@@ -113,14 +113,15 @@
                :on-complete
                (fn [resp]
                  ;; ~ means evaluate the sexp before passing
-                 (om/transact! this
-                               `[(fperson/by-fname
-                                  {:kws [:fperson/by-fname ~(keyword "b")]
-                                   :v   {:fname "b" :lname "yyyyyyX"}})
-                                 (list/three
-                                  {:kws [:fperson/by-fname ~(keyword "b")]})])
+                 (let [fname "Jim"
+                       lname "Jones"
+                       hm {:kws [:fperson/by-fname (keyword fname)]}]
+                   (om/transact!
+                    this `[(fperson/by-fname
+                            ~(assoc hm :v {:fname fname :lname lname}))
+                           (list/three ~hm)]))
 
-                 #_(println ":resp"
+                 (println ":resp"
                             {:resp (str resp) :tbeg tbeg :tend (time/now)}))
                :on-error (fn [resp] (println resp))})))}
         "fetch data"]]))))
