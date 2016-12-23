@@ -25,36 +25,36 @@
   (render [this]
           (println "Render Person" (-> this om/props :fname))
           (let [{:keys [fname lname] :as props} (om/props this)]
-            (dom/li nil
-                    (dom/label nil (str fname " " lname))))))
+            (html
+             [:li
+              [:label (str fname " " lname)]]))))
 
 (def threep (om/factory ThreeP {:keyfn :fname}))
 
 (defui Person
   static om/Ident
   (ident [this {:keys [name]}]
-    [:person/by-name name])
+         [:person/by-name name])
   static om/IQuery
   (query [this]
-    '[:name :points :age])
+         '[:name :points :age])
   Object
   (render [this]
-    (println "Render Person" (-> this om/props :name))
-    (let [{:keys [points name] :as props} (om/props this)]
-      (dom/li nil
-        (dom/label nil (str name ", points: " points))
-        (dom/button
-          #js {:onClick
-               (fn [e]
-                 (om/transact! this
-                   `[(points/increment ~props)]))}
-          "+")
-        (dom/button
-          #js {:onClick
-               (fn [e]
-                 (om/transact! this
-                   `[(points/decrement ~props)]))}
-          "-")))))
+          (println "Render Person" (-> this om/props :name))
+          (let [{:keys [points name] :as props} (om/props this)]
+            (html
+             [:li
+              [:label (str name ", points: " points)]
+              [:button {:onClick
+                        (fn [e]
+                          (om/transact! this
+                                        `[(points/increment ~props)]))}
+               "+"]
+              [:button {:onClick
+                        (fn [e]
+                          (om/transact! this
+                                        `[(points/decrement ~props)]))}
+               "-"]]))))
 
 (def person (om/factory Person {:keyfn :name}))
 
@@ -63,62 +63,60 @@
   (render [this]
           (println "Render ThreePListView" (-> this om/path first))
           (let [list (om/props this)]
-            (apply dom/ul nil
-                   (map threep list)))))
+            (html
+             [:ul
+              (map threep list)]))))
 
 (def threep-list-view (om/factory ThreePListView))
 
 (defui ListView
   Object
   (render [this]
-    (println "Render ListView" (-> this om/path first))
-    (let [list (om/props this)]
-      (apply dom/ul nil
-        (map person list)))))
+          (println "Render ListView" (-> this om/path first))
+          (let [list (om/props this)]
+            (html
+             [:ul
+              (map person list)]))))
 
 (def list-view (om/factory ListView))
 
 (defui RootView
   static om/IQuery
-  (query [this]
-         (let [subquery (om/get-query Person)
-               qthreep (om/get-query ThreeP)]
-      `[{:list/one ~subquery} {:list/two ~subquery} {:list/three ~qthreep}]))
+  (query
+   [this]
+   (let [subquery (om/get-query Person)
+         qthreep (om/get-query ThreeP)]
+     `[{:list/one ~subquery} {:list/two ~subquery} {:list/three ~qthreep}]))
+
   Object
-  (render [this]
-    (println "Render RootView")
-    (let [{:keys [list/one list/two list/three]} (om/props this)]
-      (apply dom/div nil
-        [(dom/h2 nil "List A")
-         (list-view one)
-         (dom/h2 nil "List B")
-         (list-view two)
-         (dom/h2 nil "List ThreeP")
-         ;; TODO transact from 'outside'
-         #_(dom/button
-          #js {:onClick
-               (fn [e]
-                 (om/transact! this
-                               `[(points/increment ~props)]))}
-          "+")
-         (threep-list-view three)
-         (dom/button #js
-           {:onClick
-            (fn [e]
-              (let [fname :users
-                    tbeg (time/now)]
-                (println "read-key" fname "Searching in DB...")
-                (utils/ednxhr
-                 {:reqprm {:f fname :rowlim 4 :log t :nocache t}
-                  :on-complete
-                  (fn [resp]
-                    ;; TODO transact the hash-map to the app-state
-                    (println ":resp"
-                             {:resp (str resp) :tbeg tbeg :tend (time/now)}))
-                  :on-error (fn [resp] (println resp))
-                  })))}
-           "fetch data")
-         ]))))
+  (render
+   [this]
+   (println "Render RootView")
+   (let [{:keys [list/one list/two list/three]} (om/props this)]
+     (html
+      [:div
+       [:h2 "List A"]
+       (list-view one)
+       [:h2 "List B"]
+       (list-view two)
+       [:h2 "List ThreeP"]
+       ;; TODO transact from 'outside'
+       (threep-list-view three)
+       [:button
+        {:onClick
+         (fn [e]
+           (let [fname :users
+                 tbeg (time/now)]
+             (println "read-key" fname "Searching in DB...")
+             (utils/ednxhr
+              {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+               :on-complete
+               (fn [resp]
+                 ;; TODO transact the hash-map to the app-state
+                 (println ":resp"
+                          {:resp (str resp) :tbeg tbeg :tend (time/now)}))
+               :on-error (fn [resp] (println resp))})))}
+        "fetch data"]]))))
 
 (def reconciler
   (om/reconciler
