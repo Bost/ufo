@@ -12,6 +12,15 @@
    [goog.dom :as gdom]
    [om.dom :as dom]))
 
+;; TODO hiccup (html [:div#foo.bar.baz "bang"])
+;;      <div id='foo' class='bar baz'>bang</div>
+;; TODO hicckup [:div.stuff "bla stuff"]
+
+;; TODO deduplicated signal graph
+
+;; TODO re-frame - single web page apps; re-frisk
+;; TODO reagent is probably better than om-next
+
 (enable-console-print!)
 
 (defn add-person! [widget {:keys [id fname lname] :as prm}]
