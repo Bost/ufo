@@ -11,7 +11,7 @@
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
    [org.omcljs/om "1.0.0-alpha47" :exclusions [commons-codec]]
    [ring "1.5.0"]
-   [compojure "1.5.1"]
+   [compojure "1.5.1"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
    [com.andrewmcveigh/cljs-time "0.4.0"]
    [sablono "0.7.6"] ; hiccup style templating for om-next
@@ -41,7 +41,7 @@
    [clj-time-ext "0.7.2"]
    [clj-time "0.12.2"]]
   :plugins
-  [[lein-cljsbuild "1.1.3"]
+  [[lein-cljsbuild "1.1.5"]
    [lein-figwheel "0.5.8" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
