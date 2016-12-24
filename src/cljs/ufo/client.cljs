@@ -14,9 +14,16 @@
 
 (enable-console-print!)
 
+(defn add-person! [widget {:keys [id fname lname] :as prm}]
+  (let [hm {:kws [:rows/by-id id]}]
+    (om/transact! widget `[(rows/by-id
+                            ;; ~ means evaluate the sexp before passing
+                            ~(assoc hm :v {:id id :fname fname :lname lname}))
+                           (list/trows ~hm)])))
+
 (defui Tables
   static om/Ident (ident [this {:keys [id]}] [:tables/by-id id])
-  static om/IQuery (query [this] '[:id :fname]))
+  static om/IQuery (query [this] '[:id :fname :tname]))
 
 (defui TCols
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -65,6 +72,35 @@
                 (om/get-query TCols))]))))
 (def tbody-row (om/factory TBodyRow))
 
+(defui TBody
+  static om/IQuery
+  (query [this] `[{:list/trows ~(om/get-query TCols)}])
+  Object
+  (componentWillMount
+   [this]
+   (let [fname (om/props this)]
+     (let [tbeg (time/now)]
+       (utils/ednxhr
+        {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+         :on-complete
+         (fn [resp]
+           ;; map returs a lazy sequence therefore doseq must be used
+           ;; (map #(add-person! this %) (:rows resp))
+           (doseq [p (:rows resp)]
+             (add-person! this p))
+           ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+           :on-error (fn [resp] (println resp)))})
+       ;; TODO Searching DB should be returned by ednxhr and displayed here
+       #_(html [:div "Searching DB..."]))))
+
+  (render
+   [this]
+   (let [{:keys [list/trows] :as prm} (om/props this)]
+     (println "prm" prm)
+     (html
+      [:tbody (map tbody-row trows)]))))
+(def tbody (om/factory TBody))
+
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   ;; static om/IQuery
@@ -73,59 +109,13 @@
   Object
   (render
    [this]
-   (let [rows (om/props this)]
+   (let [{:keys [fname tname] :as prm} (om/props this)]
      (html
       [:div
-       [:table
-        [:thead (thead-row)]
-        [:tbody (map tbody-row rows)]]]))))
-(def table (om/factory Table))
-
-(defn add-person! [widget {:keys [id fname lname] :as prm}]
-  (let [hm {:kws [:rows/by-id id]}]
-    (om/transact! widget `[(rows/by-id
-                            ;; ~ means evaluate the sexp before passing
-                            ~(assoc hm :v {:id id :fname fname :lname lname}))
-                           (list/tvals ~hm)])))
-
-(defui RootView
-  static om/IQuery
-  (query [this] `[{:list/tables ~(om/get-query Tables)}
-                  {:list/tvals ~(om/get-query TCols)}])
-  Object
-  (componentWillMount
-   [this]
-   (let [{:keys [list/tables]} (om/props this)]
-     (doseq [t tables]
-       (let [fname (:fname t)
-             tbeg (time/now)]
-         (utils/ednxhr
-          {:reqprm {:f fname :rowlim 4 :log t :nocache t}
-           :on-complete
-           (fn [resp]
-             ;; map returs a lazy sequence therefore doseq must be used
-             ;; (map #(add-person! this %) (:rows resp))
-             (doseq [p (:rows resp)]
-               (add-person! this p))
-             ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-             :on-error (fn [resp] (println resp)))})
-         ;; TODO Searching DB should be returned by ednxhr and displayed here
-         (html [:div "Searching DB..."])))))
-  #_(componentWillUpdate [this nextprops nextstate] (println "componentWillUpdate"))
-  #_(componentDidMount [this] (.log js/console "componentDidMount"))
-  (render
-   [this]
-   #_(println "Render RootView")
-   (let [{:keys [list/tvals]} (om/props this)]
-     (html
-      [:div
-       ;; TODO transact from 'outside'
-       (table tvals)
        [:button
         {:onClick
          (fn [e]
-           (let [fname :users
-                 tbeg (time/now)]
+           (let [tbeg (time/now)]
              (utils/ednxhr
               {:reqprm {:f fname :rowlim 4 :log t :nocache t}
                :on-complete
@@ -136,7 +126,26 @@
                    (add-person! this p))
                  #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
                :on-error (fn [resp] (println resp))})))}
-        "fetch data"]]))))
+        "fetch data"]
+       [:div tname]
+       [:table
+        [:thead (thead-row)]
+        (tbody fname)]]))))
+(def table (om/factory Table {:keyfn :table-desc}))
+
+(defui RootView
+  static om/IQuery
+  (query [this] `[{:list/tables ~(om/get-query Tables)}])
+  Object
+  #_(componentWillUpdate [this nextprops nextstate] (println "componentWillUpdate"))
+  #_(componentDidMount [this] (.log js/console "componentDidMount"))
+  (render
+   [this]
+   (let [{:keys [list/tables]} (om/props this)]
+     (html
+      [:div
+       (for [table-desc tables]
+         (table table-desc))]))))
 
 (def reconciler
   (om/reconciler

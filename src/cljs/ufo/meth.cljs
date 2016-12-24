@@ -13,7 +13,7 @@
   (let [st @state]
     (into [] (map #(get-in st %)) (get st key))))
 
-(defmethod state/read :list/tvals
+(defmethod state/read :list/trows
   [{:keys [state] :as env} key params]
   {:value (get-people state key)})
 
@@ -22,14 +22,14 @@
   [{:keys [state]} _ {:keys [kws v]}]
   {:action (fn [] (swap! state update-in kws (fn [] v)))})
 
-(defmethod state/mutate 'list/tvals
+(defmethod state/mutate 'list/trows
   [{:keys [state]} _ {:keys [kws person]}]
   {:action
    (fn []
-     (let [old-list (:list/tvals @state)]
+     (let [old-list (:list/trows @state)]
        (if (in? old-list kws)
-         (println "WARN: mutate list/tvals (in? old-list kws); :kws" kws)
-         (swap! state assoc :list/tvals (conj old-list kws)))))})
+         (println "WARN: mutate list/trows (in? old-list kws); :kws" kws)
+         (swap! state assoc :list/trows (conj old-list kws)))))})
 
 
 ;;;;;;;;;;;;;;;;;

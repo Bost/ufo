@@ -19,7 +19,7 @@
   {:list/tvals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]
    :list/tables
    [
-    {:id :users :fname :users}
+    {:id :users :fname :users :tname "Users"}
     ]
    })
 

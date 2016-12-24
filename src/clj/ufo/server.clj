@@ -1,17 +1,18 @@
 (ns ufo.server
-  (:require [ring.util.response :refer [file-response]]
-            [ring.adapter.jetty :refer [run-jetty]]
+  (:require
+   [ring.util.response :refer [file-response]]
+   [ring.adapter.jetty :refer [run-jetty]]
 
-            ;; compojure is used for dispatching
-            [compojure.core :refer [defroutes GET PUT]]
-            [compojure.route :as route]
-            [compojure.handler :as handler]
+   ;; compojure: routing lib for Ring; dispatching of GET, PUT, etc.
+   [compojure.core :refer [defroutes GET PUT]]
+   [compojure.route :as route]
+   [compojure.handler :as handler]
 
-            [clojure.edn :as edn]
-            [ufo
-             [db :as db]
-             [sql :as sql]]
-            [clj-time-ext.core :as etime]))
+   [clojure.edn :as edn]
+   [ufo
+    [db :as db]
+    [sql :as sql]]
+   [clj-time-ext.core :as etime]))
 
 (defn indexhtml [req #_{:keys [params edn-body] :as prm}]
   (file-response "public/html/index.html" {:root "resources"}))
