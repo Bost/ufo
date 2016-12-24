@@ -10,3 +10,5 @@
     :comment ""}
   users [prm] (dbcon/sdbquery (sql/users prm)))
 
+
+(defn salaries [prm] (dbcon/sdbquery (sql/salaries prm)))

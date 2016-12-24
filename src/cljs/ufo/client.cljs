@@ -29,6 +29,10 @@
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   static om/IQuery (query [this] '[:id :fname :lname]))
 
+(defui TColsSalaries
+  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
+  static om/IQuery (query [this] '[:id :salary]))
+
 (defui Th
   "1. {:keyfn ...} can only use keys specified by (om/props this)
 2. Values stored under these keys can't be keywords"
@@ -96,7 +100,6 @@
   (render
    [this]
    (let [{:keys [list/trows] :as prm} (om/props this)]
-     (println "prm" prm)
      (html
       [:tbody (map tbody-row trows)]))))
 (def tbody (om/factory TBody))
@@ -131,7 +134,7 @@
        [:table
         [:thead (thead-row)]
         (tbody fname)]]))))
-(def table (om/factory Table {:keyfn :table-desc}))
+(def table (om/factory Table {:keyfn :fname}))
 
 (defui RootView
   static om/IQuery

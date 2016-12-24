@@ -23,7 +23,8 @@
    :body (pr-str data)})
 
 (def fmap
-  {:users {:db db/users}})
+  {:users {:db db/users}
+   :salaries {:db db/salaries}})
 
 (defn doreq [{:keys [params edn-body] :as prm}]
   (println "doreq" "prm" prm)

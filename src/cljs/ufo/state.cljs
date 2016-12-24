@@ -18,10 +18,8 @@
 (def app-state
   {:list/tvals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]
    :list/tables
-   [
-    {:id :users :fname :users :tname "Users"}
-    ]
-   })
+   [{:id :salaries :fname :salaries :tname "Salaries"}
+    {:id :users    :fname :users    :tname "Users"}]})
 
 (defonce reconciler
   (om/reconciler {:state  app-state

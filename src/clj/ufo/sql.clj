@@ -50,8 +50,7 @@ and t.COLUMN_Y in (" (re/inclause {:elems ys :contract re/coly?}) ")
 " (postfix prm))]
     (assoc prm :f "cols-xyz" :sql sql)))
 
-(defn users
-  [{:keys [xs ys] :as prm}]
+(defn users [{:keys [] :as prm}]
   (let [sql (str "
 select
   emp_no " (name :id) "
@@ -59,5 +58,15 @@ select
  ,last_name " (name :lname) "
 from employees where emp_no between 10010 and 10020
 "
-              (postfix prm))]
-    (assoc prm :f "cols-xyz" :sql sql)))
+                 (postfix prm))]
+    (assoc prm :f "users" :sql sql)))
+
+(defn salaries [{:keys [] :as prm}]
+  (let [sql (str "
+select
+  emp_no " (name :id) "
+ ,salary " (name :salary) "
+from salaries where emp_no between 10010 and 10020
+"
+                 (postfix prm))]
+    (assoc prm :f "salaries" :sql sql)))
