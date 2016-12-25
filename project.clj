@@ -54,7 +54,7 @@
   {:ring-handler ufo.server/handler
    ;; Access figwheel server from outside of VM:
    ;; the 'Figwheel: Starting server at http://localhost:3448' is misleading
-   ;; :server-ip "localhost" ; default server-ip see :websocket-host
+   :server-ip "0.0.0.0" ; default is "localhost"; see also :websocket-host
    ;; :server-port 3449 ; default port
    :http-server-root "public" ; css-dirs requires http-server-root specification
    :css-dirs ["resources/public/css"]
