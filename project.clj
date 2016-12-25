@@ -67,7 +67,7 @@
    [{:id "dev"
      :source-paths ["src/cljs" "src/clj"]
      ;; figwheel client config
-     :figwheel {:websocket-host :js-client-host}
+     :figwheel {:websocket-host "0.0.0.0" #_:js-client-host}
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
                 :main ufo.core
