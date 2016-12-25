@@ -54,8 +54,8 @@
   {:ring-handler ufo.server/handler
    ;; Access figwheel server from outside of VM:
    ;; the 'Figwheel: Starting server at http://localhost:3448' is misleading
-   :server-ip "0.0.0.0" ; default is "localhost"; see also :websocket-host
-   ;; :server-port 3449 ; default port
+   ;; :server-ip "..."; default is "localhost"; see also :websocket-host
+   ;; :server-port ... ; default port 3449
    :http-server-root "public" ; css-dirs requires http-server-root specification
    :css-dirs ["resources/public/css"]
    ;; Load CIDER, refactor-nrepl and piggieback middleware
@@ -67,7 +67,7 @@
    [{:id "dev"
      :source-paths ["src/cljs" "src/clj"]
      ;; figwheel client config
-     :figwheel {:websocket-host "0.0.0.0" #_:js-client-host}
+     :figwheel {:websocket-host :js-client-host}
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
                 :main ufo.core
