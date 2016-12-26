@@ -9,13 +9,20 @@
 
 (enable-console-print!)
 
-(defn get-people [state key]
+(defn get-val [state key]
   (let [st @state]
     (into [] (map #(get-in st %)) (get st key))))
 
+(defn set-vals [state kw kws]
+  (let [old-list (kw @state)]
+    (println "kw" kw "kws" kws)
+    (if (in? old-list kws)
+      (println "WARN: mutate " kw " (in? old-list kws); :kws" kws)
+      (swap! state assoc (conj old-list kws)))))
+
 (defmethod state/read :list/trows
   [{:keys [state] :as env} key params]
-  {:value (get-people state key)})
+  {:value (get-val state key)})
 
 (defmethod state/mutate 'rows/by-id
   [{:keys [state]} _ {:keys [kws v]}]
@@ -23,51 +30,33 @@
 
 (defmethod state/mutate 'list/trows
   [{:keys [state]} _ {:keys [kws]}]
-  {:action
-   (fn []
-     (let [old-list (:list/trows @state)]
-       (if (in? old-list kws)
-         (println "WARN: mutate list/trows (in? old-list kws); :kws" kws)
-         (swap! state assoc :list/trows (conj old-list kws)))))})
-
+  {:action (fn [] (set-vals state :list/trows kws))})
 
 ;;;;;;;;;;;;;;;;;
 
 ;; "List of tables to display on the web page"
 (defmethod state/read :list/tables
   [{:keys [state] :as env} key params]
-  {:value (get-people state key)})
+  {:value (get-val state key)})
 
 (defmethod state/mutate 'tables/by-id
   [{:keys [state]} _ {:keys [kws v]}]
   {:action (fn [] (swap! state update-in kws (fn [] v)))})
 
 (defmethod state/mutate 'list/tables
-  [{:keys [state]} _ {:keys [kws person]}]
-  {:action
-   (fn []
-     (let [old-list (:list/tables @state)]
-       (if (in? old-list kws)
-         (println "WARN: mutate list/tables (in? old-list kws); :kws" kws)
-         (swap! state assoc :list/tables (conj old-list kws)))))})
+  [{:keys [state]} _ {:keys [kws]}]
+  {:action (fn [] (set-vals state :list/tables kws))})
 
 ;;;;;;;;;;;;;;;;;
 
 (defmethod state/read :list/cols
   [{:keys [state] :as env} key params]
-  {:value (get-people state key)})
+  {:value (get-val state key)})
 
 (defmethod state/mutate 'cols/by-id
-  [{:keys [state]} _ {:keys [cols]}]
-  {:action
-   (fn []
-     (swap! state assoc :list/cols cols))})
+  [{:keys [state]} _ {:keys [kws v]}]
+  {:action (fn [] (swap! state update-in kws (fn [] v)))})
 
 (defmethod state/mutate 'list/cols
   [{:keys [state]} _ {:keys [kws]}]
-  {:action
-   (fn []
-     (let [old-list (:list/tables @state)]
-       (if (in? old-list kws)
-         (println "WARN: mutate list/cols (in? old-list kws); :kws" kws)
-         (swap! state assoc :list/cols (conj old-list kws)))))})
+  {:action (fn [] (set-vals state :list/cols kws))})

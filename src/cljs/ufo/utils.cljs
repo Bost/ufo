@@ -16,11 +16,11 @@
 
 (defn rowlim [kw]
   {:rowlim
-   (or (kw {:users 8})
+   (or (kw {:users 3 :salaries 3})
        (do
          (let [v 10]
            (println
-            (str "WARN rowlim - no value defined for kw: '" kw "'. Using default value " v))
+            (str "WARN: undef rowlim val; kw '" kw "'. Using default val " v))
            v)))})
 
 #_(defn ednxhr [m cb]

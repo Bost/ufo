@@ -13,7 +13,7 @@
 ;; Unions (think UNION)
 ;; Mutations (think INSERT/UPDATE/DELETE)
 
-;; (def app-state { :keyword { id real-information }})
+;; (def app-state {:keyword {id real-information}})
 
 (def app-state
   {:list/tvals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]

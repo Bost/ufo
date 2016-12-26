@@ -24,20 +24,16 @@
 (enable-console-print!)
 
 (defn add-person! [widget {:keys [id fname lname] :as prm} cols]
-  (let [
-        hm-rows {:kws [:rows/by-id id]}
-        hm-cols {:kws [:cols/by-id id]}
-        ]
-    (om/transact! widget `[
-                           (rows/by-id
+  (let [hm-rows {:kws [:rows/by-id id]}
+        hm-cols {:kws [:cols/by-id id]}]
+    (om/transact! widget `[(rows/by-id
                             ;; ~ means evaluate the sexp before passing
                             ~(assoc hm-rows :v {:id id :fname fname :lname lname}))
                            (list/trows ~hm-rows)
                            (cols/by-id
                             ;; ~ means evaluate the sexp before passing
                             ~(assoc hm-cols :v {:id id :cols cols}))
-                           (list/cols ~hm-cols)
-                           ])))
+                           (list/cols ~hm-cols)])))
 
 (defui TCols
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -115,7 +111,7 @@
   (render
    [this]
    (let [{:keys [list/trows list/cols] :as prm} (om/props this)]
-     (println "render" "cols" cols)
+     (println "render" "trows" trows "cols" cols)
      (html
       [:tbody (map tbody-row trows)]))))
 (def tbody (om/factory TBody))
@@ -129,7 +125,7 @@
    (let [{:keys [id fname tname cols] :as prm} (om/props this)]
      (html
       [:div
-       [:button
+       #_[:button
         {:onClick
          (fn [e]
            (let [tbeg (time/now)]
