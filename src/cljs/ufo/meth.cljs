@@ -17,13 +17,12 @@
   [{:keys [state] :as env} key params]
   {:value (get-people state key)})
 
-
 (defmethod state/mutate 'rows/by-id
   [{:keys [state]} _ {:keys [kws v]}]
   {:action (fn [] (swap! state update-in kws (fn [] v)))})
 
 (defmethod state/mutate 'list/trows
-  [{:keys [state]} _ {:keys [kws person]}]
+  [{:keys [state]} _ {:keys [kws]}]
   {:action
    (fn []
      (let [old-list (:list/trows @state)]
@@ -52,3 +51,23 @@
          (println "WARN: mutate list/tables (in? old-list kws); :kws" kws)
          (swap! state assoc :list/tables (conj old-list kws)))))})
 
+;;;;;;;;;;;;;;;;;
+
+(defmethod state/read :list/cols
+  [{:keys [state] :as env} key params]
+  {:value (get-people state key)})
+
+(defmethod state/mutate 'cols/by-id
+  [{:keys [state]} _ {:keys [cols]}]
+  {:action
+   (fn []
+     (swap! state assoc :list/cols cols))})
+
+(defmethod state/mutate 'list/cols
+  [{:keys [state]} _ {:keys [kws]}]
+  {:action
+   (fn []
+     (let [old-list (:list/tables @state)]
+       (if (in? old-list kws)
+         (println "WARN: mutate list/cols (in? old-list kws); :kws" kws)
+         (swap! state assoc :list/cols (conj old-list kws)))))})

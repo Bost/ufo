@@ -23,24 +23,29 @@
 
 (enable-console-print!)
 
-(defn add-person! [widget {:keys [id fname lname] :as prm}]
-  (let [hm {:kws [:rows/by-id id]}]
-    (om/transact! widget `[(rows/by-id
+(defn add-person! [widget {:keys [id fname lname] :as prm} cols]
+  (let [
+        hm-rows {:kws [:rows/by-id id]}
+        hm-cols {:kws [:cols/by-id id]}
+        ]
+    (om/transact! widget `[
+                           (rows/by-id
                             ;; ~ means evaluate the sexp before passing
-                            ~(assoc hm :v {:id id :fname fname :lname lname}))
-                           (list/trows ~hm)])))
-
-(defui Tables
-  static om/Ident (ident [this {:keys [id]}] [:tables/by-id id])
-  static om/IQuery (query [this] '[:id :fname :tname]))
+                            ~(assoc hm-rows :v {:id id :fname fname :lname lname}))
+                           (list/trows ~hm-rows)
+                           (cols/by-id
+                            ;; ~ means evaluate the sexp before passing
+                            ~(assoc hm-cols :v {:id id :cols cols}))
+                           (list/cols ~hm-cols)
+                           ])))
 
 (defui TCols
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   static om/IQuery (query [this] '[:id :fname :lname]))
 
-(defui TColsSalaries
-  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :salary]))
+(defui TTableCols
+  static om/Ident (ident [this {:keys [id]}] [:cols/by-id id])
+  static om/IQuery (query [this] '[:id :cols]))
 
 (defui Th
   "1. {:keyfn ...} can only use keys specified by (om/props this)
@@ -67,15 +72,15 @@
   Object
   (render
    [this]
-   (let [{:keys [] :as prm} (om/props this)]
+   (let [{:keys [cols] :as prm} (om/props this)]
      (html
       [:tr (map (fn [val] (th {:val (str val)}))
-                (om/get-query TCols))]))))
+                cols)]))))
 (def thead-row (om/factory THeadRow))
 
 (defui TBodyRow
-  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :fname :lname])
+  ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
+  ;; static om/IQuery (query [this] '[:id :fname :lname])
   Object
   (render
    [this]
@@ -87,41 +92,41 @@
 
 (defui TBody
   static om/IQuery
-  (query [this] `[{:list/trows ~(om/get-query TCols)}])
+  ;; TODO use zipmap here
+  (query [this] `[{:list/trows ~(om/get-query TCols)}
+                  {:list/cols ~(om/get-query TTableCols)}])
   Object
   (componentWillMount
    [this]
-   (let [fname (om/props this)]
-     (let [tbeg (time/now)]
-       (utils/ednxhr
-        {:reqprm {:f fname :rowlim 4 :log t :nocache t}
-         :on-complete
-         (fn [resp]
-           ;; map returs a lazy sequence therefore doseq must be used
-           ;; (map #(add-person! this %) (:rows resp))
-           (doseq [p (:rows resp)]
-             (add-person! this p))
-           ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-           :on-error (fn [resp] (println resp)))})
-       ;; TODO Searching DB should be returned by ednxhr and displayed here
-       #_(html [:div "Searching DB..."]))))
-
+   (let [{:keys [cols fname] :as prm} (om/props this)
+         tbeg (time/now)]
+     (utils/ednxhr
+      {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+       :on-complete
+       (fn [resp]
+         ;; map returs a lazy sequence therefore doseq must be used
+         ;; (map #(add-person! this %) (:rows resp))
+         (doseq [p (:rows resp)]
+           (add-person! this p cols))
+         ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+         :on-error (fn [resp] (println resp)))})
+     ;; TODO Searching DB should be returned by ednxhr and displayed here
+     #_(html [:div "Searching DB..."])))
   (render
    [this]
-   (let [{:keys [list/trows] :as prm} (om/props this)]
+   (let [{:keys [list/trows list/cols] :as prm} (om/props this)]
+     (println "render" "cols" cols)
      (html
       [:tbody (map tbody-row trows)]))))
 (def tbody (om/factory TBody))
 
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  ;; static om/IQuery
-  ;; (query [this] (let [qtr (om/get-query TBodyRow)]
-  ;;                 `[:id {:list/rows ~qtr}]))
+  ;; static om/IQuery (query [this] `[:id {:list/rows ~(om/get-query TBodyRow)}])
   Object
   (render
    [this]
-   (let [{:keys [fname tname] :as prm} (om/props this)]
+   (let [{:keys [id fname tname cols] :as prm} (om/props this)]
      (html
       [:div
        [:button
@@ -135,19 +140,20 @@
                  ;; map returs a lazy sequence therefore doseq must be used
                  ;; (map #(add-person! this %) (:rows resp))
                  (doseq [p (:rows resp)]
-                   (add-person! this p))
+                   (add-person! this p cols))
                  #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
                :on-error (fn [resp] (println resp))})))}
         "fetch data"]
        [:div tname]
        [:table
-        [:thead (thead-row)]
-        (tbody fname)]]))))
+        [:thead (thead-row prm)]
+        ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
+        (tbody {:cols cols :fname fname})]]))))
 (def table (om/factory Table {:keyfn :fname}))
 
 (defui RootView
   static om/IQuery
-  (query [this] `[{:list/tables ~(om/get-query Tables)}])
+  (query [this] `[{:list/tables ~(om/get-query TCols)}])
   Object
   #_(componentWillUpdate [this nextprops nextstate] (println "componentWillUpdate"))
   #_(componentDidMount [this] (.log js/console "componentDidMount"))
