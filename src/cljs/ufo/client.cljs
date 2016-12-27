@@ -83,7 +83,9 @@
          id (:id row)]
      (println "(om/props this)" (om/props this))
      (html
-      [:tr (map (fn [kw] (td {:react-key (str id "-" (name kw)) :val (kw row)}))
+      [:tr (map (fn [kw]
+                  (cond )
+                  (td {:react-key (str id "-" (name kw)) :val (kw row)}))
                 cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
@@ -154,13 +156,10 @@
        [:div tname]
        [:table
         [:thead (thead-row prm)]
-        (let [tbody-fn (cond
-                         (= tid :users)
-                         (om/factory TBodyUsers    {:keyfn :sqlfn})
-                         (= tid :salaries)
-                         (om/factory TBodySalaries {:keyfn :sqlfn})
-                         :else
-                         (fn [_] (str "ERROR: Unknown tid: '" tid "'. tbody-fn undefined.")))]
+        (let [hm {:keyfn :sqlfn}
+              tbody-fn (or (tid {:users    (om/factory TBodyUsers hm)
+                                 :salaries (om/factory TBodySalaries hm)})
+                           (fn [_] (str "ERROR: Unknown tid: '" tid "'. tbody-fn undefined.")))]
           ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
           (tbody-fn {:tname tname :cols cols :sqlfn sqlfn}))]]))))
 (def table (om/factory Table {:keyfn :tid}))
