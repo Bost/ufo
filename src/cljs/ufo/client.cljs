@@ -32,11 +32,11 @@
 
 (defui ColsUsers
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :fname :lname]))
+  static om/IQuery (query [this] '[:id :fname :lname :abrev]))
 
 (defui ColsSalaries
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :salary]))
+  static om/IQuery (query [this] '[:id :salary :abrev]))
 
 (defui TTable
   static om/Ident (ident [this {:keys [tid]}] [:tables/by-tid tid])
@@ -113,7 +113,7 @@
       [:tbody (map (fn [row]
                      (tbody-row {:row row :cols (om/get-query ColsUsers)}))
                    trows)]))))
-(def tbody-users (om/factory TBodyUsers {:keyfn :sqlfn}))
+#_(def tbody-users (om/factory TBodyUsers {:keyfn :sqlfn}))
 
 (defui TBodySalaries
   static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsSalaries)}])
@@ -125,7 +125,7 @@
       [:tbody (map (fn [row]
                      (tbody-row {:row row :cols (om/get-query ColsSalaries)}))
                    trows)]))))
-(def tbody-salaries (om/factory TBodySalaries {:keyfn :sqlfn}))
+#_(def tbody-salaries (om/factory TBodySalaries {:keyfn :sqlfn}))
 
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -154,13 +154,15 @@
        [:div tname]
        [:table
         [:thead (thead-row prm)]
-        ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
-        (let [hm {:tname tname :cols cols :sqlfn sqlfn}]
-          (cond
-            (= tid :users)    (tbody-users    hm)
-            (= tid :salaries) (tbody-salaries hm)
-            :else (str "Unknown tid: '" tid "'")))
-        ]]))))
+        (let [tbody-fn (cond
+                         (= tid :users)
+                         (om/factory TBodyUsers    {:keyfn :sqlfn})
+                         (= tid :salaries)
+                         (om/factory TBodySalaries {:keyfn :sqlfn})
+                         :else
+                         (fn [_] (str "ERROR: Unknown tid: '" tid "'. tbody-fn undefined.")))]
+          ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
+          (tbody-fn {:tname tname :cols cols :sqlfn sqlfn}))]]))))
 (def table (om/factory Table {:keyfn :tid}))
 
 (defui RootView

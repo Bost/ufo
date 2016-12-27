@@ -22,7 +22,7 @@
   {:action
    (fn []
      (let [ks [:rows/by-id id]
-           ;; get-in must be converted into {}
+           ;; result of get-in must be converted into {}
            old-state (into {} (get-in @state ks))]
        (swap! state update-in ks (fn [] (conj old-state v)))))})
 

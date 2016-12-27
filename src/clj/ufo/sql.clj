@@ -54,6 +54,7 @@ and t.COLUMN_Y in (" (re/inclause {:elems ys :contract re/coly?}) ")
   (let [sql (str "
 select
   emp_no " (name :id) "
+ ,emp_no " (name :abrev) "
  ,first_name " (name :fname) "
  ,last_name " (name :lname) "
 from employees where emp_no between 10010 and 10020
@@ -65,6 +66,7 @@ from employees where emp_no between 10010 and 10020
   (let [sql (str "
 select
   emp_no " (name :id) "
+ ,emp_no " (name :abrev) "
  ,salary " (name :salary) "
 from salaries where emp_no between 10010 and 10020
 "
