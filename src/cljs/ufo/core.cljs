@@ -6,5 +6,4 @@
    [ufo.state :as state]
    [ufo.client :as cli]))
 
-(om/add-root! cli/reconciler cli/RootView (gdom/getElement "app"))
-;; (om/add-root! state/reconciler cli/RootView (gdom/getElement "app"))
+(om/add-root! state/reconciler cli/RootView (gdom/getElement "app"))

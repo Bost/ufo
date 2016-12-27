@@ -1,3 +1,4 @@
+;; TODO https://github.com/compassus/compassus
 ;; TODO https://untangled-web.github.io/untangled/
 (ns ^:figwheel-always ufo.client
   (:require
@@ -23,25 +24,19 @@
 
 (enable-console-print!)
 
-(defn add-person! [widget {:keys [id fname lname] :as prm} cols]
-  (let [hm-rows {:kws [:rows/by-id id]}
-        hm-cols {:kws [:cols/by-id id]}]
-    (om/transact! widget `[(rows/by-id
-                            ;; ~ means evaluate the sexp before passing
-                            ~(assoc hm-rows :v {:id id :fname fname :lname lname}))
-                           (list/trows ~hm-rows)
-                           (cols/by-id
-                            ;; ~ means evaluate the sexp before passing
-                            ~(assoc hm-cols :v {:id id :cols cols}))
-                           (list/cols ~hm-cols)])))
+(defn add-person! [widget {:keys [id] :as vals}]
+  (om/transact! widget `[(rows/by-id
+                          ;; ~ means evaluate the sexp before passing
+                          ~{:id id :v vals})
+                         (list/trows ~{:kws [:rows/by-id id]})]))
 
 (defui TCols
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :fname :lname]))
+  static om/IQuery (query [this] '[:id :fname :lname :salary]))
 
-(defui TTableCols
-  static om/Ident (ident [this {:keys [id]}] [:cols/by-id id])
-  static om/IQuery (query [this] '[:id :cols]))
+(defui TTable
+  static om/Ident (ident [this {:keys [tid]}] [:tables/by-tid tid])
+  static om/IQuery (query [this] '[:tid :sqlfn :tname :cols]))
 
 (defui Th
   "1. {:keyfn ...} can only use keys specified by (om/props this)
@@ -88,33 +83,32 @@
 
 (defui TBody
   static om/IQuery
-  ;; TODO use zipmap here
-  (query [this] `[{:list/trows ~(om/get-query TCols)}
-                  {:list/cols ~(om/get-query TTableCols)}])
+  (query [this] `[{:list/trows ~(om/get-query TCols)}])
   Object
   (componentWillMount
    [this]
-   (let [{:keys [cols fname] :as prm} (om/props this)
+   (let [{:keys [cols sqlfn] :as prm} (om/props this)
          tbeg (time/now)]
+     (println "willMount" "(om/props this)" (om/props this))
      (utils/ednxhr
-      {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+      {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
        :on-complete
        (fn [resp]
          ;; map returs a lazy sequence therefore doseq must be used
          ;; (map #(add-person! this %) (:rows resp))
          (doseq [p (:rows resp)]
-           (add-person! this p cols))
+           (add-person! this p))
          ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
          :on-error (fn [resp] (println resp)))})
      ;; TODO Searching DB should be returned by ednxhr and displayed here
      #_(html [:div "Searching DB..."])))
   (render
    [this]
-   (let [{:keys [list/trows list/cols] :as prm} (om/props this)]
-     (println "render" "trows" trows "cols" cols)
+   (let [{:keys [list/trows]} (om/props this)]
+     (println "render" "(om/props this)" (om/props this))
      (html
       [:tbody (map tbody-row trows)]))))
-(def tbody (om/factory TBody))
+(def tbody (om/factory TBody {:keyfn :tid}))
 
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -122,7 +116,7 @@
   Object
   (render
    [this]
-   (let [{:keys [id fname tname cols] :as prm} (om/props this)]
+   (let [{:keys [tid tname sqlfn cols] :as prm} (om/props this)]
      (html
       [:div
        #_[:button
@@ -144,12 +138,12 @@
        [:table
         [:thead (thead-row prm)]
         ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
-        (tbody {:cols cols :fname fname})]]))))
-(def table (om/factory Table {:keyfn :fname}))
+        (tbody {:tname tname :cols cols :sqlfn sqlfn})]]))))
+(def table (om/factory Table {:keyfn :tid}))
 
 (defui RootView
   static om/IQuery
-  (query [this] `[{:list/tables ~(om/get-query TCols)}])
+  (query [this] `[{:list/tables ~(om/get-query TTable)}])
   Object
   #_(componentWillUpdate [this nextprops nextstate] (println "componentWillUpdate"))
   #_(componentDidMount [this] (.log js/console "componentDidMount"))
@@ -161,7 +155,3 @@
        (for [table-desc tables]
          (table table-desc))]))))
 
-(def reconciler
-  (om/reconciler
-    {:state  state/app-state
-     :parser (om/parser {:read state/read :mutate state/mutate})}))

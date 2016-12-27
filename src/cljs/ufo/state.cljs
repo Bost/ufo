@@ -13,16 +13,20 @@
 ;; Unions (think UNION)
 ;; Mutations (think INSERT/UPDATE/DELETE)
 
-;; (def app-state {:keyword {id real-information}})
+;; (def app-state { :keyword { id real-information }})
 
 (def app-state
-  {:list/tvals [{:id 10001 :fname "Jeffry" :lname "Glacons"}]
-   :list/tables
-   [{:id :salaries :fname :salaries :tname "Salaries"
+  {:list/tables
+   [{:tid   :salaries
+     :sqlfn :salaries
+     :tname "Salaries"
      :cols [:id :salary]}
-    {:id :users    :fname :users    :tname "Users"
+    {:tid   :users
+     :sqlfn :users
+     :tname "Users"
      :cols [:id :fname :lname]}]})
 
-(defonce reconciler
-  (om/reconciler {:state  app-state
+;; defonce produces: Encountered two children with the same key, `null`
+(def reconciler (om/reconciler
+                 {:state app-state
                   :parser (om/parser {:read read :mutate mutate})}))
