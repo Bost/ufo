@@ -128,8 +128,8 @@
       (fn [resp]
         ;; map returs a lazy sequence therefore doseq must be used
         ;; (map #(add-row! widget %) (:rows resp))
-        (doseq [p (:rows resp)]
-          (add-row! widget p))
+        (doseq [row (:rows resp)]
+          (add-row! widget row))
         ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
         :on-error (fn [resp] (println resp)))})
     ;; TODO Searching DB should be returned by ednxhr and displayed here

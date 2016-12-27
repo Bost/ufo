@@ -41,11 +41,9 @@
            (fn [resp]
              ;; map returs a lazy sequence therefore doseq must be used
              ;; (map #(add-row! widget %) (:rows resp))
-             (doseq [p (:rows resp)]
+             (doseq [row (:rows resp)]
                (swap! state update-in ks
-                      (fn [] (conj old-state
-                                  p
-                                  #_(into v {:fname "Foo" :lname "Bar"})))))
+                      (fn [] (conj old-state row))))
              ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
              :on-error (fn [resp] (println resp)))}))))})
 
