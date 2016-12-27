@@ -87,27 +87,25 @@
                 cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
+(defn will-mount [widget]
+  (let [{:keys [cols sqlfn] :as prm} (om/props widget)
+        tbeg (time/now)]
+    (utils/ednxhr
+     {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
+      :on-complete
+      (fn [resp]
+        ;; map returs a lazy sequence therefore doseq must be used
+        ;; (map #(add-person! widget %) (:rows resp))
+        (doseq [p (:rows resp)]
+          (add-person! widget p))
+        ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+        :on-error (fn [resp] (println resp)))})
+    ;; TODO Searching DB should be returned by ednxhr and displayed here
+    #_(html [:div "Searching DB..."])))
+
 (defui TBodyUsers
-  static om/IQuery
-  (query [this] `[{:list/trows ~(om/get-query ColsUsers)}])
-  Object
-  (componentWillMount
-   [this]
-   (let [{:keys [cols sqlfn] :as prm} (om/props this)
-         tbeg (time/now)]
-     (println "willMount" "TBodyUsers" "prm" prm)
-     (utils/ednxhr
-      {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
-       :on-complete
-       (fn [resp]
-         ;; map returs a lazy sequence therefore doseq must be used
-         ;; (map #(add-person! this %) (:rows resp))
-         (doseq [p (:rows resp)]
-           (add-person! this p))
-         ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-         :on-error (fn [resp] (println resp)))})
-     ;; TODO Searching DB should be returned by ednxhr and displayed here
-     #_(html [:div "Searching DB..."])))
+  static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsUsers)}])
+  Object (componentWillMount [this] (will-mount this))
   (render
    [this]
    (let [{:keys [list/trows]} (om/props this)]
@@ -118,26 +116,8 @@
 (def tbody-users (om/factory TBodyUsers {:keyfn :sqlfn}))
 
 (defui TBodySalaries
-  static om/IQuery
-  (query [this] `[{:list/trows ~(om/get-query ColsSalaries)}])
-  Object
-  (componentWillMount
-   [this]
-   (let [{:keys [cols sqlfn] :as prm} (om/props this)
-         tbeg (time/now)]
-     (println "willMount" "TBodySalaries" "prm" prm)
-     (utils/ednxhr
-      {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
-       :on-complete
-       (fn [resp]
-         ;; map returs a lazy sequence therefore doseq must be used
-         ;; (map #(add-person! this %) (:rows resp))
-         (doseq [p (:rows resp)]
-           (add-person! this p))
-         ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-         :on-error (fn [resp] (println resp)))})
-     ;; TODO Searching DB should be returned by ednxhr and displayed here
-     #_(html [:div "Searching DB..."])))
+  static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsSalaries)}])
+  Object (componentWillMount [this] (will-mount this))
   (render
    [this]
    (let [{:keys [list/trows]} (om/props this)]
