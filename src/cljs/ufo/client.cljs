@@ -24,7 +24,12 @@
 
 (enable-console-print!)
 
-(defn add-person! [widget {:keys [id] :as vals}]
+(defn add-missing! [widget {:keys [id] :as vals}]
+  (om/transact! widget `[(rows-missing/by-id
+                          ;; ~ means evaluate the sexp before passing
+                          ~{:id id :v vals})]))
+
+(defn add-row! [widget {:keys [id] :as vals}]
   (om/transact! widget `[(rows/by-id
                           ;; ~ means evaluate the sexp before passing
                           ~{:id id :v vals})
@@ -52,6 +57,31 @@
      (html [:th val]))))
 (def th (om/factory Th {:keyfn :val}))
 
+(defn abbrev [name]
+  (if name
+    (subs name 0 (min 2 (count name)))))
+
+(defui TdAbrev
+  "1. {:keyfn ...} can only use keys specified by (om/props this)
+2. Values stored under these keys can't be keywords"
+  ;; val is the id
+  static om/Ident (ident [this {:keys [val]}] [:rows/by-id val])
+  static om/IQuery (query [this] `[:list/trows])
+  Object
+  (componentWillMount
+   [this]
+   (let [{:keys [val]} (om/props this)]
+     (println "will-mount" "(om/props this)" (om/props this))
+     (add-missing! this {:id val})))
+  (render
+   [this]
+   (let [{:keys [list/trows]} (om/props this)
+         style {:style {:border "2px" :borderStyle "solid"}}
+         {fname :fname lname :lname} (first trows)]
+     (println "render" "(om/props this)" (om/props this))
+     (html [:td style (str (abbrev fname)
+                           (abbrev lname))]))))
+
 (defui Td
   "1. {:keyfn ...} can only use keys specified by (om/props this)
 2. Values stored under these keys can't be keywords"
@@ -61,7 +91,7 @@
    (let [{:keys [react-key val]} (om/props this)
          style {:style {:border "1px" :borderStyle "solid"}}]
      (html [:td style (str val)]))))
-(def td (om/factory Td {:keyfn :react-key}))
+#_(def td (om/factory Td {:keyfn :react-key}))
 
 (defui THeadRow
   Object
@@ -81,11 +111,11 @@
    [this]
    (let [{:keys [row cols]} (om/props this)
          id (:id row)]
-     (println "(om/props this)" (om/props this))
      (html
       [:tr (map (fn [kw]
-                  (cond )
-                  (td {:react-key (str id "-" (name kw)) :val (kw row)}))
+                  (let [td-fn (or (kw {:abrev (om/factory TdAbrev {:keyfn :react-key})})
+                                  (om/factory Td {:keyfn :react-key}))]
+                    (td-fn {:react-key (str id "-" (name kw)) :val (kw row)})))
                 cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
@@ -97,9 +127,9 @@
       :on-complete
       (fn [resp]
         ;; map returs a lazy sequence therefore doseq must be used
-        ;; (map #(add-person! widget %) (:rows resp))
+        ;; (map #(add-row! widget %) (:rows resp))
         (doseq [p (:rows resp)]
-          (add-person! widget p))
+          (add-row! widget p))
         ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
         :on-error (fn [resp] (println resp)))})
     ;; TODO Searching DB should be returned by ednxhr and displayed here
@@ -147,9 +177,9 @@
                :on-complete
                (fn [resp]
                  ;; map returs a lazy sequence therefore doseq must be used
-                 ;; (map #(add-person! this %) (:rows resp))
+                 ;; (map #(add-row! this %) (:rows resp))
                  (doseq [p (:rows resp)]
-                   (add-person! this p cols))
+                   (add-row! this p cols))
                  #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
                :on-error (fn [resp] (println resp))})))}
         "fetch data"]
@@ -168,8 +198,12 @@
   static om/IQuery
   (query [this] `[{:list/tables ~(om/get-query TTable)}])
   Object
-  #_(componentWillUpdate [this nextprops nextstate] (println "componentWillUpdate"))
-  #_(componentDidMount [this] (.log js/console "componentDidMount"))
+  #_(componentWillReceiveProps [this next-props] (println "WillReceiveProps"))
+  #_(componentWillUpdate [this next-props next-state] (println "WillUpdate"))
+  #_(componentDidUpdate [this prev-props prev-state] (println "DidUpdate"))
+  #_(componentWillMount [this] (println "WillMount"))
+  #_(componentDidMount [this] (println "DidMount"))
+  #_(componentWillUnmount [this] (println "WillUnmount"))
   (render
    [this]
    (let [{:keys [list/tables]} (om/props this)]

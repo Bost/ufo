@@ -3,7 +3,7 @@
    ;; [ufo [...]] ; is not supported by clojurescript
    [ufo.state :as state]
    [ufo.utils :as utils]
-   [ufo.regexps :as re :refer [dbg dbi id in?]]
+   [ufo.regexps :as re :refer [dbg dbi id in? t f]]
    [om.next :as om]
    [cljs-time.core :as time]))
 
@@ -25,6 +25,29 @@
            ;; result of get-in must be converted into {}
            old-state (into {} (get-in @state ks))]
        (swap! state update-in ks (fn [] (conj old-state v)))))})
+
+(defmethod state/mutate 'rows-missing/by-id
+  [{:keys [state]} _ {:keys [id v]}]
+  {:action
+   (fn []
+     (let [ks [:rows/by-id id]
+           ;; get-in must be converted into {}
+           old-state (into {} (get-in @state ks))]
+       (if-not (and (contains? old-state :fname)
+                    (contains? old-state :lname))
+         (utils/ednxhr
+          {:reqprm {:f :users :rowlim 4 :log t :nocache t}
+           :on-complete
+           (fn [resp]
+             ;; map returs a lazy sequence therefore doseq must be used
+             ;; (map #(add-row! widget %) (:rows resp))
+             (doseq [p (:rows resp)]
+               (swap! state update-in ks
+                      (fn [] (conj old-state
+                                  p
+                                  #_(into v {:fname "Foo" :lname "Bar"})))))
+             ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+             :on-error (fn [resp] (println resp)))}))))})
 
 (defmethod state/mutate 'list/trows
   [{:keys [state]} _ {:keys [kws]}]

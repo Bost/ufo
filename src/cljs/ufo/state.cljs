@@ -21,7 +21,7 @@
      :sqlfn :salaries
      :tname "Salaries"
      :cols [:id :salary]}
-    {:tid   :users
+    #_{:tid   :users
      :sqlfn :users
      :tname "Users"
      :cols [:id :fname :lname]}]})
