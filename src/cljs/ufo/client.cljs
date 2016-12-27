@@ -30,13 +30,17 @@
                           ~{:id id :v vals})
                          (list/trows ~{:kws [:rows/by-id id]})]))
 
-(defui TCols
+(defui ColsUsers
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :fname :lname :salary]))
+  static om/IQuery (query [this] '[:id :fname :lname]))
+
+(defui ColsSalaries
+  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
+  static om/IQuery (query [this] '[:id :salary]))
 
 (defui TTable
   static om/Ident (ident [this {:keys [tid]}] [:tables/by-tid tid])
-  static om/IQuery (query [this] '[:tid :sqlfn :tname :cols]))
+  static om/IQuery (query [this] '[:tid :sqlfn :tname]))
 
 (defui Th
   "1. {:keyfn ...} can only use keys specified by (om/props this)
@@ -75,21 +79,23 @@
   Object
   (render
    [this]
-   (let [{:keys [id] :as row} (om/props this)]
+   (let [{:keys [row cols]} (om/props this)
+         id (:id row)]
+     (println "(om/props this)" (om/props this))
      (html
       [:tr (map (fn [kw] (td {:react-key (str id "-" (name kw)) :val (kw row)}))
-                (om/get-query TCols))]))))
+                cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
-(defui TBody
+(defui TBodyUsers
   static om/IQuery
-  (query [this] `[{:list/trows ~(om/get-query TCols)}])
+  (query [this] `[{:list/trows ~(om/get-query ColsUsers)}])
   Object
   (componentWillMount
    [this]
    (let [{:keys [cols sqlfn] :as prm} (om/props this)
          tbeg (time/now)]
-     (println "willMount" "(om/props this)" (om/props this))
+     (println "willMount" "TBodyUsers" "prm" prm)
      (utils/ednxhr
       {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
        :on-complete
@@ -105,10 +111,41 @@
   (render
    [this]
    (let [{:keys [list/trows]} (om/props this)]
-     (println "render" "(om/props this)" (om/props this))
      (html
-      [:tbody (map tbody-row trows)]))))
-(def tbody (om/factory TBody {:keyfn :tid}))
+      [:tbody (map (fn [row]
+                     (tbody-row {:row row :cols (om/get-query ColsUsers)}))
+                   trows)]))))
+(def tbody-users (om/factory TBodyUsers {:keyfn :sqlfn}))
+
+(defui TBodySalaries
+  static om/IQuery
+  (query [this] `[{:list/trows ~(om/get-query ColsSalaries)}])
+  Object
+  (componentWillMount
+   [this]
+   (let [{:keys [cols sqlfn] :as prm} (om/props this)
+         tbeg (time/now)]
+     (println "willMount" "TBodySalaries" "prm" prm)
+     (utils/ednxhr
+      {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
+       :on-complete
+       (fn [resp]
+         ;; map returs a lazy sequence therefore doseq must be used
+         ;; (map #(add-person! this %) (:rows resp))
+         (doseq [p (:rows resp)]
+           (add-person! this p))
+         ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+         :on-error (fn [resp] (println resp)))})
+     ;; TODO Searching DB should be returned by ednxhr and displayed here
+     #_(html [:div "Searching DB..."])))
+  (render
+   [this]
+   (let [{:keys [list/trows]} (om/props this)]
+     (html
+      [:tbody (map (fn [row]
+                     (tbody-row {:row row :cols (om/get-query ColsSalaries)}))
+                   trows)]))))
+(def tbody-salaries (om/factory TBodySalaries {:keyfn :sqlfn}))
 
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -138,7 +175,12 @@
        [:table
         [:thead (thead-row prm)]
         ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
-        (tbody {:tname tname :cols cols :sqlfn sqlfn})]]))))
+        (let [hm {:tname tname :cols cols :sqlfn sqlfn}]
+          (cond
+            (= tid :users)    (tbody-users    hm)
+            (= tid :salaries) (tbody-salaries hm)
+            :else (str "Unknown tid: '" tid "'")))
+        ]]))))
 (def table (om/factory Table {:keyfn :tid}))
 
 (defui RootView
