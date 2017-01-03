@@ -44,7 +44,9 @@
     (jdbc/with-db-connection [dbx (dbspec dbconn)]
       (jdbc/query dbx [sql]))))
 
-(def dbquery (memo/memo dbquery-impl))
+(def dbquery
+  dbquery-impl
+  #_(memo/memo dbquery-impl))
 
 (defn sdbquery [{:keys [dbconn sql] :or {dbconn dbconn-default} :as prm}]
   #_(println "sdbquery" "sql" sql)

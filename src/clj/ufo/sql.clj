@@ -52,8 +52,9 @@ from employees where emp_no between 10010 and 10020
 select
   emp_no " (name :id) "
  ,emp_no " (name :abrev) "
- ,salary " (name :salary) "
+ ,max(salary) " (name :salary) "
 from salaries where emp_no between 10010 and 10020
+group by emp_no
 "
                  (postfix prm))]
     (assoc prm :f "salaries" :sql sql)))

@@ -33,6 +33,13 @@ run ufo:
 lein repl
 ```
 
+sql commands in emacs:
+```sql
+(setq sql-user "root")
+(setq sql-password "root")
+```
+then see emacs menu
+
 ## License
 
 Copyright © 2016
