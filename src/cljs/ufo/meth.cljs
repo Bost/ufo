@@ -37,8 +37,7 @@
      (let [ks [:users/by-id id]
            ;; get-in must be converted into {}
            old-state (into {} (get-in @state ks))]
-       (if-not (and (contains? old-state :fname)
-                    (contains? old-state :lname))
+       (if (empty? old-state)
          (utils/ednxhr
           {:reqprm {:f :users :id id :log t :nocache t}
            :on-complete
