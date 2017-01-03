@@ -1,8 +1,7 @@
 (ns ufo.sql
   (:require
    [ufo
-    [regexps :as re]
-    ]))
+    [regexps :as re]]))
 
 (def rowlimdefault 512)
 (def rowlimmax 1024)
@@ -35,14 +34,15 @@
 
 (def postfix postfix-mysql)
 
-(defn users [{:keys [] :as prm}]
+(defn users [{:keys [id] :as prm}]
   (let [sql (str "
 select
   emp_no " (name :id) "
  ,emp_no " (name :abrev) "
  ,first_name " (name :fname) "
  ,last_name " (name :lname) "
-from employees where emp_no between 10010 and 10020
+from employees where
+emp_no in (" (re/inclause {:elems [id] :contract re/uid?}) ")
 "
                  (postfix prm))]
     (assoc prm :f "users" :sql sql)))
@@ -53,7 +53,8 @@ select
   emp_no " (name :id) "
  ,emp_no " (name :abrev) "
  ,max(salary) " (name :salary) "
-from salaries where emp_no between 10010 and 10020
+from salaries where
+emp_no between 10010 and 10020
 group by emp_no
 "
                  (postfix prm))]

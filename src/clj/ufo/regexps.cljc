@@ -23,6 +23,8 @@
   [seq elm]
   (boolean (some (fn [e] (= elm e)) seq)))
 
+(defn uid? [x] (if (string? x) true #_(re-seq revm x)))
+
 (defn union-re-patterns
   "Union regex patters"
   [patterns]
