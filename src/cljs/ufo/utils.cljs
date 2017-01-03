@@ -14,20 +14,15 @@
 
 (enable-console-print!)
 
-(defn rowlim [kw]
-  {:rowlim
-   (or (kw {:users 10 :salaries 10})
-       (do
-         (let [v 10]
-           (println
-            (str "WARN: rowlim undefined for kw '" kw "'. Using default val " v))
-           v)))})
-
 (defn ednxhr [{:keys [reqprm on-complete on-error] :as prm}]
-  (let [rowlim (rowlim (:f reqprm))
-        rowlim-val (:rowlim rowlim)]
-    (if (and (integer? rowlim-val)
-             (pos? rowlim-val))
+  (let [kw (:f reqprm)
+        rowlim (or (kw {:users 1 :salaries 10})
+                   (let [v 10]
+                     (println
+                      (str "WARN: rowlim undefined for '" kw "'. Using default val " v))
+                     v))]
+    (if (and (integer? rowlim)
+             (pos? rowlim))
       (let [xhr (XhrIo.)] ;; instantiate basic class for handling XMLHttpRequests.
         (println "Searching in DB for" reqprm "...")
         #_(events/listen
@@ -41,7 +36,7 @@
                        (fn [e]
                          (on-error {:error (.getResponseText xhr)})))
         (.send xhr "req" "PUT"
-               (when prm (pr-str (conj reqprm rowlim)))
+               (when prm (pr-str (conj reqprm {:rowlim rowlim})))
                {"Content-Type" "application/edn; charset=UTF-8"
                 "Accept" "application/edn"})))))
 
