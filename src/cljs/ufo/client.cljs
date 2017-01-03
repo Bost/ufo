@@ -4,8 +4,6 @@
   (:require
    [ufo.regexps :as re :refer [t f dbg dbi]]
    [ufo.utils :as utils]
-   [ufo.meth :as meth]
-   [ufo.state :as state]
    [om.next :as om :refer-macros [defui]]
    [sablono.core :refer-macros [html]]
    [cljs-time.core :as time]
