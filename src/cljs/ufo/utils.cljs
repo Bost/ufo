@@ -16,7 +16,7 @@
 
 (defn rowlim [kw]
   {:rowlim
-   (or (kw {:users 2 :salaries 2})
+   (or (kw {:users 10 :salaries 10})
        (do
          (let [v 10]
            (println
@@ -24,13 +24,12 @@
            v)))})
 
 (defn ednxhr [{:keys [reqprm on-complete on-error] :as prm}]
-  (let [f (:f reqprm)
-        rowlim (rowlim f)
+  (let [rowlim (rowlim (:f reqprm))
         rowlim-val (:rowlim rowlim)]
     (if (and (integer? rowlim-val)
              (pos? rowlim-val))
       (let [xhr (XhrIo.)] ;; instantiate basic class for handling XMLHttpRequests.
-        (println "Searching in DB for" f "...")
+        (println "Searching in DB for" reqprm "...")
         #_(events/listen
          xhr goog.net.EventType.COMPLETE
          (fn [e]

@@ -2,7 +2,7 @@
 ;; TODO https://untangled-web.github.io/untangled/
 (ns ^:figwheel-always ufo.client
   (:require
-   [ufo.regexps :as re :refer [dbg dbi t f]]
+   [ufo.regexps :as re :refer [t f dbg dbi]]
    [ufo.utils :as utils]
    [ufo.meth :as meth]
    [ufo.state :as state]
@@ -25,19 +25,15 @@
 (enable-console-print!)
 
 (defn add-missing! [widget {:keys [id] :as vals}]
-  (om/transact! widget `[(rows-missing/by-id
+  (om/transact! widget `[(users/by-id
                           ;; ~ means evaluate the sexp before passing
-                          ~{:id id :v vals})]))
+                          ~{:id id})]))
 
 (defn add-row! [widget {:keys [id] :as vals}]
   (om/transact! widget `[(rows/by-id
                           ;; ~ means evaluate the sexp before passing
                           ~{:id id :v vals})
                          (list/trows ~{:kws [:rows/by-id id]})]))
-
-(defui ColsUsers
-  static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  static om/IQuery (query [this] '[:id :fname :lname :abrev]))
 
 (defui ColsSalaries
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -65,20 +61,21 @@
   "1. {:keyfn ...} can only use keys specified by (om/props this)
 2. Values stored under these keys can't be keywords"
   ;; val is the id
-  static om/Ident (ident [this {:keys [val]}] [:rows/by-id val])
-  static om/IQuery (query [this] `[:list/trows])
+  static om/Ident (ident [this {:keys [val]}] [:users/by-id val])
+  static om/IQuery (query [this] (let [{:keys [val]} (om/props this)]
+                                   `[(:user ~{:id val})]))
   Object
-  (componentWillMount
-   [this]
-   (let [{:keys [val]} (om/props this)]
-     (println "will-mount" "(om/props this)" (om/props this))
-     (add-missing! this {:id val})))
+  ;; (componentWillReceiveProps [this next-props]            (println "TdAbrev" "WillReceiveProps"))
+  ;; (componentWillUpdate       [this next-props next-state] (println "TdAbrev" "WillUpdate"))
+  ;; (componentDidUpdate        [this prev-props prev-state] (println "TdAbrev" "DidUpdate"))
+  (componentWillMount           [this] (let [{:keys [val]} (om/props this)] (add-missing! this {:id val})))
+  ;; (componentDidMount         [this]                       (println "TdAbrev" "DidMount"))
+  ;; (componentWillUnmount      [this]                       (println "TdAbrev" "WillUnmount"))
   (render
    [this]
-   (let [{:keys [list/trows]} (om/props this)
-         style {:style {:border "2px" :borderStyle "solid"}}
-         {fname :fname lname :lname} (first trows)]
-     (println "render" "(om/props this)" (om/props this))
+   (let [{:keys [user] :as prm} (om/props this)
+         style {:style {:border "1px" :borderStyle "solid"}}
+         {fname :fname lname :lname} user]
      (html [:td style (str (abbrev fname)
                            (abbrev lname))]))))
 
@@ -123,7 +120,7 @@
   (let [{:keys [cols sqlfn] :as prm} (om/props widget)
         tbeg (time/now)]
     (utils/ednxhr
-     {:reqprm {:f sqlfn :rowlim 4 :log t :nocache t}
+     {:reqprm {:f sqlfn :log t :nocache t}
       :on-complete
       (fn [resp]
         ;; map returs a lazy sequence therefore doseq must be used
@@ -133,29 +130,25 @@
       ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
       :on-error (fn [resp] (println resp))})))
 
-(defui TBodyUsers
-  static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsUsers)}])
-  Object (componentWillMount [this] (will-mount this))
-  (render
-   [this]
-   (let [{:keys [list/trows]} (om/props this)]
-     (html
-      [:tbody (map (fn [row]
-                     (tbody-row {:row row :cols (om/get-query ColsUsers)}))
-                   trows)]))))
-#_(def tbody-users (om/factory TBodyUsers {:keyfn :sqlfn}))
-
 (defui TBodySalaries
   static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsSalaries)}])
-  Object (componentWillMount [this] (will-mount this))
+  Object
+  ;; (componentWillReceiveProps [this next-props]            (println "TBodySalaries" "WillReceiveProps"))
+  ;; (componentWillUpdate       [this next-props next-state] (println "TBodySalaries" "WillUpdate"))
+  ;; (componentDidUpdate        [this prev-props prev-state] (println "TBodySalaries" "DidUpdate"))
+  (componentWillMount           [this] (will-mount this))
+  ;; (componentDidMount         [this]                       (println "TBodySalaries" "DidMount"))
+  ;; (componentWillUnmount      [this]                       (println "TBodySalaries" "WillUnmount"))
   (render
    [this]
    (let [{:keys [list/trows]} (om/props this)]
      (html
-      [:tbody (map (fn [row]
-                     (tbody-row {:row row :cols (om/get-query ColsSalaries)}))
+      [:tbody (map-indexed
+               (fn [idx row]
+                 (tbody-row
+                  {:react-key (str :row "-" idx)
+                   :row row :cols (om/get-query ColsSalaries)}))
                    trows)]))))
-#_(def tbody-salaries (om/factory TBodySalaries {:keyfn :sqlfn}))
 
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -167,26 +160,25 @@
      (html
       [:div
        #_[:button
-          {:onClick
-           (fn [e]
-             (let [tbeg (time/now)]
-               (utils/ednxhr
-                {:reqprm {:f fname :rowlim 4 :log t :nocache t}
-                 :on-complete
-                 (fn [resp]
-                   ;; map returs a lazy sequence therefore doseq must be used
-                   ;; (map #(add-row! this %) (:rows resp))
-                   (doseq [p (:rows resp)]
-                     (add-row! this p cols))
-                   #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
-                 :on-error (fn [resp] (println resp))})))}
-          "fetch data"]
+        {:onClick
+         (fn [e]
+           (let [tbeg (time/now)]
+             (utils/ednxhr
+              {:reqprm {:f fname :log t :nocache t}
+               :on-complete
+               (fn [resp]
+                 ;; map returs a lazy sequence therefore doseq must be used
+                 ;; (map #(add-row! this %) (:rows resp))
+                 (doseq [p (:rows resp)]
+                   (add-row! this p cols))
+                 #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
+               :on-error (fn [resp] (println resp))})))}
+        "fetch data"]
        [:div tname]
        [:table
         [:thead (thead-row prm)]
         (let [hm {:keyfn :sqlfn}
-              tbody-fn (or (tid {:users    (om/factory TBodyUsers hm)
-                                 :salaries (om/factory TBodySalaries hm)})
+              tbody-fn (or (tid {:salaries (om/factory TBodySalaries hm)})
                            (fn [_] (str "ERROR: Unknown tid: '" tid "'. tbody-fn undefined.")))]
           ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
           (tbody-fn {:tname tname :cols cols :sqlfn sqlfn}))]]))))
@@ -196,12 +188,12 @@
   static om/IQuery
   (query [this] `[{:list/tables ~(om/get-query TTable)}])
   Object
-  #_(componentWillReceiveProps [this next-props] (println "WillReceiveProps"))
-  #_(componentWillUpdate [this next-props next-state] (println "WillUpdate"))
-  #_(componentDidUpdate [this prev-props prev-state] (println "DidUpdate"))
-  #_(componentWillMount [this] (println "WillMount"))
-  #_(componentDidMount [this] (println "DidMount"))
-  #_(componentWillUnmount [this] (println "WillUnmount"))
+  #_(componentWillReceiveProps [this next-props]            (println "RootView" "WillReceiveProps"))
+  #_(componentWillUpdate       [this next-props next-state] (println "RootView" "WillUpdate"))
+  #_(componentDidUpdate        [this prev-props prev-state] (println "RootView" "DidUpdate"))
+  #_(componentWillMount        [this]                       (println "RootView" "WillMount"))
+  #_(componentDidMount         [this]                       (println "RootView" "DidMount"))
+  #_(componentWillUnmount      [this]                       (println "RootView" "WillUnmount"))
   (render
    [this]
    (let [{:keys [list/tables]} (om/props this)]

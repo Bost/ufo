@@ -26,17 +26,21 @@
            old-state (into {} (get-in @state ks))]
        (swap! state update-in ks (fn [] (conj old-state v)))))})
 
-(defmethod state/mutate 'rows-missing/by-id
-  [{:keys [state]} _ {:keys [id v]}]
+(defmethod state/read :user
+  [{:keys [state] :as env} key {:keys [id] :as params}]
+  {:value (get-in @state [:users/by-id id])})
+
+(defmethod state/mutate 'users/by-id
+  [{:keys [state]} _ {:keys [id]}]
   {:action
    (fn []
-     (let [ks [:rows/by-id id]
+     (let [ks [:users/by-id id]
            ;; get-in must be converted into {}
            old-state (into {} (get-in @state ks))]
        (if-not (and (contains? old-state :fname)
                     (contains? old-state :lname))
          (utils/ednxhr
-          {:reqprm {:f :users :rowlim 4 :log t :nocache t}
+          {:reqprm {:f :users :id id :log t :nocache t}
            :on-complete
            (fn [resp]
              ;; map returs a lazy sequence therefore doseq must be used
@@ -56,6 +60,7 @@
          (if (in? old-list kws)
            (println "WARN: mutate" kw "(in? old-list kws); :kws" kws)
            (swap! state assoc kw (conj old-list kws))))))})
+
 
 ;;;;;;;;;;;;;;;;;
 

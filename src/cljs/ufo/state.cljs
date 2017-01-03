@@ -20,7 +20,7 @@
    [{:tid   :salaries
      :sqlfn :salaries
      :tname "Salaries"
-     :cols [:id :salary]}
+     :cols [:id :salary :abrev]}
     #_{:tid   :users
      :sqlfn :users
      :tname "Users"
