@@ -35,21 +35,6 @@
 
 (def postfix postfix-mysql)
 
-(defn get-xyz
-  "Select SCHEMA.TABLE COLUMN_X, COLUMN_Y, COLUMN_Z according to xs, ys"
-  [{:keys [xs ys] :as prm}]
-  (let [sql (str "
-select
-   t.COLUMN_X " (name :colx) "
-  ,t.COLUMN_Y " (name :coly) "
-  ,t.COLUMN_Z " (name :colz) "
-from SCHEMA.TABLE t
-where 1=1
-and t.COLUMN_X in (" (re/inclause {:elems xs :contract re/colx?}) ")
-and t.COLUMN_Y in (" (re/inclause {:elems ys :contract re/coly?}) ")
-" (postfix prm))]
-    (assoc prm :f "cols-xyz" :sql sql)))
-
 (defn users [{:keys [] :as prm}]
   (let [sql (str "
 select
