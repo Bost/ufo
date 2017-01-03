@@ -23,19 +23,6 @@
             (str "WARN: rowlim undefined for kw '" kw "'. Using default val " v))
            v)))})
 
-#_(defn ednxhr [m cb]
-  (let [xhr (new js/XMLHttpRequest)]
-    (.open xhr "POST" "/props")
-    (.setRequestHeader xhr "Content-Type" "application/transit+json")
-    (.setRequestHeader xhr "Accept" "application/transit+json")
-    (.addEventListener
-     xhr "load"
-     (fn [evt]
-       (let [response (t/read (om/reader)
-                              (.. evt -currentTarget -responseText))]
-         (cb response))))
-    (.send xhr (t/write (om/writer) (:remote m)))))
-
 (defn ednxhr [{:keys [reqprm on-complete on-error] :as prm}]
   (let [f (:f reqprm)
         rowlim (rowlim f)
