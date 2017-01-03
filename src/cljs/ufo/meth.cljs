@@ -43,9 +43,9 @@
              ;; (map #(add-row! widget %) (:rows resp))
              (doseq [row (:rows resp)]
                (swap! state update-in ks
-                      (fn [] (conj old-state row))))
-             ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-             :on-error (fn [resp] (println resp)))}))))})
+                      (fn [] (conj old-state row)))))
+           ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+           :on-error (fn [resp] (println resp))}))))})
 
 (defmethod state/mutate 'list/trows
   [{:keys [state]} _ {:keys [kws]}]

@@ -129,11 +129,9 @@
         ;; map returs a lazy sequence therefore doseq must be used
         ;; (map #(add-row! widget %) (:rows resp))
         (doseq [row (:rows resp)]
-          (add-row! widget row))
-        ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-        :on-error (fn [resp] (println resp)))})
-    ;; TODO Searching DB should be returned by ednxhr and displayed here
-    #_(html [:div "Searching DB..."])))
+          (add-row! widget row)))
+      ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
+      :on-error (fn [resp] (println resp))})))
 
 (defui TBodyUsers
   static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsUsers)}])
@@ -169,20 +167,20 @@
      (html
       [:div
        #_[:button
-        {:onClick
-         (fn [e]
-           (let [tbeg (time/now)]
-             (utils/ednxhr
-              {:reqprm {:f fname :rowlim 4 :log t :nocache t}
-               :on-complete
-               (fn [resp]
-                 ;; map returs a lazy sequence therefore doseq must be used
-                 ;; (map #(add-row! this %) (:rows resp))
-                 (doseq [p (:rows resp)]
-                   (add-row! this p cols))
-                 #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
-               :on-error (fn [resp] (println resp))})))}
-        "fetch data"]
+          {:onClick
+           (fn [e]
+             (let [tbeg (time/now)]
+               (utils/ednxhr
+                {:reqprm {:f fname :rowlim 4 :log t :nocache t}
+                 :on-complete
+                 (fn [resp]
+                   ;; map returs a lazy sequence therefore doseq must be used
+                   ;; (map #(add-row! this %) (:rows resp))
+                   (doseq [p (:rows resp)]
+                     (add-row! this p cols))
+                   #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
+                 :on-error (fn [resp] (println resp))})))}
+          "fetch data"]
        [:div tname]
        [:table
         [:thead (thead-row prm)]

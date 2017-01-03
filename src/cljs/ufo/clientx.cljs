@@ -128,6 +128,5 @@
                (fn [resp]
                  ;; TODO transact the hash-map to the app-state
                  {:resp (str resp) :tbeg tbeg :tend (time/now)})
-               :on-error (fn [resp] (println resp))
-               })))}
+               :on-error (fn [resp] (println resp))})))}
         "fetch data"]]))))
