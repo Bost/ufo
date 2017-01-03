@@ -70,7 +70,7 @@
      :figwheel {:websocket-host :js-client-host}
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
-                :main ufo.core
+                :main ufo.sync
                 :asset-path "js/out"
                 :optimizations :none
                 ;; for debugging ClojureScript directly in the browser
