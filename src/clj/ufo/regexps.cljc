@@ -41,9 +41,6 @@
     (let [s (if (in? collstr contract) (str "'" ret "'") ret)]
       (clojure.string/replace s #"(([\d']+, ){12})" "$1\n"))))
 
-(defn colx? "TODO specify contract colx" [v] true)
-(defn coly? "TODO specify contract coly" [v] true)
-
 #_(defn tnow []
   (timef/unparse (timef/formatter "HHmmss.SSS") (time/now)))
 #_(defn fntime [v]
