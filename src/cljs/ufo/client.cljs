@@ -184,7 +184,7 @@
 (def table (om/factory Table {:keyfn :tid}))
 
 (defui RootView
-  static om/IQuery
+  static om/IQuery ;; the query-tree is static
   (query [this] `[{:list/tables ~(om/get-query TTable)}])
   Object
   #_(componentWillReceiveProps [this next-props]            (println "RootView" "WillReceiveProps"))
