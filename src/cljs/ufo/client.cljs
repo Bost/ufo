@@ -98,6 +98,11 @@
                 cols)]))))
 (def thead-row (om/factory THeadRow))
 
+(defn td [row id kw]
+  (let [td-fn (or (kw {:abrev (om/factory TdAbrev {:keyfn :react-key})})
+                  (om/factory Td {:keyfn :react-key}))]
+    (td-fn {:react-key (str id "-" (name kw)) :val (kw row)})))
+
 (defui TBodyRow
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   ;; static om/IQuery (query [this] '[:id :fname :lname])
@@ -107,11 +112,7 @@
    (let [{:keys [row cols]} (om/props this)
          id (:id row)]
      (html
-      [:tr (map (fn [kw]
-                  (let [td-fn (or (kw {:abrev (om/factory TdAbrev {:keyfn :react-key})})
-                                  (om/factory Td {:keyfn :react-key}))]
-                    (td-fn {:react-key (str id "-" (name kw)) :val (kw row)})))
-                cols)]))))
+      [:tr (map (fn [kw] (td row id kw)) cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
 (defn will-mount [widget]
