@@ -44,6 +44,13 @@
   [{:keys [state] :as env} key {:keys [id] :as params}]
   {:value (get-in @state [:users/by-id id])})
 
+(defmethod read :search/user
+  [{:keys [state ast] :as env} key {:keys [id] :as params}]
+  (merge
+   {:value (get-in @state [:users/by-id id])}
+   (when true ;; a condition on id
+     {:search ast})))
+
 (defmethod mutate 'users/by-id
   [{:keys [state]} _ {:keys [id]}]
   {:action
@@ -103,8 +110,13 @@
      :cols [:id :fname :lname]}]})
 
 ;; defonce produces: Encountered two children with the same key, `null`
-(def reconciler (om/reconciler
-                 {:state app-state
-                  :parser (om/parser {:read read :mutate mutate})}))
+(def reconciler
+  (om/reconciler
+   {:state app-state
+    :parser (om/parser {:read read :mutate mutate})
+
+    ;; "I don't know the value of this key, go ask the server"
+    :remotes [:search] ;; remote targets - represent remote services
+    }))
 
 (om/add-root! reconciler cli/RootView (gdom/getElement "app"))
