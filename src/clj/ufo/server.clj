@@ -1,8 +1,7 @@
 (ns ufo.server
   (:require
    [ring.util.response :refer [file-response]]
-   [ring.util.json-response :as jr]
-   [ring.adapter.jetty :refer [run-jetty]]
+   [cheshire.core :refer :all]
 
    ;; compojure: routing lib for Ring; dispatching of GET, PUT, etc.
    [compojure.core :refer [defroutes GET PUT]]
@@ -12,7 +11,8 @@
    [clojure.edn :as edn]
    [ufo
     [db :as db]
-    [sql :as sql]]
+    [sql :as sql]
+    #_[json :as ujs]]
    [clj-time-ext.core :as etime]))
 
 (defn response [data & [status]]
@@ -51,7 +51,10 @@
 (defroutes routes
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
-  (GET "/jsonreq" req (jr/json-response ["jsonufo" [] [] []]))
+  (GET "/jsonreq" req
+       (do
+         (println "GET /jsonreq")
+         (generate-string ["aaa" ["aaa!" "desc0"] [] []])))
   (route/files "/" {:root "resources/public"}))
 
 (def handler

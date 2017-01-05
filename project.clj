@@ -11,6 +11,7 @@
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
    [org.omcljs/om "1.0.0-alpha47" :exclusions [commons-codec]]
    [ring "1.5.0"]
+   [cheshire "5.6.3"]
    [compojure "1.5.1"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
    [com.andrewmcveigh/cljs-time "0.4.0"]
@@ -36,8 +37,6 @@
 
    ;; quartzite dependency on slf4j-api should be auto-resolved
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
-
-   [ring-json-response "0.2.0"]
 
    ;; (time/now) in clj
    [clj-time-ext "0.7.2"]
@@ -72,7 +71,7 @@
      :figwheel {:websocket-host :js-client-host}
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
-                :main ufo.sync
+                :main ufo.core
                 :asset-path "js/out"
                 :optimizations :none
                 ;; for debugging ClojureScript directly in the browser
