@@ -54,7 +54,11 @@
   (GET "/jsonreq" req
        (do
          (println "GET /jsonreq")
-         (generate-string ["aaa" ["aaa!" "desc0"] [] []])))
+         (generate-string ["jsonreq" ["aaa!" "desc0"] [] []])))
+  (GET "/jsonreq/:search" req
+       (do
+         (println "GET /jsonreq/:search" req)
+         (generate-string ["jsonreq-search" ["aaa!" "search-desc0"] [] []])))
   (route/files "/" {:root "resources/public"}))
 
 (def handler

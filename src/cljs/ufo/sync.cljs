@@ -13,15 +13,20 @@
 (enable-console-print!)
 
 (def base-url
-  "http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=")
+  #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
+  "http://localhost:3449/jsonreq/search="
+  )
 
 (defn jsonp
   ([uri] (jsonp (chan) uri))
   ([c uri]
    (let [gjsonp (Jsonp. (Uri. uri))]
      ;; put! - Asynchronously puts a val into port
+     #_(println "before" "uri" uri)
+     (println "gjsonp" gjsonp)
      (.send gjsonp nil (fn [val]
-                         (println "val" val)
+                         #_(println "val" val)
+                         (println "after" "uri" uri)
                          (put! c val)))
      c)))
 
@@ -60,7 +65,7 @@
    (let [{:keys [search/results]} (om/props this)]
      (html
       [:div
-       [:h2 "Autocompleter"]
+       [:h2 (str "base-url: " base-url)]
        (cond->
            [(search-field this (:query (om/get-params this)))]
          (not (empty? results)) (conj (result-list results)))]))))
@@ -70,14 +75,18 @@
     ;; callback is provided by om.next itself
     (loop [[query callback] (<! c)] ;; <! takes val from a port
       (let [[_ results] (<! (jsonp (str base-url query)))]
+        (println "results" results)
         (callback {:search/results results}))
       (recur (<! c)))))
 
 (defn send-to-chan [c]
   (fn [{:keys [search]} callback]
+    (println "search" search)
+    (println "(om/query->ast search)" (om/query->ast search))
     (when search
       (let [{[search] :children} (om/query->ast search)
             query (get-in search [:params :query])]
+        (println "query" query)
         (put! c [query callback])))))
 
 (def send-chan (chan))
