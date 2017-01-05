@@ -37,6 +37,8 @@
    ;; quartzite dependency on slf4j-api should be auto-resolved
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
 
+   [ring-json-response "0.2.0"]
+
    ;; (time/now) in clj
    [clj-time-ext "0.7.2"]
    [clj-time "0.12.2"]]

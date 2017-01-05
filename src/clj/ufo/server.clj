@@ -1,6 +1,7 @@
 (ns ufo.server
   (:require
    [ring.util.response :refer [file-response]]
+   [ring.util.json-response :as jr]
    [ring.adapter.jetty :refer [run-jetty]]
 
    ;; compojure: routing lib for Ring; dispatching of GET, PUT, etc.
@@ -50,18 +51,16 @@
 (defroutes routes
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
+  (GET "/jsonreq" req (jr/json-response ["jsonufo" [] [] []]))
   (route/files "/" {:root "resources/public"}))
 
-(defn read-inputstream-edn [input]
-  (edn/read {:eof nil}
-            (java.io.PushbackReader.
-             (java.io.InputStreamReader. input "UTF-8"))))
-
-(defn parse-edn-body [handler]
+(def handler
   (fn [request]
-    (handler (if-let [body (:body request)]
-               (assoc request
-                 :edn-body (read-inputstream-edn body))
-               request))))
-
-(def handler (parse-edn-body routes))
+    (let [req (if-let [body (:body request)]
+                (assoc request
+                       :edn-body
+                       (edn/read {:eof nil}
+                                 (java.io.PushbackReader.
+                                  (java.io.InputStreamReader. body "UTF-8"))))
+                request)]
+      (routes req))))
