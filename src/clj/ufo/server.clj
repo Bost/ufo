@@ -1,24 +1,31 @@
 (ns ufo.server
   (:require
    [ring.util.response :refer [file-response]]
-   [cheshire.core :refer :all]
 
    ;; compojure: routing lib for Ring; dispatching of GET, PUT, etc.
    [compojure.core :refer [defroutes GET PUT]]
    [compojure.route :as route]
    [compojure.handler :as handler]
-
    [clojure.edn :as edn]
+   [clojure.data.json :as json]
    [ufo
     [db :as db]
     [sql :as sql]
     #_[json :as ujs]]
    [clj-time-ext.core :as etime]))
 
-(defn response [data & [status]]
+(defn end-response [data & [status]]
   {:status (or status 200) ;; Status code: 200 'OK (The request was fulfilled)'
    :headers {"Content-Type" "application/edn; charset=UTF-8"}
    :body (pr-str data)})
+
+(defn json-response [callback data & [status]]
+  {:status (or status 200) ;; Status code: 200 'OK (The request was fulfilled)'
+   :headers {"Content-Type" "application/jsonp; charset=UTF-8"}
+   :body (let [json-data (json/write-str data)]
+           (if callback
+             (str callback "(" json-data ")") ;; encapsulate the return in jsonp
+             json-data))})
 
 (def fmap
   {:users    {:db db/users    :prm {}}
@@ -30,13 +37,13 @@
                  (println "ERROR" fnkw "does not exist in the fmap"))
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
     (let [data (dbfn dbfnprm)]
-      (response {:sql (:sql data)
-                 :rows (for [row (:rows data)]
-                         (assoc row
-                                :ago
-                                (etime/tstp-modified-ago
-                                 (:tstp row)
-                                 {:verbose false :desc-length :short})))}))))
+      (end-response {:sql (:sql data)
+                     :rows (for [row (:rows data)]
+                             (assoc row
+                                    :ago
+                                    (etime/tstp-modified-ago
+                                     (:tstp row)
+                                     {:verbose false :desc-length :short})))}))))
 #_
 (defroutes myapp
   (GET "/"     [] "Show something")
@@ -47,27 +54,21 @@
   (OPTIONS "/" [] "Appease something") ; beschwichtigen, stillen, besaenftigen
   (HEAD "/"    [] "Preview something"))
 
-;; Restart figwheel to apply changes
+;; (reset-autobuild) should be enough for figwheel to see the changes
 (defroutes routes
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
-  (GET "/jsonreq" req
-       (do
-         (println "GET /jsonreq")
-         (generate-string ["jsonreq" ["aaa!" "desc0"] [] []])))
   (GET "/jsonreq/:search" req
-       (do
-         (println "GET /jsonreq/:search" req)
-         (generate-string ["jsonreq-search" ["aaa!" "search-desc0"] [] []])))
-  (route/files "/" {:root "resources/public"}))
+    (let [query-string (:query-string req)
+          callback (subs query-string (count "callback="))]
+      (json-response callback ["stuff" ["foo" "joe"] [] []])))
+  (route/files "/" {:root "resources/public"})
+  (route/not-found "<h1>Page not found</h1>"))
 
-(def handler
-  (fn [request]
-    (let [req (if-let [body (:body request)]
-                (assoc request
-                       :edn-body
-                       (edn/read {:eof nil}
-                                 (java.io.PushbackReader.
-                                  (java.io.InputStreamReader. body "UTF-8"))))
-                request)]
-      (routes req))))
+(defn handler [request]
+  (routes (if-let [body (:body request)]
+            (assoc request :edn-body
+                   (edn/read {:eof nil}
+                             (java.io.PushbackReader.
+                              (java.io.InputStreamReader. body "UTF-8"))))
+            request)))

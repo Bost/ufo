@@ -65,7 +65,7 @@
                       "cemerick.piggieback/wrap-cljs-repl"]}
   :cljsbuild
   {:builds
-   [{:id "dev"
+   [{:id "dev-ufo"
      :source-paths ["src/cljs" "src/clj"]
      ;; figwheel client config
      :figwheel {:websocket-host :js-client-host}
