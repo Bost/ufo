@@ -1,15 +1,21 @@
 ;; TODO https://github.com/compassus/compassus
 ;; TODO https://untangled-web.github.io/untangled/
 (ns ^:figwheel-always ufo.client
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require
    [ufo.regexps :as re :refer [t f dbg dbi]]
    [ufo.utils :as utils]
+   [ufo.sync :as sync]
+   [cljs.core.async :as async :refer [<! >! put! chan]]
    [om.next :as om :refer-macros [defui]]
    [sablono.core :refer-macros [html]]
    [cljs-time.core :as time]
 
    [goog.dom :as gdom]
-   [om.dom :as dom]))
+   [om.dom :as dom])
+  (:import [goog Uri]
+           ;; Jsonp creates a new cross domain channel that sends data to the specified host URL
+           [goog.net Jsonp]))
 
 ;; TODO hiccup (html [:div#foo.bar.baz "bang"])
 ;;      <div id='foo' class='bar baz'>bang</div>
@@ -59,23 +65,33 @@
   "1. {:keyfn ...} can only use keys specified by (om/props this)
 2. Values stored under these keys can't be keywords"
   ;; val is the id
-  static om/Ident (ident [this {:keys [val]}] [:users/by-id val])
-  static om/IQuery (query [this] (let [{:keys [val]} (om/props this)]
-                                   `[(:user ~{:id val})]))
+  static om/IQueryParams (params [this] {:query ""})
+  ;; static om/Ident (ident [this {:keys [val]}] [:users/by-id val])
+  static om/IQuery (query [this] '[(:search/user {:query ?query})])
   Object
   ;; (componentWillReceiveProps [this next-props]            (println "TdAbrev" "WillReceiveProps"))
   ;; (componentWillUpdate       [this next-props next-state] (println "TdAbrev" "WillUpdate"))
   ;; (componentDidUpdate        [this prev-props prev-state] (println "TdAbrev" "DidUpdate"))
-  (componentWillMount           [this] (let [{:keys [val]} (om/props this)] (add-missing! this {:id val})))
+  ;; (componentWillMount        [this] (let [{:keys [val]} (om/props this)] (add-missing! this {:id val})))
   ;; (componentDidMount         [this]                       (println "TdAbrev" "DidMount"))
   ;; (componentWillUnmount      [this]                       (println "TdAbrev" "WillUnmount"))
   (render
    [this]
-   (let [{:keys [user] :as prm} (om/props this)
+   (let [{:keys [search/user val] :as prm} (om/props this)
          style {:style {:border "1px" :borderStyle "solid"}}
          {fname :fname lname :lname} user]
-     (html [:td style (str (abbrev fname)
-                           (abbrev lname))]))))
+     (println "TdAbrev" "(om/props this)" (om/props this))
+     #_(println "TdAbrev" "(:query (om/get-params this))" (:query (om/get-params this)))
+     (let [query-val (or val (:query (om/get-params this)))]
+       (html [:td (conj style
+                        {:onClick
+                         (fn [e]
+                           (om/set-query! this {:params {:query query-val}})
+                           #_(println "om/set-query!"))})
+              (str
+               query-val "-"
+               (abbrev fname)
+               (abbrev lname))])))))
 
 (defui Td
   "1. {:keyfn ...} can only use keys specified by (om/props this)
@@ -198,6 +214,46 @@
    (let [{:keys [list/tables]} (om/props this)]
      (html
       [:div
-       (for [table-desc tables]
-         (table table-desc))]))))
+       [:div (for [table-desc tables]
+               (table table-desc))]]))))
 
+(defn jsonp
+  ([uri] (jsonp (chan) uri))
+  ([c uri]
+   ;; put! - Asynchronously puts a val into port
+   (.send (Jsonp. (Uri. uri))
+          nil                    ;; payload
+          (fn [val] ;; reply-callback
+            (println "val" val)
+            (put! c val))
+          (fn [val] (println "error-callback" "val" val))
+          nil                    ;; callback param value
+          )
+   c))
+
+(def base-url (str sync/uri "users/"))
+
+(defn send-to-chan [c]
+  (fn [{:keys [search] :as prm} callback]
+    (println "prm" prm)
+    (when search
+      (let [{[search] :children} (om/query->ast search)
+            query (get-in search [:params :query])]
+        (println "search" search)
+        (put! c [query callback])))))
+
+(defn search-loop [c]
+  (go
+    ;; callback is provided by om.next itself
+    (loop [[query callback] (<! c)] ;; <! takes val from a port
+      (let [fetched-vals (<! (jsonp (str base-url query)))
+            vals (js->clj fetched-vals :keywordize-keys true)
+            fst-row (first (:rows vals))
+            hm {(:id fst-row) fst-row}]
+        (println "hm" hm)
+        (callback {:search/user hm}))
+      (recur (<! c)))))
+
+(def send-chan (chan))
+
+(search-loop send-chan)

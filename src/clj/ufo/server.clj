@@ -10,8 +10,7 @@
    [clojure.data.json :as json]
    [ufo
     [db :as db]
-    [sql :as sql]
-    #_[json :as ujs]]
+    [sql :as sql]]
    [clj-time-ext.core :as etime]))
 
 (defn end-response [data & [status]]
@@ -44,6 +43,22 @@
                                     (etime/tstp-modified-ago
                                      (:tstp row)
                                      {:verbose false :desc-length :short})))}))))
+
+(defn doreq-json [callback {:keys [params edn-body] :as prm}]
+  (let [fnkw (:f edn-body)
+        dbfn (or (get-in fmap [fnkw :db])
+                 (println "ERROR" fnkw "does not exist in the fmap"))
+        dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
+    (let [data (dbfn dbfnprm)]
+      (json-response
+       callback
+       {:sql (:sql data)
+        :rows (for [row (:rows data)]
+                (assoc row
+                       :ago
+                       (etime/tstp-modified-ago
+                        (:tstp row)
+                        {:verbose false :desc-length :short})))}))))
 #_
 (defroutes myapp
   (GET "/"     [] "Show something")
@@ -58,6 +73,12 @@
 (defroutes routes
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
+  (GET "/users/:id" req
+       (let [params (:params req)
+             edn-body (conj {:f :users, :log true, :nocache true, :rowlim 1} params)
+             query-string (:query-string req)
+             callback (subs query-string (count "callback="))]
+         (doreq-json callback {:edn-body edn-body})))
   (GET "/jsonreq/:search" req
     (let [query-string (:query-string req)
           callback (subs query-string (count "callback="))]

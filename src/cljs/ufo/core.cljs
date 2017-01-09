@@ -7,7 +7,8 @@
    ;; [ufo [...]] ; is not supported by clojurescript
    [ufo.regexps :as re :refer [dbg dbi id in? t f]]
    [ufo.utils :as utils]
-   [ufo.client :as cli]))
+   [ufo.client :as cli]
+   [ufo.sync :as sync]))
 
 (enable-console-print!)
 
@@ -45,10 +46,18 @@
   {:value (get-in @state [:users/by-id id])})
 
 (defmethod read :search/user
-  [{:keys [state ast] :as env} key {:keys [id] :as params}]
+  [{:keys [state ast] :as env} key {:keys [query] :as params}]
   (merge
-   {:value (get-in @state [:users/by-id id])}
-   (when true ;; a condition on id
+   {:value (get-in @state [key query])}
+   (when query ;; a condition on query
+     {:search ast})))
+
+(defmethod read :search/results
+  [{:keys [state ast] :as env} k {:keys [query]}]
+  (merge
+   {:value (get @state k [])}
+   (when-not (or (clojure.string/blank? query)
+                 (< (count query) 3))
      {:search ast})))
 
 (defmethod mutate 'users/by-id
@@ -98,7 +107,8 @@
   {:action (fn [] (set-vals state :list/tables kws))})
 
 (def app-state
-  {:list/tables
+  {:search/user []
+   :list/tables
    [{:tid   :salaries
      :sqlfn :salaries
      :tname "Salaries"
@@ -114,9 +124,11 @@
   (om/reconciler
    {:state app-state
     :parser (om/parser {:read read :mutate mutate})
-
+    :send (cli/send-to-chan cli/send-chan)
     ;; "I don't know the value of this key, go ask the server"
     :remotes [:search] ;; remote targets - represent remote services
     }))
 
 (om/add-root! reconciler cli/RootView (gdom/getElement "app"))
+(om/add-root! sync/reconciler sync/AutoCompleter (gdom/getElement "app-json"))
+
