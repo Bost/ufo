@@ -65,27 +65,32 @@
   "1. {:keyfn ...} can only use keys specified by (om/props this)
 2. Values stored under these keys can't be keywords"
   ;; val is the id
-  static om/IQueryParams (params [this] {:query ""})
+  static om/IQueryParams (params [this] {:query nil})
   ;; static om/Ident (ident [this {:keys [val]}] [:users/by-id val])
   static om/IQuery (query [this] '[(:search/user {:query ?query})])
   Object
   ;; (componentWillReceiveProps [this next-props]            (println "TdAbrev" "WillReceiveProps"))
   ;; (componentWillUpdate       [this next-props next-state] (println "TdAbrev" "WillUpdate"))
   ;; (componentDidUpdate        [this prev-props prev-state] (println "TdAbrev" "DidUpdate"))
-  ;; (componentWillMount        [this] (let [{:keys [val]} (om/props this)] (add-missing! this {:id val})))
+  ;; (componentWillMount        [this]                       (println "TdAbrev" "WillMount"))
   ;; (componentDidMount         [this]                       (println "TdAbrev" "DidMount"))
   ;; (componentWillUnmount      [this]                       (println "TdAbrev" "WillUnmount"))
   (render
    [this]
    (let [{:keys [search/user val] :as prm} (om/props this)
          style {:style {:border "1px" :borderStyle "solid"}}
-         {fname :fname lname :lname} (js->clj user :keywordize-keys true)]
-     (let [query-val (or val (:query (om/get-params this)))]
+         qval (or val (:query (om/get-params this)))
+         clj-user (js->clj user :keywordize-keys true)
+         ;; (get ... ) must be used; qval is a number - can't be keywordized
+         user-vals (get clj-user qval)]
+     (let [{fname :fname lname :lname} user-vals
+           set-query-fn! (fn [] (om/set-query! this {:params {:query qval}}))]
        (html [:td (conj style
-                        {:onClick
-                         (fn [e]
-                           (om/set-query! this {:params {:query query-val}}))})
-              (str query-val "-" (abbrev fname) (abbrev lname))])))))
+                        #_{:onClick set-query-fn!}
+                        #_{:onMouseOver set-query-fn!}
+                        {:onMouseDown set-query-fn!
+                         :onMouseUp set-query-fn!})
+              (str qval "-" (abbrev fname) (abbrev lname))])))))
 
 (defui Td
   "1. {:keyfn ...} can only use keys specified by (om/props this)

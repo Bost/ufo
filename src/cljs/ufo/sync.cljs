@@ -37,8 +37,8 @@
 (defmethod read :search/results
   [{:keys [state ast] :as env} key {:keys [query]}]
   (let [result (merge {:value (get @state key [])}
-                      {:search ast}
-                      #_(when-not (or (string/blank? query)
+                      #_{:search ast}
+                      (when-not (or (string/blank? query)
                                     (< (count query) 3))
                         {:search ast}))]
     (println key "result" result)
@@ -103,4 +103,3 @@
 
 (search-loop send-chan)
 
-#_(om/add-root! reconciler AutoCompleter (gdom/getElement "app"))

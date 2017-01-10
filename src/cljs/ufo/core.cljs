@@ -47,14 +47,9 @@
 
 (defmethod read :search/user
   [{:keys [state ast] :as env} key {:keys [query] :as params}]
-  (let [result (merge {:value
-                       #_(get @state key [])
-                       (get-in @state [key query])}
-                      {:search ast}
-                      #_(when query ;; a condition on query
-                          {:search ast}))]
-    (println key "result" result)
-    result))
+  (merge {:value (into {} (get @state key []))}
+         (when query
+           {:search ast})))
 
 #_(defmethod read :search/results
   [{:keys [state ast] :as env} k {:keys [query]}]
@@ -131,5 +126,5 @@
     }))
 
 (om/add-root! reconciler cli/RootView (gdom/getElement "app"))
-(om/add-root! sync/reconciler sync/AutoCompleter (gdom/getElement "app-json"))
+#_(om/add-root! sync/reconciler sync/AutoCompleter (gdom/getElement "app-json"))
 
