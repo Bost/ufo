@@ -79,7 +79,7 @@
    [this]
    (let [{:keys [search/user val] :as prm} (om/props this)
          style {:style {:border "1px" :borderStyle "solid"}}
-         {fname :fname lname :lname} user]
+         {fname :fname lname :lname} (js->clj user :keywordize-keys true)]
      (let [query-val (or val (:query (om/get-params this)))]
        (html [:td (conj style
                         {:onClick
@@ -237,12 +237,12 @@
     ;; callback is provided by om.next itself
     (loop [[query callback] (<! c)] ;; <! takes val from a port
       (let [fetched-vals (<! (jsonp (str base-url query)))
-            [stuff results] fetched-vals
-            ;; vals (js->clj fetched-vals :keywordize-keys true)
-            fst-row stuff #_(first (:rows vals))
-            hm {(:id fst-row) fst-row}]
-        (println "hm" stuff)
-        (callback {:search/user hm}))
+            fst-row (->> (js->clj fetched-vals :keywordize-keys true)
+                         :rows
+                         first)
+            results {(:id fst-row) fst-row}]
+        #_(println "cli" "search-loop" "results" results)
+        (callback {:search/user results}))
       (recur (<! c)))))
 
 (def send-chan (chan))

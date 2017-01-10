@@ -81,6 +81,7 @@
     (loop [[query callback] (<! c)] ;; <! takes val from a port
       (let [fetched-vals (<! (jsonp (str base-url query)))
             [_ results] fetched-vals]
+        #_(println "sync" "search-loop" "results" results)
         (callback {:search/results results}))
       (recur (<! c)))))
 

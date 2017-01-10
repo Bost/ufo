@@ -52,8 +52,7 @@
     (let [data (dbfn dbfnprm)]
       (json-response
        callback
-       [{:id 10011 :abrev 10011 :fname "Mary" :lname "Sluis"}]
-       #_{:sql (:sql data)
+       {:sql (:sql data)
         :rows (for [row (:rows data)]
                 (assoc row
                        :ago

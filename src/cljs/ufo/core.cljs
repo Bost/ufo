@@ -47,7 +47,9 @@
 
 (defmethod read :search/user
   [{:keys [state ast] :as env} key {:keys [query] :as params}]
-  (let [result (merge {:value (get @state key []) #_(get-in @state [key query])}
+  (let [result (merge {:value
+                       #_(get @state key [])
+                       (get-in @state [key query])}
                       {:search ast}
                       #_(when query ;; a condition on query
                           {:search ast}))]
@@ -91,9 +93,6 @@
          (if (in? old-list kws)
            (println "WARN: mutate" kw "(in? old-list kws); :kws" kws)
            (swap! state assoc kw (conj old-list kws))))))})
-
-
-;;;;;;;;;;;;;;;;;
 
 ;; "List of tables to display on the web page"
 (defmethod read :list/tables
