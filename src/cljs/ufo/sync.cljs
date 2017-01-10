@@ -18,7 +18,7 @@
 
 (def base-url
   #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
-  (str uri "jsonreq/"))
+  (str uri "jsonreq/search="))
 
 (defn jsonp
   ([uri] (jsonp (chan) uri))
@@ -35,12 +35,14 @@
 (defmulti read om/dispatch)
 
 (defmethod read :search/results
-  [{:keys [state ast] :as env} k {:keys [query]}]
-  (merge
-    {:value (get @state k [])}
-    (when-not (or (string/blank? query)
-                  (< (count query) 3))
-      {:search ast})))
+  [{:keys [state ast] :as env} key {:keys [query]}]
+  (let [result (merge {:value (get @state key [])}
+                      {:search ast}
+                      #_(when-not (or (string/blank? query)
+                                    (< (count query) 3))
+                        {:search ast}))]
+    (println key "result" result)
+    result))
 
 (defn result-list [results]
   [:ul {:key "result-list"}

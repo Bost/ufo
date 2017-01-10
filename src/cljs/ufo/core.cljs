@@ -47,12 +47,14 @@
 
 (defmethod read :search/user
   [{:keys [state ast] :as env} key {:keys [query] :as params}]
-  (merge
-   {:value (get-in @state [key query])}
-   (when query ;; a condition on query
-     {:search ast})))
+  (let [result (merge {:value (get @state key []) #_(get-in @state [key query])}
+                      {:search ast}
+                      #_(when query ;; a condition on query
+                          {:search ast}))]
+    (println key "result" result)
+    result))
 
-(defmethod read :search/results
+#_(defmethod read :search/results
   [{:keys [state ast] :as env} k {:keys [query]}]
   (merge
    {:value (get @state k [])}

@@ -80,18 +80,12 @@
    (let [{:keys [search/user val] :as prm} (om/props this)
          style {:style {:border "1px" :borderStyle "solid"}}
          {fname :fname lname :lname} user]
-     (println "TdAbrev" "(om/props this)" (om/props this))
-     #_(println "TdAbrev" "(:query (om/get-params this))" (:query (om/get-params this)))
      (let [query-val (or val (:query (om/get-params this)))]
        (html [:td (conj style
                         {:onClick
                          (fn [e]
-                           (om/set-query! this {:params {:query query-val}})
-                           #_(println "om/set-query!"))})
-              (str
-               query-val "-"
-               (abbrev fname)
-               (abbrev lname))])))))
+                           (om/set-query! this {:params {:query query-val}}))})
+              (str query-val "-" (abbrev fname) (abbrev lname))])))))
 
 (defui Td
   "1. {:keyfn ...} can only use keys specified by (om/props this)
@@ -223,9 +217,7 @@
    ;; put! - Asynchronously puts a val into port
    (.send (Jsonp. (Uri. uri))
           nil                    ;; payload
-          (fn [val] ;; reply-callback
-            (println "val" val)
-            (put! c val))
+          (fn [val] (put! c val)) ;; reply-callback
           (fn [val] (println "error-callback" "val" val))
           nil                    ;; callback param value
           )
@@ -235,11 +227,9 @@
 
 (defn send-to-chan [c]
   (fn [{:keys [search] :as prm} callback]
-    (println "prm" prm)
     (when search
       (let [{[search] :children} (om/query->ast search)
             query (get-in search [:params :query])]
-        (println "search" search)
         (put! c [query callback])))))
 
 (defn search-loop [c]
@@ -247,10 +237,11 @@
     ;; callback is provided by om.next itself
     (loop [[query callback] (<! c)] ;; <! takes val from a port
       (let [fetched-vals (<! (jsonp (str base-url query)))
-            vals (js->clj fetched-vals :keywordize-keys true)
-            fst-row (first (:rows vals))
+            [stuff results] fetched-vals
+            ;; vals (js->clj fetched-vals :keywordize-keys true)
+            fst-row stuff #_(first (:rows vals))
             hm {(:id fst-row) fst-row}]
-        (println "hm" hm)
+        (println "hm" stuff)
         (callback {:search/user hm}))
       (recur (<! c)))))
 

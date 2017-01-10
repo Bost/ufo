@@ -52,7 +52,8 @@
     (let [data (dbfn dbfnprm)]
       (json-response
        callback
-       {:sql (:sql data)
+       [{:id 10011 :abrev 10011 :fname "Mary" :lname "Sluis"}]
+       #_{:sql (:sql data)
         :rows (for [row (:rows data)]
                 (assoc row
                        :ago
@@ -80,9 +81,11 @@
              callback (subs query-string (count "callback="))]
          (doreq-json callback {:edn-body edn-body})))
   (GET "/jsonreq/:search" req
-    (let [query-string (:query-string req)
-          callback (subs query-string (count "callback="))]
-      (json-response callback ["stuff" ["foo" "joe"] [] []])))
+       (do
+         (println "jsonreq" req)
+         (let [query-string (:query-string req)
+               callback (subs query-string (count "callback="))]
+           (json-response callback ["joe-foo-stuff" ["foo" "joe"] [] []]))))
   (route/files "/" {:root "resources/public"})
   (route/not-found "<h1>Page not found</h1>"))
 
