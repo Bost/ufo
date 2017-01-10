@@ -35,9 +35,9 @@
         dbfn (or (get-in fmap [fnkw :db])
                  (println "ERROR" fnkw "does not exist in the fmap"))
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
-    (let [data (dbfn dbfnprm)]
-      (end-response {:sql (:sql data)
-                     :rows (for [row (:rows data)]
+    (let [{sql :sql rows :rows} (dbfn dbfnprm)]
+      (end-response {:sql sql
+                     :rows (for [row rows]
                              (assoc row
                                     :ago
                                     (etime/tstp-modified-ago
@@ -49,11 +49,11 @@
         dbfn (or (get-in fmap [fnkw :db])
                  (println "ERROR" fnkw "does not exist in the fmap"))
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
-    (let [data (dbfn dbfnprm)]
+    (let [{sql :sql rows :rows} (dbfn dbfnprm)]
       (json-response
        callback
-       {:sql (:sql data)
-        :rows (for [row (:rows data)]
+       {:sql sql
+        :rows (for [row rows]
                 (assoc row
                        :ago
                        (etime/tstp-modified-ago
@@ -80,11 +80,9 @@
              callback (subs query-string (count "callback="))]
          (doreq-json callback {:edn-body edn-body})))
   (GET "/jsonreq/:search" req
-       (do
-         (println "jsonreq" req)
-         (let [query-string (:query-string req)
-               callback (subs query-string (count "callback="))]
-           (json-response callback ["joe-foo-stuff" ["foo" "joe"] [] []]))))
+       (let [query-string (:query-string req)
+             callback (subs query-string (count "callback="))]
+         (json-response callback ["joe-foo-stuff" ["foo" "joe"] [] []])))
   (route/files "/" {:root "resources/public"})
   (route/not-found "<h1>Page not found</h1>"))
 
