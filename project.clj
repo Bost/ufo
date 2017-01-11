@@ -10,12 +10,12 @@
    [org.clojure/clojurescript "1.9.293"]
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
    [org.omcljs/om "1.0.0-alpha47" :exclusions [commons-codec]]
-   [ring "1.5.0"]
+   [ring "1.5.1"]
    [cheshire "5.6.3"]
-   [compojure "1.5.1"] ; routing lib for Ring; dispatching of GET, PUT, etc.
+   [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
    [com.andrewmcveigh/cljs-time "0.4.0"]
-   [sablono "0.7.6"] ; hiccup style templating for om-next
+   [sablono "0.7.7"] ; hiccup style templating for om-next
    ;; [cljsjs/react "15.2.1-1"]
    ;; [cljsjs/react-dom "15.2.1-1"]
    ;; [binaryage/devtools "0.7.2"] ; TODO look at CLJS DevTools
@@ -39,8 +39,8 @@
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
 
    ;; (time/now) in clj
-   [clj-time-ext "0.7.2"]
-   [clj-time "0.12.2"]]
+   [clj-time-ext "0.13.0"]
+   [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
    [lein-figwheel "0.5.8" :exclusions [org.clojure/clojure]]]
