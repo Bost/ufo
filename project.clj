@@ -10,6 +10,7 @@
    [org.clojure/clojurescript "1.9.293"]
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
    [org.omcljs/om "1.0.0-alpha47" :exclusions [commons-codec]]
+   #_[org.omcljs/om "1.0.0-alpha48-SNAPSHOT" :exclusions [commons-codec]]
    [ring "1.5.1"]
    [cheshire "5.6.3"]
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.

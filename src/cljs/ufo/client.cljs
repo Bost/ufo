@@ -86,10 +86,11 @@
      (let [{fname :fname lname :lname} user-vals
            set-query-fn! (fn [] (om/set-query! this {:params {:query qval}}))]
        (html [:td (conj style
+                        {}
                         #_{:onClick set-query-fn!}
                         #_{:onMouseOver set-query-fn!}
-                        {:onMouseDown set-query-fn!
-                         :onMouseUp set-query-fn!})
+                        {:onMouseDown set-query-fn!}
+                        {:onMouseUp set-query-fn!})
               (str qval "-" (abbrev fname) (abbrev lname))])))))
 
 (defui Td
