@@ -1,7 +1,8 @@
 (ns ^:figwheel-always ufo.regexps
-  (:require [clojure.string :as s]
-            #_[clj-time.core :as time]
-            #_[clj-time.format :as timef]))
+  (:require
+   [clojure.string :as s]
+   #_[clj-time.core :as time]
+   #_[clj-time.format :as timef]))
 
 (def t true)
 (def f false)

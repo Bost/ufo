@@ -1,15 +1,13 @@
 (ns ^:figwheel-always ufo.core
   (:require
    [goog.dom :as gdom]
-   [om.dom]
    [om.next :as om]
    [clojure.string :as string]
    [cljs-time.core :as time]
    ;; [ufo [...]] ; is not supported by clojurescript
    [ufo.regexps :as re :refer [dbg dbi id in? t f]]
    [ufo.utils :as utils]
-   [ufo.client :as cli]
-   [ufo.sync :as sync]))
+   [ufo.client :as cli]))
 
 (enable-console-print!)
 

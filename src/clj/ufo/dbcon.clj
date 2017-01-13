@@ -3,10 +3,10 @@
    [clj-time-ext.core :as time]
    [clojure.java.jdbc :as jdbc]
    [clj-dbcp.core :as dbcp]
-   [clojure.core.memoize :as memo]
-   )
-  #_(:use [korma.db]
-          [korma.core])
+   [clojure.core.memoize :as memo])
+  #_(:use
+     [korma.db]
+     [korma.core])
   (:import com.mchange.v2.c3p0.ComboPooledDataSource))
 
 ;; TODO DRY dbase connection
