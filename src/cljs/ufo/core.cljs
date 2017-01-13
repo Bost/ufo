@@ -109,7 +109,6 @@
   [{:keys [state]} _ {:keys [kws]}]
   {:action (fn [] (set-vals state :list/tables kws))})
 
-
 (def app-state
   {:search/results []
    :search/user []
@@ -129,10 +128,10 @@
   (om/reconciler
    {:state app-state
     :parser  (om/parser {:read read :mutate mutate})
-    :send (cli/send-to-chan cli/send-chan)
+    :send (utils/send-to-chan utils/send-chan)
     :remotes [:remote :search] ;; remote targets - represent remote services
     }))
 
 (om/add-root! reconciler cli/RootView (gdom/getElement "app"))
-#_(om/add-root! sync/reconciler sync/AutoCompleter (gdom/getElement "app-json"))
 
+(utils/search-loop utils/send-chan)

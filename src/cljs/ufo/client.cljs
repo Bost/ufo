@@ -1,21 +1,13 @@
 ;; TODO https://github.com/compassus/compassus
 ;; TODO https://untangled-web.github.io/untangled/
 (ns ^:figwheel-always ufo.client
-  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require
    [ufo.regexps :as re :refer [t f dbg dbi]]
    [ufo.utils :as utils]
    [ufo.sync :as sync]
-   [cljs.core.async :as async :refer [<! >! put! chan]]
    [om.next :as om :refer-macros [defui]]
    [sablono.core :refer-macros [html]]
-   [cljs-time.core :as time]
-
-   [goog.dom :as gdom]
-   [om.dom :as dom])
-  (:import [goog Uri]
-           ;; Jsonp creates a new cross domain channel that sends data to the specified host URL
-           [goog.net Jsonp]))
+   [cljs-time.core :as time]))
 
 ;; TODO hiccup (html [:div#foo.bar.baz "bang"])
 ;;      <div id='foo' class='bar baz'>bang</div>
@@ -27,11 +19,6 @@
 ;; TODO reagent is probably better than om-next
 
 (enable-console-print!)
-
-(defn add-missing! [widget {:keys [id] :as vals}]
-  (om/transact! widget `[(users/by-id
-                          ;; ~ means evaluate the sexp before passing
-                          ~{:id id})]))
 
 (defn add-row! [widget {:keys [id] :as vals}]
   (om/transact! widget `[(rows/by-id
@@ -200,43 +187,3 @@
       [:div
        [:div (for [table-desc tables]
                (table table-desc))]]))))
-
-(defn jsonp
-  ([uri] (jsonp (chan) uri))
-  ([c uri]
-   ;; put! - Asynchronously puts a val into port
-   (.send (Jsonp. (Uri. uri))
-          nil                    ;; payload
-          (fn [val] (put! c val)) ;; reply-callback
-          (fn [val] (println "error-callback" "val" val))
-          nil                    ;; callback param value
-          )
-   c))
-
-(def base-url
-  #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
-  (str sync/uri #_"jsonreq/search=" "users/ids="))
-
-(defn search-loop [c]
-  (go
-    (loop [[query cb remote] (<! c)]
-      (if-not (empty? query)
-        (let [ret (<! (jsonp (str base-url query)))
-              hm (js->clj ret :keywordize-keys true)
-              ;; [_ results] ret
-              results (->> hm first :rows first)]
-          #_(println "search-loop" "results" results)
-          (cb {:search/results results} query remote))
-        (cb {:search/results []} query remote))
-      (recur (<! c)))))
-
-(defn send-to-chan [c]
-  (fn [{:keys [search]} cb]
-    (when search
-      (let [{[search] :children} (om/query->ast search)
-            query (get-in search [:params :query])]
-        (put! c [query cb :search])))))
-
-(def send-chan (chan))
-
-(search-loop send-chan)

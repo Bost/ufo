@@ -13,20 +13,6 @@
 
 (enable-console-print!)
 
-(def uri "http://localhost:3449/")
-
-(defn jsonp
-  ([uri] (jsonp (chan) uri))
-  ([c uri]
-   ;; put! - Asynchronously puts a val into port
-   (.send (Jsonp. (Uri. uri))
-          nil                    ;; payload
-          (fn [val] (put! c val)) ;; reply-callback
-          (fn [val] (println "error-callback" "val" val))
-          nil                    ;; callback param value
-          )
-   c))
-
 (defn result-list [results]
   (dom/ul #js {:key "result-list"}
           (map #(dom/li nil %) results)))
@@ -38,18 +24,6 @@
       {:onClick (fn [] (om/set-query! ac
                                       {:params {:query value}}))}
       (str "<CLICK HERE TO AUTOCOMPLETE: '" value "'>")])))
-
-(defui AutoCompleter
-  static om/IQueryParams (params [_] {:query ""})
-  static om/IQuery (query [_] '[(:search/results {:query ?query})])
-  Object
-  (render
-   [this]
-   (let [{:keys [search/results]} (om/props this)]
-     (html
-      [:div
-       (search-field this (:query (om/get-params this)) results)]))))
-(def auto-completer (om/factory AutoCompleter))
 
 (defn in?
   "true if seq contains elm"
@@ -153,7 +127,7 @@
   (componentWillMount
    [this]
    (let [{:keys [cols sqlfn] :as prm} (om/props this)]
-     (ednxhr
+     (utils/ednxhr
       {:reqprm {:f sqlfn :log true :nocache true}
        :on-complete
        (fn [resp]
@@ -213,37 +187,5 @@
   (render
    [this]
    (let [{:keys [list/tables]} (om/props this)]
-     (html
-      [:div
-       [:div (auto-completer)]
-       [:div "---"]
-       [:div (for [table-desc tables]
-               (table table-desc))]]))))
-
-;;;;;;
-
-(defn search-loop [c]
-  (go
-    (loop [[query cb remote] (<! c)]
-      (if-not (empty? query)
-        (let [ret (<! (jsonp (str base-url query)))
-              hm (js->clj ret :keywordize-keys true)
-              ;; [_ results] ret
-              results (->> hm first :rows first)]
-          #_(println "search-loop" "results" results)
-          (cb {:search/results results} query remote))
-        (cb {:search/results []} query remote))
-      (recur (<! c)))))
-
-(defn send-to-chan [c]
-  (fn [{:keys [search]} cb]
-    (when search
-      (let [{[search] :children} (om/query->ast search)
-            query (get-in search [:params :query])]
-        (put! c [query cb :search])))))
-
-(def send-chan (chan))
-
-(search-loop send-chan)
-
-
+     (html [:div (for [table-desc tables]
+                   (table table-desc))]))))
