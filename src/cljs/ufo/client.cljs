@@ -75,7 +75,6 @@
          qval (or val
                   (first
                    (:query (om/get-params this))))]
-     (println "(om/get-params this)" (om/get-params this))
      (let [{fname :fname lname :lname} results
            set-query-fn!
            ;; {:params {:query <val>}} - <val> must be vector otherwise I get:
