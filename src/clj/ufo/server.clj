@@ -55,24 +55,23 @@
   (OPTIONS "/" [] "Appease something") ; beschwichtigen, stillen, besaenftigen
   (HEAD "/"    [] "Preview something"))
 
+(defn callback [req] (subs (:query-string req) (count "callback=")))
+
 ;; (reset-autobuild) should be enough for figwheel to see the changes
 (defroutes routes
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
   (GET "/users/ids=:ids" req
-    (let [query-string (:query-string req)
-          callback (subs query-string (count "callback="))
-          edn-body (conj {:f :users, :log true, :nocache true, :rowlim 1}
-                         {:ids (->> req :params :ids read-string)})]
-      (doreq-json callback {:edn-body edn-body})))
+       (doreq-json
+        (callback req)
+        {:edn-body (conj {:f :users, :log true, :nocache true, :rowlim 1}
+                         {:ids (->> req :params :ids read-string)})}))
 
   (GET "/jsonreq/:search" req
-    (let [query-string (:query-string req)
-          callback (subs query-string (count "callback="))]
-      (json-response callback ["joe-foo-stuff" ["foo" "joe"] [] []])))
+       (json-response (callback req) ["joe-foo-stuff" ["foo" "joe"] [] []]))
 
   (route/files "/" {:root "resources/public"})
-  (route/not-found "<h1>Page not foundX</h1>"))
+  (route/not-found "<h1>Page not found</h1>"))
 
 (defn handler [request]
   (routes (if-let [body (:body request)]
