@@ -6,7 +6,6 @@
    ;; [ufo [...]] ; is not supported by clojurescript
    [ufo.regexps :as re :refer [dbg dbi id]]
    [cljs-time.core :as time]
-   #_[om.core :as om :include-macros true]
    [om-tools.core :as otc :refer-macros [defcomponent]]
    [om-tools.dom :as otd :include-macros true]
    [cljs.core.async :as async :refer [<! >! put! chan]])

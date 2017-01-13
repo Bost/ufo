@@ -1,34 +1,12 @@
 (ns ufo.sync
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [goog.dom :as gdom]
-            [cljs.core.async :as async :refer [<! >! put! chan]]
-            [sablono.core :refer-macros [html]]
-            [om.next :as om :refer-macros [defui]]
-            [ufo.regexps :as re :refer [dbg dbi id t f]]
-            [ufo.utils :as utils]
-            [om.dom :as dom])
-  (:import [goog Uri]
-           ;; Jsonp creates a new cross domain channel that sends data to the specified host URL
-           [goog.net Jsonp]))
+  (:require
+   [sablono.core :refer-macros [html]]
+   [om.next :as om :refer-macros [defui]]
+   ;; [ufo [...]] ; is not supported by clojurescript
+   [ufo.regexps :as re :refer [dbg dbi id t f]]
+   [ufo.utils :as utils]))
 
 (enable-console-print!)
-
-(defn result-list [results]
-  (dom/ul #js {:key "result-list"}
-          (map #(dom/li nil %) results)))
-
-(defn search-field [ac query result]
-  (let [value (if result result "foo-bar-ba")]
-    (html
-     [:div
-      {:onClick (fn [] (om/set-query! ac
-                                      {:params {:query value}}))}
-      (str "<CLICK HERE TO AUTOCOMPLETE: '" value "'>")])))
-
-(defn in?
-  "true if seq contains elm"
-  [seq elm]
-  (boolean (some (fn [e] (= elm e)) seq)))
 
 (defn add-row! [widget {:keys [id] :as vals}]
   (om/transact! widget `[(rows/by-id

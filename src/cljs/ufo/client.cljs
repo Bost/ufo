@@ -2,9 +2,9 @@
 ;; TODO https://untangled-web.github.io/untangled/
 (ns ^:figwheel-always ufo.client
   (:require
+   ;; [ufo [...]] ; is not supported by clojurescript
    [ufo.regexps :as re :refer [t f dbg dbi]]
    [ufo.utils :as utils]
-   [ufo.sync :as sync]
    [om.next :as om :refer-macros [defui]]
    [sablono.core :refer-macros [html]]
    [cljs-time.core :as time]))
