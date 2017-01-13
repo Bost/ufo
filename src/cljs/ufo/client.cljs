@@ -62,12 +62,13 @@
          qval (or val
                   (first
                    (:query (om/get-params this))))]
-     (let [{fname :fname lname :lname} results
+     (let [{fname :fname lname :lname} (get-in results [qval])
            set-query-fn!
            ;; {:params {:query <val>}} - <val> must be vector otherwise I get:
            ;;    10010 is not ISeqable(...)
-           (fn [] (om/set-query! this {:params {:query [qval]
-                                                }}))]
+           (fn [] (om/set-query! this {:params {:query [qval]}}))]
+       ;; auto-resolve of :abrev doesn't work
+       #_(om/set-query! this {:params {:query [qval]}})
        (html [:td (conj style
                             {}
                             {:onClick set-query-fn!})

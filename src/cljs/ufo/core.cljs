@@ -25,7 +25,6 @@
 
 ;; (def app-state { :keyword { id real-information }})
 
-
 (defn get-vals [state key]
   (let [st @state]
     (into [] (map #(get-in st %)) (get st key))))
@@ -37,59 +36,61 @@
 (defmethod mutate 'rows/by-id
   [{:keys [state]} kwx {:keys [id v]}]
   {:action
-   (fn []
-     (let [kw (keyword kwx)]
-       (let [ks [kw id]
-             ;; result of get-in must be converted into {}
-             old-state (into {} (get-in @state ks))]
-         (swap! state update-in ks (fn [] (conj old-state v))))))})
+   (fn [] (let [kw (keyword kwx)
+               ks [kw id]
+               ;; result of get-in must be converted into {}
+               old-state (into {} (get-in @state ks))]
+           (swap! state update-in ks (fn [] (conj old-state v)))))})
 
 (defmethod read :user
   [{:keys [state] :as env} key {:keys [id] :as params}]
   {:value (get-vals state key)})
 
 (defmethod read :search/user
-  [{:keys [state ast] :as env} key {:keys [query] :as params}]
-  (merge {:value (into {} (get @state key []))}
+  [{:keys [state ast] :as env} k {:keys [query] :as params}]
+  (merge {:value (get @state k [])}
          (when query
            {:search ast})))
 
 (defmethod mutate 'users/by-id
   [{:keys [state]} kwx {:keys [id]}]
   {:action
-   (fn []
-     (let [kw (keyword kwx)]
-       (let [ks [kw id]
-             ;; get-in must be converted into {}
-             old-state (into {} (get-in @state ks))]
-         (if (empty? old-state)
-           (utils/ednxhr
-            {:reqprm {:f :users :id id :log true :nocache true}
-             :on-complete
-             (fn [resp]
-               ;; map returs a lazy sequence therefore doseq must be used
-               ;; (map #(add-row! widget %) (:rows resp))
-               (doseq [row (:rows resp)]
-                 (swap! state update-in ks (fn [] (conj old-state row)))))
-             :on-error (fn [resp] (println resp))})))))})
+   (fn [] (let [kw (keyword kwx)
+               ks [kw id]
+               ;; get-in must be converted into {}
+               old-state (get-in @state ks)]
+           (if (empty? old-state)
+             (utils/ednxhr
+              {:reqprm {:f :users :id id :log true :nocache true}
+               :on-complete
+               (fn [resp]
+                 ;; map returs a lazy sequence therefore doseq must be used
+                 ;; (map #(add-row! widget %) (:rows resp))
+                 (doseq [row (:rows resp)]
+                   (swap! state update-in ks (fn [] (conj old-state row)))))
+               :on-error (fn [resp] (println resp))}))))})
 
 (defmethod mutate 'list/trows
   [{:keys [state]} kwx {:keys [kws]}]
   {:action
-   (fn []
-     (let [kw (keyword kwx)]
-       (let [old-list (get @state kw [])]
-         (if (in? old-list kws)
-           (println "WARN: mutate" kw "(in? old-list kws); :kws" kws)
-           (swap! state assoc kw (conj old-list kws))))))})
-
+   (fn [] (let [kw (keyword kwx)
+               old-list (get @state kw [])]
+           (if (in? old-list kws)
+             (println "WARN: mutate" kw "(in? old-list kws); :kws" kws)
+             (swap! state assoc kw (conj old-list kws)))))})
 
 (defmethod read :search/results
   [{:keys [state ast] :as env} k {:keys [query]}]
-  (merge {:value (get @state k [])}
-         (when-not (and (string/blank? query)
-                        (<= 2 (count query)))
-           {:search ast})))
+  (let [r
+        (merge {:value (get @state k [])}
+               (when query
+                 {:search ast}))
+        #_(merge {:value (get @state k [])}
+               (when-not (and (string/blank? query)
+                              (<= 2 (count query)))
+                 {:search ast}))]
+    #_(println "read :search/results" r)
+    r))
 
 ;; "List of tables to display on the web page"
 (defmethod read :list/tables

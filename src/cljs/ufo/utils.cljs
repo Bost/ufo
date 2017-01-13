@@ -79,11 +79,13 @@
     (loop [[query cb remote] (<! c)]
       (if-not (empty? query)
         (let [ret (<! (jsonp (str base-url query)))
+              ;; [_ result] ret
               hm (js->clj ret :keywordize-keys true)
-              ;; [_ results] ret
-              results (->> hm first :rows first)]
-          #_(println "search-loop" "results" results)
-          (cb {:search/results results} query remote))
+              row (->> hm first :rows first)
+              ;; {10011 {:id 10010, :abrev 10010, :fname Duangkaew, :lname Piveteau}}
+              result {(:id row) row}]
+          #_(println "search-loop" "result" result)
+          (cb {:search/results result} query remote))
         (cb {:search/results []} query remote))
       (recur (<! c)))))
 
