@@ -21,13 +21,10 @@
 (defn json-response [callback data & [status]]
   {:status (or status 200) ;; Status code: 200 'OK (The request was fulfilled)'
    :headers {"Content-Type" "application/jsonp; charset=UTF-8"}
-   :body
-   (do
-     (println "callback" callback "data" data)
-     (let [json-data (json/write-str data)]
-       (if callback
-         (str callback "(" json-data ")") ;; encapsulate the return in jsonp
-         json-data)))})
+   :body (let [json-data (json/write-str data)]
+           (if callback
+             (str callback "(" json-data ")") ;; encapsulate the return in jsonp
+             json-data))})
 
 (def fmap
   {:users    {:db db/users    :prm {}}
@@ -39,8 +36,7 @@
                  (println "ERROR" fnkw "does not exist in the fmap"))
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
     (let [{sql :sql rows :rows} (dbfn dbfnprm)]
-      (end-response {:sql sql
-                     :rows rows}))))
+      (end-response {:sql sql :rows rows}))))
 
 (defn doreq-json [callback {:keys [params edn-body] :as prm}]
   (let [fnkw (:f edn-body)
@@ -48,11 +44,7 @@
                  (println "ERROR" fnkw "does not exist in the fmap"))
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
     (let [{sql :sql rows :rows} (dbfn dbfnprm)]
-      (let [joe (json-response callback ["joj-foj" ["foj" "joj"] [] []])]
-        (println "joe" joe)
-        (let [res (json-response callback [{:sql sql :rows rows}])]
-          (println "res" res)
-          res)))))
+      (json-response callback [{:sql sql :rows rows}]))))
 #_
 (defroutes myapp
   (GET "/"     [] "Show something")
@@ -68,27 +60,17 @@
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
   (GET "/users/ids=:ids" req
-       (do
-         (println "/users/ids=:ids" req)
-         (let [{ids-str :ids} (:params req)]
-           (println "(= ids-str \"foo-bar-ba\")" (= ids-str "foo-bar-ba"))
-           (let [query-string (:query-string req)
-                 callback (subs query-string (count "callback="))]
-             (if (= ids-str "foo-bar-ba")
-               (json-response callback ["jot-fot" ["fot" "jot"] [] []])
-               #_(json-response callback ["jof-fof" ["fof" "jof"] [] []])
-               #_(println "(read-string ids-str)" (read-string ids-str))
-               (let [ids (read-string ids-str)
-                     edn-body (conj {:f :users, :log true, :nocache true, :rowlim 1} {:ids ids})]
-                 #_(println "edn-body" edn-body)
-                 (doreq-json callback {:edn-body edn-body})))
-           ))))
+    (let [query-string (:query-string req)
+          callback (subs query-string (count "callback="))
+          edn-body (conj {:f :users, :log true, :nocache true, :rowlim 1}
+                         {:ids (->> req :params :ids read-string)})]
+      (doreq-json callback {:edn-body edn-body})))
+
   (GET "/jsonreq/:search" req
-       (do
-         (println "/jsonreq/:search")
-         (let [query-string (:query-string req)
-                 callback (subs query-string (count "callback="))]
-             (json-response callback ["joe-foo-stuff" ["foo" "joe"] [] []]))))
+    (let [query-string (:query-string req)
+          callback (subs query-string (count "callback="))]
+      (json-response callback ["joe-foo-stuff" ["foo" "joe"] [] []])))
+
   (route/files "/" {:root "resources/public"})
   (route/not-found "<h1>Page not foundX</h1>"))
 
