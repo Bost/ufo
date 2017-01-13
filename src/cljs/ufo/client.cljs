@@ -66,32 +66,26 @@
 2. Values stored under these keys can't be keywords"
   ;; val is the id
   static om/IQueryParams (params [this] {:query nil})
-  ;; static om/Ident (ident [this {:keys [val]}] [:users/by-id val])
-  static om/IQuery (query [this] '[(:search/user {:query ?query})])
+  static om/IQuery (query [this] '[(:search/results {:query ?query})])
   Object
-  ;; (componentWillReceiveProps [this next-props]            (println "TdAbrev" "WillReceiveProps"))
-  ;; (componentWillUpdate       [this next-props next-state] (println "TdAbrev" "WillUpdate"))
-  ;; (componentDidUpdate        [this prev-props prev-state] (println "TdAbrev" "DidUpdate"))
-  ;; (componentWillMount        [this]                       (println "TdAbrev" "WillMount"))
-  ;; (componentDidMount         [this]                       (println "TdAbrev" "DidMount"))
-  ;; (componentWillUnmount      [this]                       (println "TdAbrev" "WillUnmount"))
   (render
    [this]
-   (let [{:keys [search/user val] :as prm} (om/props this)
+   (let [{:keys [search/results val] :as prm} (om/props this)
          style {:style {:border "1px" :borderStyle "solid"}}
-         qval (or val (:query (om/get-params this)))
-         clj-user (js->clj user :keywordize-keys true)
-         ;; (get ... ) must be used; qval is a number - can't be keywordized
-         user-vals (get clj-user qval)]
-     (let [{fname :fname lname :lname} user-vals
-           set-query-fn! (fn [] (om/set-query! this {:params {:query qval}}))]
+         qval (or val
+                  (first
+                   (:query (om/get-params this))))]
+     (println "(om/get-params this)" (om/get-params this))
+     (let [{fname :fname lname :lname} results
+           set-query-fn!
+           ;; {:params {:query <val>}} - <val> must be vector otherwise I get:
+           ;;    10010 is not ISeqable(...)
+           (fn [] (om/set-query! this {:params {:query [qval]
+                                                }}))]
        (html [:td (conj style
-                        {}
-                        #_{:onClick set-query-fn!}
-                        #_{:onMouseOver set-query-fn!}
-                        {:onMouseDown set-query-fn!}
-                        {:onMouseUp set-query-fn!})
-              (str qval "-" (abbrev fname) (abbrev lname))])))))
+                            {}
+                            {:onClick set-query-fn!})
+                  (str qval "-" (abbrev fname) (abbrev lname))])))))
 
 (defui Td
   "1. {:keyfn ...} can only use keys specified by (om/props this)
@@ -131,39 +125,30 @@
       [:tr (map (fn [kw] (td row id kw)) cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
-(defn will-mount [widget]
-  (let [{:keys [cols sqlfn] :as prm} (om/props widget)
-        tbeg (time/now)]
-    (utils/ednxhr
-     {:reqprm {:f sqlfn :log t :nocache t}
-      :on-complete
-      (fn [resp]
-        ;; map returs a lazy sequence therefore doseq must be used
-        ;; (map #(add-row! widget %) (:rows resp))
-        (doseq [row (:rows resp)]
-          (add-row! widget row)))
-      ;; TODO transact {:resp (str resp) :tbeg tbeg :tend (time/now)})
-      :on-error (fn [resp] (println resp))})))
-
 (defui TBodySalaries
   static om/IQuery (query [this] `[{:list/trows ~(om/get-query ColsSalaries)}])
   Object
-  ;; (componentWillReceiveProps [this next-props]            (println "TBodySalaries" "WillReceiveProps"))
-  ;; (componentWillUpdate       [this next-props next-state] (println "TBodySalaries" "WillUpdate"))
-  ;; (componentDidUpdate        [this prev-props prev-state] (println "TBodySalaries" "DidUpdate"))
-  (componentWillMount           [this] (will-mount this))
-  ;; (componentDidMount         [this]                       (println "TBodySalaries" "DidMount"))
-  ;; (componentWillUnmount      [this]                       (println "TBodySalaries" "WillUnmount"))
+  (componentWillMount
+   [this]
+   (let [{:keys [cols sqlfn] :as prm} (om/props this)]
+     (utils/ednxhr
+      {:reqprm {:f sqlfn :log true :nocache true}
+       :on-complete
+       (fn [resp]
+         ;; map returs a lazy sequence therefore doseq must be used
+         ;; (map #(add-row! this %) (:rows resp))
+         (doseq [row (:rows resp)]
+           (add-row! this row)))
+       :on-error (fn [resp] (println resp))})))
   (render
    [this]
    (let [{:keys [list/trows]} (om/props this)]
      (html
       [:tbody (map-indexed
                (fn [idx row]
-                 (tbody-row
-                  {:react-key (str :row "-" idx)
-                   :row row :cols (om/get-query ColsSalaries)}))
-                   trows)]))))
+                 (tbody-row {:react-key (str :row "-" idx)
+                             :row row :cols (om/get-query ColsSalaries)}))
+               trows)]))))
 
 (defui Table
   ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
@@ -229,27 +214,29 @@
           )
    c))
 
-(def base-url (str sync/uri "users/"))
-
-(defn send-to-chan [c]
-  (fn [{:keys [search] :as prm} callback]
-    (when search
-      (let [{[search] :children} (om/query->ast search)
-            query (get-in search [:params :query])]
-        (put! c [query callback])))))
+(def base-url
+  #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
+  (str sync/uri #_"jsonreq/search=" "users/ids="))
 
 (defn search-loop [c]
   (go
-    ;; callback is provided by om.next itself
-    (loop [[query callback] (<! c)] ;; <! takes val from a port
-      (let [fetched-vals (<! (jsonp (str base-url query)))
-            fst-row (->> (js->clj fetched-vals :keywordize-keys true)
-                         :rows
-                         first)
-            results {(:id fst-row) fst-row}]
-        #_(println "cli" "search-loop" "results" results)
-        (callback {:search/user results}))
+    (loop [[query cb remote] (<! c)]
+      (if-not (empty? query)
+        (let [ret (<! (jsonp (str base-url query)))
+              hm (js->clj ret :keywordize-keys true)
+              ;; [_ results] ret
+              results (->> hm first :rows first)]
+          #_(println "search-loop" "results" results)
+          (cb {:search/results results} query remote))
+        (cb {:search/results []} query remote))
       (recur (<! c)))))
+
+(defn send-to-chan [c]
+  (fn [{:keys [search]} cb]
+    (when search
+      (let [{[search] :children} (om/query->ast search)
+            query (get-in search [:params :query])]
+        (put! c [query cb :search])))))
 
 (def send-chan (chan))
 

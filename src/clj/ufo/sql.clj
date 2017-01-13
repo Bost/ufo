@@ -34,7 +34,7 @@
 
 (def postfix postfix-mysql)
 
-(defn users [{:keys [id] :as prm}]
+(defn users [{:keys [ids] :as prm}]
   (let [sql (str "
 select
   emp_no " (name :id) "
@@ -42,7 +42,8 @@ select
  ,first_name " (name :fname) "
  ,last_name " (name :lname) "
 from employees where
-emp_no in (" (re/inclause {:elems [id] :contract re/uid?}) ")
+emp_no in (" (re/inclause {:elems ids ; ids is a vector
+                           :contract re/uid?}) ")
 "
                  (postfix prm))]
     (assoc prm :f "users" :sql sql)))
