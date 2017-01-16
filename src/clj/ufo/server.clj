@@ -18,14 +18,6 @@
    :headers {"Content-Type" "application/edn; charset=UTF-8"}
    :body (pr-str data)})
 
-(defn json-response [callback data & [status]]
-  {:status (or status 200) ;; Status code: 200 'OK (The request was fulfilled)'
-   :headers {"Content-Type" "application/jsonp; charset=UTF-8"}
-   :body (let [json-data (json/write-str data)]
-           (if callback
-             (str callback "(" json-data ")") ;; encapsulate the return in jsonp
-             json-data))})
-
 (def fmap
   {:users    {:db db/users    :prm {}}
    :salaries {:db db/salaries :prm {}}})
@@ -37,14 +29,6 @@
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
     (let [{sql :sql rows :rows} (dbfn dbfnprm)]
       (end-response {:sql sql :rows rows}))))
-
-(defn doreq-json [callback {:keys [params edn-body] :as prm}]
-  (let [fnkw (:f edn-body)
-        dbfn (or (get-in fmap [fnkw :db])
-                 (println "ERROR" fnkw "does not exist in the fmap"))
-        dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
-    (let [{sql :sql rows :rows} (dbfn dbfnprm)]
-      (json-response callback [{:sql sql :rows rows}]))))
 #_
 (defroutes myapp
   (GET "/"     [] "Show something")
@@ -55,21 +39,10 @@
   (OPTIONS "/" [] "Appease something") ; beschwichtigen, stillen, besaenftigen
   (HEAD "/"    [] "Preview something"))
 
-(defn callback [req] (subs (:query-string req) (count "callback=")))
-
 ;; (reset-autobuild) should be enough for figwheel to see the changes
 (defroutes routes
   (GET "/"    req (file-response "public/html/index.html" {:root "resources"}))
   (PUT "/req" req (doreq req))
-  (GET "/users/ids=:ids" req
-       (doreq-json
-        (callback req)
-        {:edn-body (conj {:f :users, :log true, :nocache true, :rowlim 1}
-                         {:ids (->> req :params :ids read-string)})}))
-
-  (GET "/jsonreq/:search" req
-       (json-response (callback req) ["joe-foo-stuff" ["foo" "joe"] [] []]))
-
   (route/files "/" {:root "resources/public"})
   (route/not-found "<h1>Page not found</h1>"))
 

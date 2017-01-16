@@ -79,16 +79,9 @@
 
 (defmethod read :search/results
   [{:keys [state ast] :as env} k {:keys [query]}]
-  (let [r
-        (merge {:value (get @state k [])}
-               (when query
-                 {:search ast}))
-        #_(merge {:value (get @state k [])}
-               (when-not (and (string/blank? query)
-                              (<= 2 (count query)))
-                 {:search ast}))]
-    #_(println "read :search/results" r)
-    r))
+  (merge {:value (get @state k [])}
+         (when query
+           {:search ast})))
 
 ;; "List of tables to display on the web page"
 (defmethod read :list/tables
@@ -126,11 +119,9 @@
 (def reconciler
   (om/reconciler
    {:state app-state
-    :parser  (om/parser {:read read :mutate mutate})
-    :send (utils/send-to-chan utils/send-chan)
+    :parser (om/parser {:read read :mutate mutate})
+    :send utils/send-to-remote
     :remotes [:remote :search] ;; remote targets - represent remote services
     }))
 
 (om/add-root! reconciler cli/RootView (gdom/getElement "app"))
-
-(utils/search-loop utils/send-chan)

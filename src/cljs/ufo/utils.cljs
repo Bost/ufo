@@ -55,44 +55,25 @@
 
 ;; TODO :tbeg :tend must be inside :resp
 
-(defn jsonp
-  ([uri] (jsonp (chan) uri))
-  ([c uri]
-   ;; put! - Asynchronously puts a val into port
-   (.send (Jsonp. (Uri. uri))
-          nil                    ;; payload
-          (fn [val] (put! c val)) ;; reply-callback
-          (fn [val] (println "error-callback" "val" val))
-          nil                    ;; callback param value
-          )
-   c))
-
 (def uri "http://localhost:3449/")
 
 (def base-url
   #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
   (str uri #_"jsonreq/search=" "users/ids="))
 
-(defn search-loop [c]
-  (go
-    (loop [[query cb remote] (<! c)]
-      (if-not (empty? query)
-        (let [ret (<! (jsonp (str base-url query)))
-              ;; [_ result] ret
-              hm (js->clj ret :keywordize-keys true)
-              row (->> hm first :rows first)
-              ;; {10011 {:id 10010, :abrev 10010, :fname Duangkaew, :lname Piveteau}}
-              result {(:id row) row}]
-          #_(println "search-loop" "result" result)
-          (cb {:search/results result} query remote))
-        (cb {:search/results []} query remote))
-      (recur (<! c)))))
-
-(defn send-to-chan [c]
-  (fn [{:keys [search]} cb]
-    (when search
-      (let [{[search] :children} (om.next/query->ast search)
-            query (get-in search [:params :query])]
-        (put! c [query cb :search])))))
-
-(def send-chan (chan))
+(defn send-to-remote [{:keys [search] :as prm} cb]
+  (let [{[search] :children} (om.next/query->ast search)
+        query (get-in search [:params :query])
+        remote :search]
+    (if (empty? query)
+      (cb {:search/results []} query remote)
+      (ednxhr
+       {:reqprm {:f :users :ids query :log true :nocache true}
+        :on-complete
+        (fn [resp]
+          ;; map returs a lazy sequence therefore doseq must be used
+          ;; (map #(add-row! widget %) (:rows resp))
+          (doseq [row (:rows resp)]
+            (let [result {(:id row) row}]
+              (cb {:search/results result} query remote))))
+        :on-error (fn [resp] (println resp))}))))

@@ -62,6 +62,7 @@
          qval (or val
                   (first
                    (:query (om/get-params this))))]
+     #_(println "TdAbrev" "results" results)
      (let [{fname :fname lname :lname} (get-in results [qval])
            set-query-fn!
            ;; {:params {:query <val>}} - <val> must be vector otherwise I get:
