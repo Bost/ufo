@@ -61,12 +61,18 @@
   #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
   (str uri #_"jsonreq/search=" "users/ids="))
 
-(defn send-to-remote [{:keys [search] :as prm} cb]
-  (let [{[search] :children} (om.next/query->ast search)
-        query (get-in search [:params :query])
+(defn send-to-remote
+  "prm is a map of remotes and the pending message to be sent"
+  [{:keys [search] :as prm} cb]
+  (println "search" search)
+  (let [{[search-ast] :children} (om.next/query->ast search)
+        query (get-in search-ast [:params :query])
+        key :search/results
         remote :search]
+    (println "prm" prm)
+    (println "(om.next/query->ast search-ast)" (om.next/query->ast search))
     (if (empty? query)
-      (cb {:search/results []} query remote)
+      (cb {key []} query remote)
       (ednxhr
        {:reqprm {:f :users :ids query :log true :nocache true}
         :on-complete
@@ -75,5 +81,5 @@
           ;; (map #(add-row! widget %) (:rows resp))
           (doseq [row (:rows resp)]
             (let [result {(:id row) row}]
-              (cb {:search/results result} query remote))))
+              (cb {key result} query remote))))
         :on-error (fn [resp] (println resp))}))))

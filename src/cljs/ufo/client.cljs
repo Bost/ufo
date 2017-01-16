@@ -115,6 +115,8 @@
   (componentWillMount
    [this]
    (let [{:keys [cols sqlfn] :as prm} (om/props this)]
+     (println "(om/props this)" (om/props this))
+     #_(println "this" this)
      (utils/ednxhr
       {:reqprm {:f sqlfn :log true :nocache true}
        :on-complete
