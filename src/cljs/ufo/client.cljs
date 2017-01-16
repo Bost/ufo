@@ -135,8 +135,6 @@
                trows)]))))
 
 (defui Table
-  ;; static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
-  ;; static om/IQuery (query [this] `[:id {:list/rows ~(om/get-query TBodyRow)}])
   Object
   (render
    [this]
@@ -148,21 +146,29 @@
         [:thead (thead-row prm)]
         (let [hm {:keyfn :sqlfn}
               tbody-fn (or (tid {:salaries (om/factory TBodySalaries hm)})
-                           (fn [_] (str "ERROR: Unknown tid: '" tid "'. tbody-fn undefined.")))]
-          ;; the map {:cols cols :fname fname} must be reconstructed; can't use 'prm'
+                           (fn [_] (str "ERROR: Unknown tid: '" tid "'."
+                                       " tbody-fn undefined.")))]
+          ;; the map {:cols cols :fname fname} must be reconstructed
+          ;; can't use 'prm'
           (tbody-fn {:tname tname :cols cols :sqlfn sqlfn}))]]))))
 (def table (om/factory Table {:keyfn :tid}))
 
 (defui RootView
-  static om/IQuery ;; the query-tree is static
-  (query [this] `[{:list/tables ~(om/get-query TTable)}])
+  ;; the query-tree is static
+  static om/IQuery (query [this] `[{:list/tables ~(om/get-query TTable)}])
   Object
-  #_(componentWillReceiveProps [this next-props]            (println "RootView" "WillReceiveProps"))
-  #_(componentWillUpdate       [this next-props next-state] (println "RootView" "WillUpdate"))
-  #_(componentDidUpdate        [this prev-props prev-state] (println "RootView" "DidUpdate"))
-  #_(componentWillMount        [this]                       (println "RootView" "WillMount"))
-  #_(componentDidMount         [this]                       (println "RootView" "DidMount"))
-  #_(componentWillUnmount      [this]                       (println "RootView" "WillUnmount"))
+  #_(componentWillReceiveProps
+     [this next-props]            (println "RootView" "WillReceiveProps"))
+  #_(componentWillUpdate
+     [this next-props next-state] (println "RootView" "WillUpdate"))
+  #_(componentDidUpdate
+     [this prev-props prev-state] (println "RootView" "DidUpdate"))
+  #_(componentWillMount
+     [this]                       (println "RootView" "WillMount"))
+  #_(componentDidMount
+     [this]                       (println "RootView" "DidMount"))
+  #_(componentWillUnmount
+     [this]                       (println "RootView" "WillUnmount"))
   (render
    [this]
    (let [{:keys [list/tables]} (om/props this)]
