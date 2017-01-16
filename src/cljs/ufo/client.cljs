@@ -30,10 +30,6 @@
   static om/Ident (ident [this {:keys [id]}] [:rows/by-id id])
   static om/IQuery (query [this] '[:id :salary :abrev]))
 
-(defui TTable
-  static om/Ident (ident [this {:keys [tid]}] [:tables/by-tid tid])
-  static om/IQuery (query [this] '[:tid :sqlfn :tname]))
-
 (defui Th
   "1. {:keyfn ...} can only use keys specified by (om/props this)
 2. Values stored under these keys can't be keywords"
@@ -137,6 +133,8 @@
                trows)]))))
 
 (defui Table
+  static om/Ident (ident [this {:keys [tid]}] [:tables/by-tid tid])
+  static om/IQuery (query [this] '[:tid :sqlfn :tname])
   Object
   (render
    [this]
@@ -157,7 +155,7 @@
 
 (defui RootView
   ;; the query-tree is static
-  static om/IQuery (query [this] `[{:list/tables ~(om/get-query TTable)}])
+  static om/IQuery (query [this] `[{:list/tables ~(om/get-query Table)}])
   Object
   #_(componentWillReceiveProps
      [this next-props]            (println "RootView" "WillReceiveProps"))
