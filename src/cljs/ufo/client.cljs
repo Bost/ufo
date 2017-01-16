@@ -133,25 +133,25 @@
                trows)]))))
 
 (defui Table
-  static om/Ident (ident [this {:keys [tid]}] [:tables/by-tid tid])
-  static om/IQuery (query [this] '[:tid :sqlfn :tname])
+  static om/Ident (ident [this {:keys [id]}] [:tables/by-id id])
+  static om/IQuery (query [this] '[:id :sqlfn :tname])
   Object
   (render
    [this]
-   (let [{:keys [tid tname sqlfn cols] :as prm} (om/props this)]
+   (let [{:keys [id tname sqlfn cols] :as prm} (om/props this)]
      (html
       [:div
        [:div tname]
        [:table
         [:thead (thead-row prm)]
         (let [hm {:keyfn :sqlfn}
-              tbody-fn (or (tid {:salaries (om/factory TBodySalaries hm)})
-                           (fn [_] (str "ERROR: Unknown tid: '" tid "'."
+              tbody-fn (or (id {:salaries (om/factory TBodySalaries hm)})
+                           (fn [_] (str "ERROR: Unknown id: '" id "'."
                                        " tbody-fn undefined.")))]
           ;; the map {:cols cols :fname fname} must be reconstructed
           ;; can't use 'prm'
           (tbody-fn {:tname tname :cols cols :sqlfn sqlfn}))]]))))
-(def table (om/factory Table {:keyfn :tid}))
+(def table (om/factory Table {:keyfn :id}))
 
 (defui RootView
   ;; the query-tree is static

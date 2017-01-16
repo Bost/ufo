@@ -106,11 +106,11 @@
    :search/user []
    :list/trows []
    :list/tables
-   [{:tid   :salaries
+   [{:id   :salaries
      :sqlfn :salaries
      :tname "Salaries"
      :cols [:id :salary :abrev]}
-    #_{:tid   :users
+    #_{:id   :users
        :sqlfn :users
        :tname "Users"
        :cols [:id :fname :lname]}]})
