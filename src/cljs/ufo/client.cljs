@@ -91,9 +91,7 @@
   (render
    [this]
    (let [{:keys [cols] :as prm} (om/props this)]
-     (html
-      [:tr (map (fn [val] (th {:val (str val)}))
-                cols)]))))
+     (html [:tr (map (fn [v] (th {:val (str v)})) cols)]))))
 (def thead-row (om/factory THeadRow))
 
 (defn td [row id kw]
@@ -107,10 +105,8 @@
   Object
   (render
    [this]
-   (let [{:keys [row cols]} (om/props this)
-         id (:id row)]
-     (html
-      [:tr (map (fn [kw] (td row id kw)) cols)]))))
+   (let [{:keys [row cols]} (om/props this)]
+     (html [:tr (map (fn [kw] (td row (:id row) kw)) cols)]))))
 (def tbody-row (om/factory TBodyRow))
 
 (defui TBodySalaries
@@ -147,21 +143,6 @@
    (let [{:keys [tid tname sqlfn cols] :as prm} (om/props this)]
      (html
       [:div
-       #_[:button
-        {:onClick
-         (fn [e]
-           (let [tbeg (time/now)]
-             (utils/ednxhr
-              {:reqprm {:f fname :log t :nocache t}
-               :on-complete
-               (fn [resp]
-                 ;; map returs a lazy sequence therefore doseq must be used
-                 ;; (map #(add-row! this %) (:rows resp))
-                 (doseq [p (:rows resp)]
-                   (add-row! this p cols))
-                 #_{:resp (str resp) :tbeg tbeg :tend (time/now)})
-               :on-error (fn [resp] (println resp))})))}
-        "fetch data"]
        [:div tname]
        [:table
         [:thead (thead-row prm)]
@@ -185,7 +166,4 @@
   (render
    [this]
    (let [{:keys [list/tables]} (om/props this)]
-     (html
-      [:div
-       [:div (for [table-desc tables]
-               (table table-desc))]]))))
+     (html [:div (map table tables)]))))
