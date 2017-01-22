@@ -18,7 +18,7 @@
   "Send an asynchronous HTTP request using XhrIo's send() Instance Method"
   [{:keys [reqprm on-complete on-error] :as prm}]
   (let [kw (:f reqprm)
-        rowlim (or (kw {:users 1 :salaries 3})
+        rowlim (or (kw {:users 1 :salaries 2})
                    (let [v 10]
                      (println (str "WARN: rowlim undefined for '" kw "'."
                                    " Using default val " v))
