@@ -12,10 +12,7 @@
   (:import
    [goog.net XhrIo]
    [goog.net.EventType]
-   [goog.events EventType]
-   [goog Uri]
-   ;; Jsonp creates a new cross domain channel that sends data to the specified host URL
-   [goog.net Jsonp]))
+   [goog.events EventType]))
 
 (enable-console-print!)
 
@@ -54,12 +51,6 @@
           (.send xhr url opt_method opt_content opt_headers))))))
 
 ;; TODO :tbeg :tend must be inside :resp
-
-(def uri "http://localhost:3449/")
-
-(def base-url
-  #_"http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
-  (str uri #_"jsonreq/search=" "users/ids="))
 
 (defn send-to-remote
   "prm is a map of remotes and the pending message to be sent"
