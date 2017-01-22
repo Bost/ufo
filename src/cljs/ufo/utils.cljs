@@ -63,23 +63,28 @@
 
 (defn send-to-remote
   "prm is a map of remotes and the pending message to be sent"
-  [{:keys [search] :as prm} cb]
-  (println "search" search)
-  (let [{[search-ast] :children} (om.next/query->ast search)
-        query (get-in search-ast [:params :query])
-        key :search/results
-        remote :search]
-    (println "prm" prm)
-    (println "(om.next/query->ast search-ast)" (om.next/query->ast search))
-    (if (empty? query)
-      (cb {key []} query remote)
-      (ednxhr
-       {:reqprm {:f :users :ids query :log true :nocache true}
-        :on-complete
-        (fn [resp]
-          ;; map returs a lazy sequence therefore doseq must be used
-          ;; (map #(add-row! widget %) (:rows resp))
-          (doseq [row (:rows resp)]
-            (let [result {(:id row) row}]
-              (cb {key result} query remote))))
-        :on-error (fn [resp] (println resp))}))))
+  [{:keys [search] :as prm} callback]
+  (println "(count search)" (count search))
+  (doseq [child (
+                 #_identity
+                 distinct
+                 (:children (om.next/query->ast search)))]
+    (println "child" child) ;; remote calls get accumulated
+    (let [query (get-in child [:params :query])]
+      #_(println "query" query)
+      (let [key :search/results
+            keyx (keyword (namespace key) (str (name key) "-" query))
+            remote :search]
+        (if (empty? query)
+          (callback {key []} query remote)
+          (ednxhr
+           {:reqprm {:f :users :ids query :log true :nocache true}
+            :on-complete
+            (fn [resp]
+              ;; map returs a lazy sequence therefore doseq must be used
+              ;; (map #(add-row! widget %) (:rows resp))
+              (doseq [row (:rows resp)]
+                (let [result {(:id row) row}]
+                  (callback {key result} query remote)
+                  #_(callback {keyx result} query remote))))
+            :on-error (fn [resp] (println resp))}))))))

@@ -44,6 +44,11 @@
   [{:keys [state] :as env} key {:keys [id] :as params}]
   {:value (get-vals state key)})
 
+(defmethod read :all-results
+  [{:keys [state] :as env} key {:keys [id] :as params}]
+  #_(println "(get-in @state [:search/results])" (get-in @state [:search/results]))
+  {:value (get-in @state [:search/results])})
+
 (defmethod read :search/user
   [{:keys [state ast] :as env} k {:keys [query] :as params}]
   (merge {:value (get @state k [])}
@@ -79,9 +84,14 @@
 
 (defmethod read :search/results
   [{:keys [state ast] :as env} k {:keys [query]}]
-  (merge {:value (get @state k [])}
-         (when query
-           {:search ast})))
+  (let [ks [k #_query]
+        old-state (get-in @state [:search/results])
+        value (into {} (get-in @state ks))]
+    #_(swap! state update-in ks (fn [] (conj value h1)))
+    (let [h1 {:value (get-in @state ks)}
+          h2 {:search ast}
+          r (merge h1 h2)]
+      r)))
 
 ;; "List of tables to display on the web page"
 (defmethod read :list/tables
@@ -120,8 +130,17 @@
   (om/reconciler
    {:state app-state
     :parser (om/parser {:read read :mutate mutate})
-    :send utils/send-to-remote
+    :send (fn [hm callback]
+            #_(println "hm" hm)
+            #_(println "callback" callback)
+            (utils/send-to-remote hm callback))
     :remotes [:remote :search] ;; remote targets - represent remote services
+    :merge (fn [reconciler state novelty query]
+             #_(println "reconciler" reconciler)
+             #_(println "state" state)
+             #_(println "novelty" novelty)
+             #_(println "query" query)
+             (om/default-merge reconciler state novelty query))
     }))
 
 (om/add-root! reconciler cli/RootView (gdom/getElement "app"))
