@@ -1,5 +1,4 @@
 (ns ^:figwheel-always ufo.utils
-  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require
    [cljs.reader :as reader]
    [goog.events :as events]
@@ -7,8 +6,7 @@
    [ufo.regexps :as re :refer [dbg dbi id]]
    [cljs-time.core :as time]
    [om-tools.core :as otc :refer-macros [defcomponent]]
-   [om-tools.dom :as otd :include-macros true]
-   [cljs.core.async :as async :refer [<! >! put! chan]])
+   [om-tools.dom :as otd :include-macros true])
   (:import
    [goog.net XhrIo]
    [goog.net.EventType]
