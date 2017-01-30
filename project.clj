@@ -7,7 +7,7 @@
   [[org.clojure/clojure "1.9.0-alpha14"]
 
    ;; webapp - begin
-   [org.clojure/clojurescript "1.9.293"]
+   [org.clojure/clojurescript "1.9.456"]
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
    [org.omcljs/om "1.0.0-alpha48-SNAPSHOT" :exclusions [commons-codec]]
    [ring "1.5.1"]
@@ -42,7 +42,7 @@
    [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
-   [lein-figwheel "0.5.8" :exclusions [org.clojure/clojure]]]
+   [lein-figwheel "0.5.9" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -78,10 +78,9 @@
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
-   :dev {:dependencies [[figwheel-sidecar "0.5.8"
+   :dev {:dependencies [[figwheel-sidecar "0.5.9"
                          :exclusions [org.clojure/tools.analyzer
                                       org.clojure/tools.analyzer.jvm]]
-                        #_[lein-figwheel "0.5.4-5"]
                         [com.cemerick/piggieback "0.2.1"]
                         ;; 0.2.13-SNAPSHOT fixes:
                         ;; Unable to resolve var: cemerick.piggieback/wrap-cljs-repl in this context
