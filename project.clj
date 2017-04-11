@@ -14,7 +14,7 @@
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
    [com.andrewmcveigh/cljs-time "0.4.0"]
-   [sablono "0.7.7"] ; hiccup style templating for om-next
+   [sablono "0.8.0"] ; hiccup style templating for om-next
    ;; [cljsjs/react "15.2.1-1"]
    ;; [cljsjs/react-dom "15.2.1-1"]
    ;; [binaryage/devtools "0.7.2"] ; TODO look at CLJS DevTools
@@ -55,7 +55,7 @@
    ;; Access figwheel server from outside of VM:
    ;; the 'Figwheel: Starting server at http://localhost:3448' is misleading
    ;; :server-ip "..."; default is "localhost"; see also :websocket-host
-   ;; :server-port ... ; default port 3449
+   :server-port 3450 ; default port 3449
    :http-server-root "public" ; css-dirs requires http-server-root specification
    :css-dirs ["resources/public/css"]
    ;; Load CIDER, refactor-nrepl and piggieback middleware
@@ -78,7 +78,7 @@
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
-   :dev {:dependencies [[figwheel-sidecar "0.5.9"
+   :dev {:dependencies [[figwheel-sidecar "0.5.10"
                          :exclusions [org.clojure/tools.analyzer
                                       org.clojure/tools.analyzer.jvm]]
                         [com.cemerick/piggieback "0.2.1"]
