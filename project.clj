@@ -6,6 +6,11 @@
   :dependencies
   [[org.clojure/clojure "1.9.0-alpha15"]
 
+   [reagent "0.5.1"]
+   [re-frame "0.5.0"]
+   ;; [cljs-ajax "0.5.1"] ;; ClassNotFoundException figwheel-sidecar.repl-api
+   [secretary "1.2.3"]
+
    ;; webapp - begin
    [org.clojure/clojurescript "1.9.495"]
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
@@ -67,10 +72,14 @@
    [{:id "dev-ufo"
      :source-paths ["src/cljs" "src/clj"]
      ;; figwheel client config
-     :figwheel {:websocket-host :js-client-host}
+     :figwheel {:websocket-host :js-client-host
+                :on-jsload "github-profile.core/mount-root"
+                }
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
-                :main ufo.core
+                :main
+                github-profile.core
+                #_ufo.core
                 :asset-path "js/out"
                 :optimizations :none
                 ;; for debugging ClojureScript directly in the browser
