@@ -1,6 +1,5 @@
 (ns ufo.dbcon
   (:require
-   [clj-time-ext.core :as time]
    [clojure.java.jdbc :as jdbc]
    [clj-dbcp.core :as dbcp]
    [clojure.core.memoize :as memo])
@@ -14,12 +13,18 @@
   {:datasource (dbcp/make-datasource
                 {:classname "com.mysql.cj.jdbc.Driver"
                  :subprotocol "mysql"
-                 :subname "//127.0.0.1:3306/employees"
+                 :subname
+                 (str
+                  "//127.0.0.1:3306/employees"
+                  "?useUnicode=true"
+                  "&useJDBCCompliantTimezoneShift=true"
+                  "&useLegacyDatetimeCode=false"
+                  "&serverTimezone=UTC")
                  :user "root"
                  :password "root"}
                 #_{:user "login" :password "password"
-                 :database 'DBASE_NAME;; ' is for excatly quoted symbol-name
-                 :adapter :db2 :host "127.0.0.1" :port 12345})})
+                   :database 'DBASE_NAME;; ' is for excatly quoted symbol-name
+                   :adapter :db2 :host "127.0.0.1" :port 12345})})
 
 (defn pool [spec]
   {:datasource (doto (ComboPooledDataSource.)
