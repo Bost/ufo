@@ -12,9 +12,9 @@
    [secretary "1.2.3"]
 
    ;; webapp - begin
-   [org.clojure/clojurescript "1.9.495"]
+   [org.clojure/clojurescript "1.9.518"]
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
-   [org.omcljs/om "1.0.0-alpha48-SNAPSHOT" :exclusions [commons-codec]]
+   [org.omcljs/om "1.0.0-alpha48" :exclusions [commons-codec]]
    [ring "1.5.1"]
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
@@ -47,7 +47,7 @@
    [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
-   [lein-figwheel "0.5.9" :exclusions [org.clojure/clojure]]]
+   [lein-figwheel "0.5.10" :exclusions [cider/cider-nrepl]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
