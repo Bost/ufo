@@ -79,19 +79,24 @@
      [:div [:a {:href "#/"} "go to Home Page"]]
      ]))
 
-#_(defn Table
-  (let [id
-        tname
-        sqlfn
-        cols
+(defn thead-row []
+  (fn []
+   [:th [:td "td-val"]]
+   #_(let [{:keys [react-key cols] :as props} (om/props this)]
+     (html [:tr (map (fn [v] (th {:val (str v)})) cols)]))))
+
+(defn table []
+  (let [id "id"
+        tname "tnamee"
+        ;; sqlfn ""
+        ;; cols
         ]
-    #_(println "Table" "render" "props" props)
     (fn []
       [:div
        [:div tname]
        [:table
-        [:thead (thead-row props)]
-        (let [hm {:keyfn :sqlfn}
+        [:thead (thead-row)]
+        #_(let [hm {:keyfn :sqlfn}
               tbody-fn (or (id {:salaries (om/factory TBodySalaries hm)})
                            (fn [_] (str "ERROR: Unknown id: '" id "'."
                                         " tbody-fn undefined.")))]
