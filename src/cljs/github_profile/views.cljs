@@ -81,13 +81,24 @@
 
 (defn thead-row []
   (fn []
-   [:th [:td "td-val"]]
-   #_(let [{:keys [react-key cols] :as props} (om/props this)]
-     (html [:tr (map (fn [v] (th {:val (str v)})) cols)]))))
+    [:tr
+     [:th "th-0"]
+     [:th "th-val-1"]]))
+
+(defn tbody-row []
+  (fn []
+    (let [td-vals ["val-0" "val-1"]]
+      [:tr (map-indexed
+            (fn [i v]
+              [:td
+               (conj {:key i}
+                     {:style {:border "1px" :borderStyle "solid"}}
+                     {:onClick (fn [_] (println "onClick" v))})
+               v]) td-vals)])))
 
 (defn table []
   (let [id "id"
-        tname "tnamee"
+        tname "table-name"
         ;; sqlfn ""
         ;; cols
         ]
@@ -95,18 +106,11 @@
       [:div
        [:div tname]
        [:table
-        [:thead (thead-row)]
-        #_(let [hm {:keyfn :sqlfn}
-              tbody-fn (or (id {:salaries (om/factory TBodySalaries hm)})
-                           (fn [_] (str "ERROR: Unknown id: '" id "'."
-                                        " tbody-fn undefined.")))]
-          #_(println
-             "=" (= props {:id id :tname tname :cols cols :sqlfn sqlfn})
-             "(type props)" (type props)
-             "(type {:id id :tname tname :cols cols :sqlfn sqlfn})"
-             (type {:id id :tname tname :cols cols :sqlfn sqlfn}))
-          ;; merge must be done - can't use 'props' ???
-          (tbody-fn (merge {} props)))]])))
+        [:thead [thead-row]]
+        [:tbody
+         [tbody-row]
+         [tbody-row]]
+        ]])))
 
 ;; main
 
@@ -119,7 +123,8 @@
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [:div
-       [loading-throbber]
-       [user-name-and-avatar]
-       (panels @active-panel)
+       [table]
+       #_[loading-throbber]
+       #_[user-name-and-avatar]
+       #_(panels @active-panel)
        ])))
