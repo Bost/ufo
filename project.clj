@@ -14,7 +14,7 @@
    ;; webapp - begin
    [org.clojure/clojurescript "1.9.518"]
    [prismatic/om-tools "0.4.0"] ; more convenient dom elements
-   [org.omcljs/om "1.0.0-alpha48" :exclusions [commons-codec]]
+   [org.omcljs/om "1.0.0-alpha48" :exclusions [cljsjs/react commons-codec]]
    [ring "1.5.1"]
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
@@ -47,7 +47,7 @@
    [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
-   [lein-figwheel "0.5.10" :exclusions [cider/cider-nrepl]]]
+   [lein-figwheel "0.5.10" :exclusions [cider/cider-nrepl org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -72,7 +72,8 @@
    [{:id "dev-ufo"
      :source-paths ["src/cljs" "src/clj"]
      ;; figwheel client config
-     :figwheel {:websocket-host :js-client-host
+     :figwheel {
+                ;; :websocket-host :js-client-host
                 :on-jsload "github-profile.core/mount-root"
                 }
      :compiler {:output-to "resources/public/js/main.js"
@@ -93,6 +94,6 @@
                         [com.cemerick/piggieback "0.2.1"]
                         ;; 0.2.13-SNAPSHOT fixes:
                         ;; Unable to resolve var: cemerick.piggieback/wrap-cljs-repl in this context
-                        [org.clojure/tools.nrepl "0.2.13-SNAPSHOT"]]
+                        [org.clojure/tools.nrepl "0.2.13" #_"0.2.13-SNAPSHOT"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}})
