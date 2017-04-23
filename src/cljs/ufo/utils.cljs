@@ -70,7 +70,7 @@
            {:reqprm {:f :users :ids query :log true :nocache true}
             :on-complete
             (fn [resp]
-              ;; map returs a lazy sequence therefore doseq must be used
+              ;; map returns a lazy sequence therefore doseq must be used
               ;; (map #(add-row! widget %) (:rows resp))
               (doseq [row (:rows resp)]
                 (let [result {(:id row) row}]

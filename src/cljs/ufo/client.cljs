@@ -119,7 +119,7 @@
       {:reqprm {:f sqlfn :log true :nocache true}
        :on-complete
        (fn [resp]
-         ;; map returs a lazy sequence therefore doseq must be used
+         ;; map returns a lazy sequence therefore doseq must be used
          ;; (map #(add-row! this %) (:rows resp))
          (doseq [row (:rows resp)]
            (add-row! this row)))

@@ -67,7 +67,7 @@
               {:reqprm {:f :users :id id :log true :nocache true}
                :on-complete
                (fn [resp]
-                 ;; map returs a lazy sequence therefore doseq must be used
+                 ;; map returns a lazy sequence therefore doseq must be used
                  ;; (map #(add-row! widget %) (:rows resp))
                  (doseq [row (:rows resp)]
                    (swap! state update-in ks (fn [] (conj old-state row)))))
