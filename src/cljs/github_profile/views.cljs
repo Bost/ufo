@@ -13,7 +13,8 @@
 
 (defn tbody []
   (fn []
-    (let [emps (re-frame/subscribe [:emps])]
+    (let [loading? (re-frame/subscribe [:loading?])
+          emps (re-frame/subscribe [:emps])]
       ;; (doall) ;; avoid warn: Reactive deref not supported in lazy seq
       (println "@emps" @emps)
       [:tbody
@@ -30,7 +31,9 @@
                  ]
              (for [v [id salary abbrev]]
                [:td (conj {:key (str "tr-" i "-" v)}
-                          {:style {:border "1px" :borderStyle "solid"}})
+                          {:style {:border "1px" :borderStyle "solid"}}
+                          {:on-click #(when-not @loading?
+                                        (println "on-click" v))})
                 v]))])
         @emps)])))
 
@@ -48,17 +51,14 @@
         [:tbody [tbody]]
         ]])))
 
-(defn main-panel []
-  (fn []
-    [:div
-     [table]]))
-
 (defn loading-throbber
   []
   (let [loading? (re-frame/subscribe [:loading?])]
     (when @loading?
-      [:div.loading
-       [:div.three-quarters-loader "Loading..."]])))
+      (do
+        (println "Loading...")
+        [:div.loading
+         [:div.three-quarters-loader "Loading..."]]))))
 
 (defn github-id-input
   []
@@ -143,3 +143,9 @@
        [user-name-and-avatar]
        (panels @active-panel)
        ])))
+
+(defn main-panel []
+  (fn []
+    [:div
+     [loading-throbber]
+     [table]]))
