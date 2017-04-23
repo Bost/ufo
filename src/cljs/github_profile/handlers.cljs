@@ -12,7 +12,6 @@
 
 (enable-console-print!)
 
-
 (defn ednxhr
   "Send an asynchronous HTTP request using XhrIo's send() Instance Method"
   [{:keys [reqprm on-complete on-error] :as prm}]
@@ -40,13 +39,13 @@
         (println "xhr" xhr)
         (let [url
               #_"http://10.90.20.167:3450/req"
-              "req"
+              "req" ;; for localhost
               opt_method "PUT" ; defaults to "GET"
               opt_content (when prm (pr-str (conj reqprm {:rowlim rowlim})))
               opt_headers {"Content-Type" "application/edn; charset=UTF-8"
                            "Accept" "application/edn"}]
-          (.send xhr url opt_method opt_content opt_headers) ;; returns nil
-          )))))
+          ;;.send  returns nil
+          (.send xhr url opt_method opt_content opt_headers))))))
 
 (re-frame/register-handler
  :initialize-db
@@ -67,18 +66,6 @@
 (re-frame/register-handler
  :fetch-gh-user-details
  (fn [db [_ github-id]]
-   #_(ajax.core/GET
-       (str "https://api.github.com/users/" github-id)
-       {:handler       #(re-frame/dispatch [:process-user-response %1])
-        :error-handler #(re-frame/dispatch [:bad-response %1])})
-   #_(ajax.core/GET
-       (str "https://api.github.com/users/" github-id "/repos?sort=updated")
-       {:handler       #(re-frame/dispatch [:process-repo-response %1])
-        :error-handler #(re-frame/dispatch [:bad-response %1])})
-   #_(ednxhr
-    {:reqprm {:f :users :ids [10010] :log true :nocache true}
-     :on-complete (fn [resp] (println ":on-complete" resp))
-     :on-error (fn [resp] (println ":on-error" resp))})
    (let [id github-id]
      (ednxhr
       {:reqprm {:f :users :ids [id] :log true :nocache true}
