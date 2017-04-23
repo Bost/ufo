@@ -39,15 +39,14 @@
         (println "Sending request" reqprm "...")
         (println "xhr" xhr)
         (let [url
-              "http://10.90.20.167:3450/req"
-              #_"req"
+              #_"http://10.90.20.167:3450/req"
+              "req"
               opt_method "PUT" ; defaults to "GET"
               opt_content (when prm (pr-str (conj reqprm {:rowlim rowlim})))
               opt_headers {"Content-Type" "application/edn; charset=UTF-8"
                            "Accept" "application/edn"}]
-          (let [send-ret (.send xhr url opt_method opt_content opt_headers)]
-            (println "send-ret" send-ret)
-            send-ret))))))
+          (.send xhr url opt_method opt_content opt_headers) ;; returns nil
+          )))))
 
 (re-frame/register-handler
  :initialize-db
@@ -80,7 +79,7 @@
     {:reqprm {:f :users :ids [10010] :log true :nocache true}
      :on-complete (fn [resp] (println ":on-complete" resp))
      :on-error (fn [resp] (println ":on-error" resp))})
-   #_(ednxhr
+   (ednxhr
     {:reqprm {:f :users :ids [10011] :log true :nocache true}
      :on-complete (fn [resp] (println ":on-complete" resp))
      :on-error (fn [resp] (println ":on-error" resp))})
