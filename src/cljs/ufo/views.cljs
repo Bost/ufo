@@ -4,12 +4,11 @@
 
 (enable-console-print!)
 
-(defn thead []
+(defn thead [cols]
   (fn []
-    (let [cols [:id :salary :abbrev]]
-      [:tr
-       (map-indexed (fn [i v]
-                      [:th {:key i} (str v)]) cols)])))
+    [:tr
+     (map-indexed (fn [i v]
+                    [:th {:key i} (str v)]) cols)]))
 
 (defn tbody []
   (fn []
@@ -35,15 +34,16 @@
         @emps)])))
 
 (defn table [id]
-  (let [tname (re-frame/subscribe [:tables])
+  (let [
+        table-def (re-frame/subscribe [:tables])
         ;; sqlfn ""
         ;; cols
         ]
     (fn []
       [:div
-       [:div (->> @tname id :name)]
+       [:div (->> @table-def id :name)]
        [:table
-        [:thead [thead]]
+        [:thead [thead (->> @table-def id :cols)]]
         [:tbody [tbody]]
         ]])))
 
@@ -52,7 +52,7 @@
   (let [loading? (re-frame/subscribe [:loading?])]
     (when @loading?
       (do
-        (println "Loading...")
+        #_(println "Loading...")
         [:div.loading
          [:div.three-quarters-loader "Loading..."]]))))
 
