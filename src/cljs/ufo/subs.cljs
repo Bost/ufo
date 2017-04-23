@@ -3,6 +3,11 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
+ :tables
+ (fn [db]
+   (reaction (:tables @db))))
+
+(re-frame/register-sub
  :emps
  (fn [db]
    (reaction (:emps @db))))

@@ -22,10 +22,10 @@
            (let [id (name id-val)
                  salary-val (:salary hm)
                  salary (if salary-val salary-val ;; auto-onclick
-                            (re-frame/dispatch [:set-github-id (name id-val)]))
+                            (re-frame/dispatch [:set-github-id id]))
                  abbrev-val (:abbrev hm)
                  abbrev (if abbrev-val abbrev-val ;; auto-onclick
-                            (re-frame/dispatch [:set-github-id (name id-val)]))]
+                            (re-frame/dispatch [:set-github-id id]))]
              (for [v (remove nil? [id salary abbrev])]
                [:td (conj {:key (str "tr-" i "-" v)}
                           {:style {:border "1px" :borderStyle "solid"}}
@@ -34,15 +34,14 @@
                 v]))])
         @emps)])))
 
-(defn table []
-  (let [id "id"
-        tname "table-name"
+(defn table [id]
+  (let [tname (re-frame/subscribe [:tables])
         ;; sqlfn ""
         ;; cols
         ]
     (fn []
       [:div
-       [:div tname]
+       [:div (->> @tname id :name)]
        [:table
         [:thead [thead]]
         [:tbody [tbody]]
@@ -145,4 +144,4 @@
   (fn []
     [:div
      [loading-throbber]
-     [table]]))
+     [table :salaries]]))
