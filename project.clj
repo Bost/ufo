@@ -74,13 +74,11 @@
      ;; figwheel client config
      :figwheel {
                 ;; :websocket-host :js-client-host
-                :on-jsload "github-profile.core/mount-root"
+                :on-jsload "ufo.core/mount-root"
                 }
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
-                :main
-                github-profile.core
-                #_ufo.core
+                :main ufo.core
                 :asset-path "js/out"
                 :optimizations :none
                 ;; for debugging ClojureScript directly in the browser

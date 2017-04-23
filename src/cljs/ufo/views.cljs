@@ -1,4 +1,4 @@
-(ns github-profile.views
+(ns ufo.views
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
@@ -15,8 +15,6 @@
   (fn []
     (let [loading? (re-frame/subscribe [:loading?])
           emps (re-frame/subscribe [:emps])]
-      ;; (doall) ;; avoid warn: Reactive deref not supported in lazy seq
-      (println "@emps" @emps)
       [:tbody
        (map-indexed
         (fn [i [id-val hm]]
@@ -27,9 +25,8 @@
                             (re-frame/dispatch [:set-github-id (name id-val)]))
                  abbrev-val (:abbrev hm)
                  abbrev (if abbrev-val abbrev-val ;; auto-onclick
-                            (re-frame/dispatch [:set-github-id (name id-val)]))
-                 ]
-             (for [v [id salary abbrev]]
+                            (re-frame/dispatch [:set-github-id (name id-val)]))]
+             (for [v (remove nil? [id salary abbrev])]
                [:td (conj {:key (str "tr-" i "-" v)}
                           {:style {:border "1px" :borderStyle "solid"}}
                           {:on-click #(when-not @loading?

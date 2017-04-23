@@ -1,14 +1,9 @@
-(ns github-profile.handlers
-  (:require
-   [cljs.reader :as reader]
-   [goog.events :as events]
-   #_[ajax.core :refer [GET]]
-   [re-frame.core :as re-frame]
-   [github-profile.db :as db])
-  (:import
-   [goog.net XhrIo]
-   [goog.net.EventType]
-   #_[goog.events EventType]))
+(ns ufo.handlers
+  (:require [cljs.reader :as reader]
+            [goog.events :as events]
+            [re-frame.core :as re-frame]
+            [ufo.db :as db])
+  (:import goog.net.XhrIo))
 
 (enable-console-print!)
 

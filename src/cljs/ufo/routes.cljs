@@ -1,4 +1,4 @@
-(ns github-profile.routes
+(ns ufo.routes
   (:require-macros [secretary.core :refer [defroute]])
   (:import goog.History)
   (:require [secretary.core :as secretary]
