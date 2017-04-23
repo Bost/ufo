@@ -4,24 +4,32 @@
 
 (enable-console-print!)
 
-#_(defn thead-row []
+(defn thead-row []
   (fn []
     [:tr
      [:th "th-0"]
      [:th "th-1"]]))
 
-#_(defn tbody-row []
+(defn tbody-row []
   (fn []
-    (let [td-vals ["val-0" "val-1"]]
-      [:tr (map-indexed
-            (fn [i v]
-              [:td
-               (conj {:key i}
-                     {:style {:border "1px" :borderStyle "solid"}}
-                     {:onClick (fn [_] (println "onClick" v))})
-               v]) td-vals)])))
+    (let [acros (re-frame/subscribe [:acros])]
+      (let [ids [10010 10011]]
+        [:tr
+         (doall ;; avoid warn: Reactive deref not supported in lazy seq
+          (map-indexed
+           (fn [i id]
+             (let [acro-val (if @acros ((keyword (str id)) @acros))
+                   acro (if acro-val acro-val
+                            ;; auto-onclick
+                            (re-frame/dispatch [:set-github-id id]))]
+               [:td
+                (conj {:key i}
+                      {:style {:border "1px" :borderStyle "solid"}}
+                      #_{:onClick (fn [_]
+                                    (re-frame/dispatch [:set-github-id id]))})
+                acro])) ids))]))))
 
-#_(defn table []
+(defn table []
   (let [id "id"
         tname "table-name"
         ;; sqlfn ""
@@ -37,7 +45,7 @@
          [tbody-row]]
         ]])))
 
-#_(defn main-panel []
+(defn main-panel []
   (fn []
     [:div
      [table]]))
@@ -124,7 +132,7 @@
 (defmethod panels :profile-panel [] [profile-panel])
 (defmethod panels :default [] [:div])
 
-(defn main-panel []
+#_(defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [:div

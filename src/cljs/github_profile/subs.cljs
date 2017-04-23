@@ -3,6 +3,11 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
+ :acros
+ (fn [db]
+   (reaction (:acros @db))))
+
+(re-frame/register-sub
  :name
  (fn [db]
    (reaction (:name @db))))

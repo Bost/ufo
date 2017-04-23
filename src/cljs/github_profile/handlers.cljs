@@ -79,13 +79,29 @@
     {:reqprm {:f :users :ids [10010] :log true :nocache true}
      :on-complete (fn [resp] (println ":on-complete" resp))
      :on-error (fn [resp] (println ":on-error" resp))})
-   (ednxhr
-    {:reqprm {:f :users :ids [10011] :log true :nocache true}
-     :on-complete (fn [resp] (println ":on-complete" resp))
-     :on-error (fn [resp] (println ":on-error" resp))})
+   (let [id github-id]
+     (ednxhr
+      {:reqprm {:f :users :ids [id] :log true :nocache true}
+       :on-complete (fn [resp] (re-frame/dispatch [:acro resp]))
+       :on-error (fn [resp] (println ":on-error" resp))}))
    (-> db
        (assoc :loading? true)
        (assoc :error false))))
+
+(defn abbrev [name]
+  (if name
+    (subs name 0 (min 2 (count name)))))
+
+(re-frame/register-handler
+ :acro
+ (fn [db [_ resp]]
+   (let [fname (->> resp :rows first :fname)
+         lname (->> resp :rows first :lname)
+         id (->> resp :rows first :id)
+         acro (str (abbrev fname) (abbrev lname))]
+     (-> db
+         (assoc :loading? false)
+         (assoc-in [:acros (keyword (str id))] acro)))))
 
 (re-frame/register-handler
  :process-user-response
