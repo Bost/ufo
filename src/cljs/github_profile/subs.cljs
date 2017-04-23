@@ -3,9 +3,9 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
- :acros
+ :abbrevs
  (fn [db]
-   (reaction (:acros @db))))
+   (reaction (:abbrevs @db))))
 
 (re-frame/register-sub
  :name

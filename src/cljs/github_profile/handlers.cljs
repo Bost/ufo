@@ -36,7 +36,6 @@
                          (on-error {:error
                                     (.getResponseText xhr)})))
         (println "Sending request" reqprm "...")
-        (println "xhr" xhr)
         (let [url
               #_"http://10.90.20.167:3450/req"
               "req" ;; for localhost
@@ -69,7 +68,7 @@
    (let [id github-id]
      (ednxhr
       {:reqprm {:f :users :ids [id] :log true :nocache true}
-       :on-complete (fn [resp] (re-frame/dispatch [:acro resp]))
+       :on-complete (fn [resp] (re-frame/dispatch [:abbrevs resp]))
        :on-error (fn [resp] (println ":on-error" resp))}))
    (-> db
        (assoc :loading? true)
@@ -80,7 +79,7 @@
     (subs name 0 (min 2 (count name)))))
 
 (re-frame/register-handler
- :acro
+ :abbrevs
  (fn [db [_ resp]]
    (let [fname (->> resp :rows first :fname)
          lname (->> resp :rows first :lname)
@@ -88,7 +87,7 @@
          acro (str (abbrev fname) (abbrev lname))]
      (-> db
          (assoc :loading? false)
-         (assoc-in [:acros (keyword (str id))] acro)))))
+         (assoc-in [:abbrevs (keyword (str id))] acro)))))
 
 (re-frame/register-handler
  :process-user-response

@@ -4,30 +4,30 @@
 
 (enable-console-print!)
 
-(defn thead-row []
+(defn thead []
   (fn []
-    [:tr
-     [:th "th-0"]
-     [:th "th-1"]]))
+    (let [cols [:id :salary :abbrev]]
+      [:tr
+       (map-indexed (fn [i v]
+                      [:th {:key i} (str v)]) cols)])))
 
-(defn tbody-row []
+(defn tbody []
   (fn []
-    (let [acros (re-frame/subscribe [:acros])]
-      (let [ids [10010 10011]]
-        [:tr
-         (doall ;; avoid warn: Reactive deref not supported in lazy seq
-          (map-indexed
-           (fn [i id]
-             (let [acro-val (if @acros ((keyword (str id)) @acros))
-                   acro (if acro-val acro-val
-                            ;; auto-onclick
-                            (re-frame/dispatch [:set-github-id id]))]
-               [:td
-                (conj {:key i}
-                      {:style {:border "1px" :borderStyle "solid"}}
-                      #_{:onClick (fn [_]
-                                    (re-frame/dispatch [:set-github-id id]))})
-                acro])) ids))]))))
+    (let [abbrevs (re-frame/subscribe [:abbrevs])]
+      ;; (doall) ;; avoid warn: Reactive deref not supported in lazy seq
+      [:tbody
+       (map-indexed
+        (fn [i [id-val abbrev-val]]
+          [:tr {:key (str "tr-" i)}
+           (let [id (name id-val)
+                 abbrev (if abbrev-val abbrev-val
+                           ;; auto-onclick
+                           (re-frame/dispatch [:set-github-id (name id-val)]))]
+             (for [v [id "?" abbrev]]
+               [:td (conj {:key (str "tr-" i "-" v)}
+                          {:style {:border "1px" :borderStyle "solid"}})
+                v]))])
+        @abbrevs)])))
 
 (defn table []
   (let [id "id"
@@ -39,10 +39,8 @@
       [:div
        [:div tname]
        [:table
-        [:thead [thead-row]]
-        [:tbody
-         [tbody-row]
-         [tbody-row]]
+        [:thead [thead]]
+        [:tbody [tbody]]
         ]])))
 
 (defn main-panel []
