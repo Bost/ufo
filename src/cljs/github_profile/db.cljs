@@ -9,5 +9,6 @@
           :profile {}
           :repos []
           }
-   :abbrevs {:10010 nil
-             :10011 nil}})
+   :emps {:10010 nil
+          :10011 nil}
+   })

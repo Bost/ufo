@@ -48,14 +48,15 @@ emp_no in (" (re/inclause {:elems ids ; ids is a vector
                  (postfix prm))]
     (assoc prm :f "users" :sql sql)))
 
-(defn salaries [{:keys [] :as prm}]
+(defn salaries [{:keys [ids] :as prm}]
   (let [sql (str "
 select
   emp_no " (name :id) "
  ,emp_no " (name :abrev) "
  ,max(salary) " (name :salary) "
 from salaries where
-emp_no between 10010 and 10020
+emp_no in (" (re/inclause {:elems ids ; ids is a vector
+                           :contract re/uid?}) ")
 group by emp_no
 "
                  (postfix prm))]

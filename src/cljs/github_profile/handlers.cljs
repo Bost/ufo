@@ -59,16 +59,29 @@
 (re-frame/register-handler
  :set-github-id
  (fn [db [_ github-id]]
-   (re-frame/dispatch [:fetch-gh-user-details github-id])
+   (re-frame/dispatch [:fetch-abbrevs github-id])
+   (re-frame/dispatch [:fetch-salaries github-id])
    (assoc-in db [:user :github-id] github-id)))
 
 (re-frame/register-handler
- :fetch-gh-user-details
+ :fetch-salaries
+ (fn [db [_ github-id]]
+   (let [id github-id]
+     (ednxhr
+      {:reqprm {:f :salaries :ids [id] :log true :nocache true}
+       :on-complete (fn [resp] (re-frame/dispatch [:emp-salaries resp]))
+       :on-error (fn [resp] (println ":on-error" resp))}))
+   (-> db
+       (assoc :loading? true)
+       (assoc :error false))))
+
+(re-frame/register-handler
+ :fetch-abbrevs
  (fn [db [_ github-id]]
    (let [id github-id]
      (ednxhr
       {:reqprm {:f :users :ids [id] :log true :nocache true}
-       :on-complete (fn [resp] (re-frame/dispatch [:abbrevs resp]))
+       :on-complete (fn [resp] (re-frame/dispatch [:emp-abbrevs resp]))
        :on-error (fn [resp] (println ":on-error" resp))}))
    (-> db
        (assoc :loading? true)
@@ -79,15 +92,27 @@
     (subs name 0 (min 2 (count name)))))
 
 (re-frame/register-handler
- :abbrevs
+ :emp-salaries
  (fn [db [_ resp]]
-   (let [fname (->> resp :rows first :fname)
-         lname (->> resp :rows first :lname)
-         id (->> resp :rows first :id)
-         acro (str (abbrev fname) (abbrev lname))]
-     (-> db
-         (assoc :loading? false)
-         (assoc-in [:abbrevs (keyword (str id))] acro)))))
+   (let [row (->> resp :rows first)]
+     (let [id (->> row :id)
+           salary (->> row :salary)]
+       (-> db
+           (assoc :loading? false)
+           (assoc-in [:emps (keyword (str id)) :salary]
+                     salary))))))
+
+(re-frame/register-handler
+ :emp-abbrevs
+ (fn [db [_ resp]]
+   (let [row (->> resp :rows first)]
+     (let [id (->> row :id)
+           fname (->> row :fname)
+           lname (->> row :lname)]
+       (-> db
+           (assoc :loading? false)
+           (assoc-in [:emps (keyword (str id)) :abbrev]
+                     (str (abbrev fname) (abbrev lname))))))))
 
 (re-frame/register-handler
  :process-user-response

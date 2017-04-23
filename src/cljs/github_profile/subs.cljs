@@ -3,9 +3,9 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
- :abbrevs
+ :emps
  (fn [db]
-   (reaction (:abbrevs @db))))
+   (reaction (:emps @db))))
 
 (re-frame/register-sub
  :name
