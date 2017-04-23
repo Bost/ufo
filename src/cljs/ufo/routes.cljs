@@ -18,10 +18,10 @@
   (secretary/set-config! :prefix "#")
   ;; --------------------
   ;; define routes here
-  (defroute "/" []
+  #_(defroute "/" []
     (re-frame/dispatch [:set-active-panel :home-panel]))
 
-  (defroute "/profile" []
+  #_(defroute "/profile" []
     (re-frame/dispatch [:set-active-panel :profile-panel]))
 
 

@@ -21,10 +21,10 @@
            (let [id (name id-val)
                  salary-val (:salary hm)
                  salary (if salary-val salary-val ;; auto-onclick
-                            (re-frame/dispatch [:set-github-id id]))
+                            (re-frame/dispatch [:id id]))
                  abbrev-val (:abbrev hm)
                  abbrev (if abbrev-val abbrev-val ;; auto-onclick
-                            (re-frame/dispatch [:set-github-id id]))]
+                            (re-frame/dispatch [:id id]))]
              (for [v (remove nil? [id salary abbrev])]
                [:td (conj {:key (str "tr-" i "-" v)}
                           {:style {:border "1px" :borderStyle "solid"}}

@@ -13,21 +13,6 @@
    (reaction (:emps @db))))
 
 (re-frame/register-sub
- :name
- (fn [db]
-   (reaction (:name @db))))
-
-(re-frame/register-sub
- :active-panel
- (fn [db _]
-   (reaction (:active-panel @db))))
-
-(re-frame/register-sub
- :github-id
- (fn [db]
-   (reaction (get-in @db [:user :github-id]))))
-
-(re-frame/register-sub
  :loading?
  (fn [db]
    (reaction (:loading? @db))))
@@ -37,13 +22,3 @@
  (fn [db]
    (reaction (:error @db))))
 
-
-(re-frame/register-sub
- :user-profile
- (fn [db]
-   (reaction (get-in @db [:user :profile]))))
-
-(re-frame/register-sub
- :user-repos
- (fn [db]
-   (reaction (get-in @db [:user :repos]))))

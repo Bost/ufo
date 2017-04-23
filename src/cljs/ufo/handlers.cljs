@@ -47,12 +47,7 @@
    db/default-db))
 
 (re-frame/register-handler
- :set-active-panel
- (fn [db [_ active-panel]]
-   (assoc db :active-panel active-panel)))
-
-(re-frame/register-handler
- :set-github-id
+ :id
  (fn [db [_ github-id]]
    (re-frame/dispatch [:fetch-abbrevs github-id])
    (re-frame/dispatch [:fetch-salaries github-id])
@@ -109,25 +104,3 @@
            (assoc-in [:emps (keyword (str id)) :abbrev]
                      (str (abbrev fname) (abbrev lname))))))))
 
-(re-frame/register-handler
- :process-user-response
- (fn [db [_ response]]
-   (-> db
-       (assoc :loading? false)
-       (assoc-in [:user :profile] (js->clj response)))))
-
-(re-frame/register-handler
- :process-repo-response
- (fn [db [_ response]]
-   (-> db
-       (assoc :loading? false)
-       (assoc-in [:user :repos] (js->clj response)))))
-
-(re-frame/register-handler
- :bad-response
- (fn [db [_ _]]
-   (-> db
-       (assoc :loading? false)
-       (assoc :error true)
-       (assoc-in [:user :repos] [])
-       (assoc-in [:user :profile] {}))))
