@@ -8,7 +8,6 @@
 
    [reagent "0.5.1"]
    [re-frame "0.5.0"]
-   ;; [cljs-ajax "0.5.1"] ;; ClassNotFoundException figwheel-sidecar.repl-api
    [secretary "1.2.3"]
 
    ;; webapp - begin
@@ -20,8 +19,6 @@
    ;; (time/now) in cljs
    [com.andrewmcveigh/cljs-time "0.4.0"]
    [sablono "0.8.0"] ; hiccup style templating for om-next
-   ;; [cljsjs/react "15.2.1-1"]
-   ;; [cljsjs/react-dom "15.2.1-1"]
    ;; [binaryage/devtools "0.7.2"] ; TODO look at CLJS DevTools
    ;; webapp - end
 
@@ -92,6 +89,6 @@
                         [com.cemerick/piggieback "0.2.1"]
                         ;; 0.2.13-SNAPSHOT fixes:
                         ;; Unable to resolve var: cemerick.piggieback/wrap-cljs-repl in this context
-                        [org.clojure/tools.nrepl "0.2.13" #_"0.2.13-SNAPSHOT"]]
+                        [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}})
