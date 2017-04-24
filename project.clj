@@ -11,7 +11,7 @@
    [reagent "0.5.1"]
    [re-frame "0.5.0"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.518"]
+   [org.clojure/clojurescript "1.9.521"]
    [ring "1.5.1"]
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    [com.andrewmcveigh/cljs-time "0.4.0"] ;; (time/now) in cljs
