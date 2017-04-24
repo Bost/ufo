@@ -12,22 +12,12 @@
 
    ;; webapp - begin
    [org.clojure/clojurescript "1.9.518"]
-   [prismatic/om-tools "0.4.0"] ; more convenient dom elements
-   [org.omcljs/om "1.0.0-alpha48" :exclusions [cljsjs/react commons-codec]]
    [ring "1.5.1"]
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    ;; (time/now) in cljs
    [com.andrewmcveigh/cljs-time "0.4.0"]
    [sablono "0.8.0"] ; hiccup style templating for om-next
-   ;; [binaryage/devtools "0.7.2"] ; TODO look at CLJS DevTools
    ;; webapp - end
-
-   #_[com.rpl/specter "0.13.1"] ; overcome fear of nested data
-
-   ;; TODO see http://www.clodoc.org/doc/clojure.contrib.def/defn-memo
-   [org.clojure/core.memoize "0.5.9"]
-
-   ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
    [org.clojure/java.jdbc "0.6.1"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
@@ -36,11 +26,7 @@
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.8.2"] ; JDBC connections pools
 
-   ;; quartzite dependency on slf4j-api should be auto-resolved
-   ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
-
-   ;; (time/now) in clj
-   [clj-time-ext "0.13.0"]
+   [clj-time-ext "0.13.0"] ;; (time/now) in clj
    [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
