@@ -4,19 +4,17 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies
-  [[org.clojure/clojure "1.9.0-alpha15"]
+  [
+   [org.clojure/clojure "1.9.0-alpha15"]
 
+   ;; webapp - begin
    [reagent "0.5.1"]
    [re-frame "0.5.0"]
    [secretary "1.2.3"]
-
-   ;; webapp - begin
    [org.clojure/clojurescript "1.9.518"]
    [ring "1.5.1"]
    [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
-   ;; (time/now) in cljs
-   [com.andrewmcveigh/cljs-time "0.4.0"]
-   [sablono "0.8.0"] ; hiccup style templating for om-next
+   [com.andrewmcveigh/cljs-time "0.4.0"] ;; (time/now) in cljs
    ;; webapp - end
 
    [org.clojure/java.jdbc "0.6.1"]
