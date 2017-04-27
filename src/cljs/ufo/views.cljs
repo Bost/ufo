@@ -44,7 +44,7 @@
        [:div (->> @table-def id :name)]
        [:table
         [:thead [thead (->> @table-def id :cols)]]
-        [:tbody [tbody]]
+        [tbody]
         ]])))
 
 (defn loading-throbber

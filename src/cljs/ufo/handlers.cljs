@@ -41,19 +41,19 @@
           ;;.send  returns nil
           (.send xhr url opt_method opt_content opt_headers))))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
  :initialize-db
  (fn  [_ _]
    db/default-db))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
  :id
  (fn [db [_ github-id]]
    (re-frame/dispatch [:fetch-abbrevs github-id])
    (re-frame/dispatch [:fetch-salaries github-id])
    (assoc-in db [:user :github-id] github-id)))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
  :fetch-salaries
  (fn [db [_ github-id]]
    (let [id github-id]
@@ -65,7 +65,7 @@
        (assoc :loading? true)
        (assoc :error false))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
  :fetch-abbrevs
  (fn [db [_ github-id]]
    (let [id github-id]
@@ -81,7 +81,7 @@
   (if name
     (subs name 0 (min 2 (count name)))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
  :emp-salaries
  (fn [db [_ resp]]
    (let [row (->> resp :rows first)]
@@ -92,7 +92,7 @@
            (assoc-in [:emps (keyword (str id)) :salary]
                      salary))))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
  :emp-abbrevs
  (fn [db [_ resp]]
    (let [row (->> resp :rows first)]

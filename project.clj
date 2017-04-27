@@ -8,8 +8,8 @@
    [org.clojure/clojure "1.9.0-alpha15"]
 
    ;; webapp - begin
-   [reagent "0.5.1"]
-   [re-frame "0.5.0"]
+   [reagent "0.6.1"]
+   [re-frame "0.9.2"]
    [secretary "1.2.3"]
    [org.clojure/clojurescript "1.9.521"]
    [ring "1.5.1"]
