@@ -30,7 +30,7 @@
                        (fn [e]
                          (on-error {:error
                                     (.getResponseText xhr)})))
-        (println "Sending request" reqprm "...")
+        (println "Requesting" reqprm "...")
         (let [url
               #_"http://10.90.20.167:3450/req"
               "req" ;; for localhost
