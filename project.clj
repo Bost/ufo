@@ -71,8 +71,6 @@
                          :exclusions [org.clojure/tools.analyzer
                                       org.clojure/tools.analyzer.jvm]]
                         [com.cemerick/piggieback "0.2.1"]
-                        ;; 0.2.13-SNAPSHOT fixes:
-                        ;; Unable to resolve var: cemerick.piggieback/wrap-cljs-repl in this context
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}})
