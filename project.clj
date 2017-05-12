@@ -50,7 +50,7 @@
                       "cemerick.piggieback/wrap-cljs-repl"]}
   :cljsbuild
   {:builds
-   [{:id "dev-ufo"
+   [{:id "dev"
      :source-paths ["src/cljs" "src/clj"]
      ;; figwheel client config
      :figwheel {
@@ -61,13 +61,14 @@
                 :output-dir "resources/public/js/out"
                 :main ufo.core
                 :asset-path "js/out"
-                :optimizations :none
-                ;; for debugging ClojureScript directly in the browser
-                :source-map true}}]}
+                :source-map-timestamp true
+                :preloads             [devtools.preload]
+                :external-config      {:devtools/config {:features-to-install :all}}}}]}
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
-   :dev {:dependencies [[figwheel-sidecar "0.5.10"]
+   :dev {:dependencies [[binaryage/devtools "0.9.4"]
+                        [figwheel-sidecar "0.5.10"]
                         [com.cemerick/piggieback "0.2.1"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
