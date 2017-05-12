@@ -2,23 +2,23 @@
   (:require-macros [reagent.ratom :refer [reaction]])
   (:require [re-frame.core :as re-frame]))
 
-(re-frame/reg-sub-raw
+(re-frame/reg-sub
  :tables
  (fn [db]
-   (reaction (:tables @db))))
+   (:tables db)))
 
-(re-frame/reg-sub-raw
+(re-frame/reg-sub
  :emps
  (fn [db]
-   (reaction (:emps @db))))
+   (:emps db)))
 
-(re-frame/reg-sub-raw
+(re-frame/reg-sub
  :loading?
  (fn [db]
-   (reaction (:loading? @db))))
+   (:loading? db)))
 
-(re-frame/reg-sub-raw
+(re-frame/reg-sub
  :error?
  (fn [db]
-   (reaction (:error @db))))
+   (:error db)))
 
