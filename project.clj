@@ -11,8 +11,8 @@
    [re-frame "0.9.2"]
    [secretary "1.2.3"]
    [org.clojure/clojurescript "1.9.521"]
-   [ring "1.5.1"]
-   [compojure "1.5.2"] ; routing lib for Ring; dispatching of GET, PUT, etc.
+   [ring "1.6.0"]
+   [compojure "1.6.0"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    [com.andrewmcveigh/cljs-time "0.4.0"] ;; (time/now) in cljs
    ;; webapp - end
 
