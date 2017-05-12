@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies
   [
-   [org.clojure/clojure "1.9.0-alpha15"]
+   [org.clojure/clojure "1.9.0-alpha16"]
 
    ;; webapp - begin
    [reagent "0.6.1"]
@@ -28,7 +28,7 @@
    [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
-   [lein-figwheel "0.5.10" :exclusions [cider/cider-nrepl org.clojure/clojure]]]
+   [lein-figwheel "0.5.10" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -67,9 +67,7 @@
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
-   :dev {:dependencies [[figwheel-sidecar "0.5.10"
-                         :exclusions [org.clojure/tools.analyzer
-                                      org.clojure/tools.analyzer.jvm]]
+   :dev {:dependencies [[figwheel-sidecar "0.5.10"]
                         [com.cemerick/piggieback "0.2.1"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
