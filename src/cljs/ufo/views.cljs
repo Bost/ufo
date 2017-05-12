@@ -1,6 +1,5 @@
 (ns ufo.views
-  (:require [re-frame.core :as re-frame]
-            [reagent.core :as reagent]))
+  (:require [re-frame.core :as re-frame]))
 
 (enable-console-print!)
 
