@@ -31,8 +31,8 @@
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
-  :clean-targets ^{:protect false} ["resources/public/js/out"
-                                    "resources/public/js/main.js"]
+  :clean-targets ^{:protect false}
+  ["resources/public/js/out" "resources/public/js/main.js"]
 
   ;; figwheel server config
   :figwheel
