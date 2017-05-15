@@ -8,10 +8,10 @@
    [org.clojure/clojure "1.9.0-alpha16"]
 
    ;; webapp - begin
-   [re-frame "0.9.2"]
+   [re-frame "0.9.3"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.521"]
-   [ring "1.6.0"]
+   [org.clojure/clojurescript "1.9.542"]
+   [ring "1.6.1"]
    [compojure "1.6.0"] ; routing lib for Ring; dispatching of GET, PUT, etc.
    [com.andrewmcveigh/cljs-time "0.4.0"] ;; (time/now) in cljs
    ;; webapp - end
