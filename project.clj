@@ -13,7 +13,8 @@
    [org.clojure/clojurescript "1.9.542"]
    [ring "1.6.1"]
    [compojure "1.6.0"] ; routing lib for Ring; dispatching of GET, PUT, etc.
-   [com.andrewmcveigh/cljs-time "0.4.0"] ;; (time/now) in cljs
+   [garden "1.3.2"] ; render CSS
+   [com.andrewmcveigh/cljs-time "0.5.0"] ;; (time/now) in cljs
    ;; webapp - end
 
    [org.clojure/java.jdbc "0.6.1"]
@@ -24,9 +25,11 @@
    [clj-dbcp "0.8.2"] ; JDBC connections pools
 
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
-   [clj-time "0.13.0"]]
+   [clj-time "0.13.0"]
+   [garden "1.3.2"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
+   [lein-garden "0.2.8"]
    [lein-figwheel "0.5.10" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
@@ -66,9 +69,17 @@
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
-   :dev {:dependencies [[binaryage/devtools "0.9.4"]
+   :dev {:dependencies [[ns-tracker "0.3.1"]
+                        [binaryage/devtools "0.9.4"]
                         [figwheel-sidecar "0.5.10"]
                         [com.cemerick/piggieback "0.2.1"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
-         :source-paths ["src/cljs" "src/clj"]}})
+         :source-paths ["src/cljs" "src/clj"]}}
+
+  :garden
+  {:builds [{:id "screen"
+             :source-paths ["src/clj"]
+             :stylesheet ufo.css/screen
+             :compiler {:output-to "resources/public/css/screen.css"
+                        :pretty-print? true}}]})

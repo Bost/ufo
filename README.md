@@ -26,6 +26,7 @@ git clone https://github.com/clojure/tools.nrepl.git; and cd tools.nrepl
 sudo apt-get install --yes maven
 mvn package
 lein repl
+lein garden auto
 ```
 
 run ufo:
