@@ -12,7 +12,8 @@
    [secretary "1.2.3"]
    [org.clojure/clojurescript "1.9.542"]
    [ring "1.6.1"]
-   [compojure "1.6.0"] ; routing lib for Ring; dispatching of GET, PUT, etc.
+   ;; Ring routing lib; dispatching of GET, PUT, etc.
+   [compojure "1.6.0"]
    [garden "1.3.2"] ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.0"] ;; (time/now) in cljs
    ;; webapp - end
@@ -25,8 +26,7 @@
    [clj-dbcp "0.8.2"] ; JDBC connections pools
 
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
-   [clj-time "0.13.0"]
-   [garden "1.3.2"]]
+   [clj-time "0.13.0"]]
   :plugins
   [[lein-cljsbuild "1.1.5"]
    [lein-garden "0.2.8"]

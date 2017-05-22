@@ -33,11 +33,7 @@
         @emps)])))
 
 (defn table [id]
-  (let [
-        table-def (re-frame/subscribe [:tables])
-        ;; sqlfn ""
-        ;; cols
-        ]
+  (let [table-def (re-frame/subscribe [:tables])]
     (fn []
       [:div
        [:div (->> @table-def id :name)]
