@@ -81,5 +81,5 @@
   {:builds [{:id "screen"
              :source-paths ["src/clj"]
              :stylesheet ufo.css/screen
-             :compiler {:output-to "resources/public/css/screen.css"
+             :compiler {:output-to "resources/public/css/style.css"
                         :pretty-print? true}}]})
