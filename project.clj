@@ -28,8 +28,8 @@
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
    [clj-time "0.13.0"]]
   :plugins
-  [[lein-cljsbuild "1.1.5"]
-   [lein-garden "0.2.8"]
+  [[lein-cljsbuild "1.1.6"]
+   [lein-garden "0.3.0"]
    [lein-figwheel "0.5.10" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
