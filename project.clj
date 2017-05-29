@@ -5,12 +5,12 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies
   [
-   [org.clojure/clojure "1.9.0-alpha16"]
+   [org.clojure/clojure "1.9.0-alpha17"]
 
    ;; webapp - begin
    [re-frame "0.9.3"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.542"]
+   [org.clojure/clojurescript "1.9.562"]
    [ring "1.6.1"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.0"]
