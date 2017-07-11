@@ -12,8 +12,7 @@
    [secretary "1.2.3"]
    [org.clojure/clojurescript "1.9.562"]
    [ring "1.6.1"]
-   ;; Ring routing lib; dispatching of GET, PUT, etc.
-   [compojure "1.6.0"]
+   [compojure "1.6.0"] ;; routing lib for Ring; dispatching of GET, PUT, etc.
    [garden "1.3.2"] ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.0"] ;; (time/now) in cljs
    ;; webapp - end
