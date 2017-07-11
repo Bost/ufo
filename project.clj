@@ -8,9 +8,9 @@
    [org.clojure/clojure "1.9.0-alpha17"]
 
    ;; webapp - begin
-   [re-frame "0.9.3"]
+   [re-frame "0.9.4"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.562"]
+   [org.clojure/clojurescript "1.9.671"]
    [ring "1.6.1"]
    [compojure "1.6.0"] ;; routing lib for Ring; dispatching of GET, PUT, etc.
    [garden "1.3.2"] ; render CSS
@@ -19,7 +19,7 @@
 
    [org.clojure/java.jdbc "0.6.1"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
-   [mysql/mysql-connector-java "6.0.6"]
+   [mysql/mysql-connector-java "8.0.7"]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.8.2"] ; JDBC connections pools
@@ -29,7 +29,7 @@
   :plugins
   [[lein-cljsbuild "1.1.6"]
    [lein-garden "0.3.0"]
-   [lein-figwheel "0.5.10" :exclusions [org.clojure/clojure]]]
+   [lein-figwheel "0.5.11" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -70,8 +70,8 @@
   {:uberjar {:aot :all}
    :dev {:dependencies [[ns-tracker "0.3.1"]
                         [binaryage/devtools "0.9.4"]
-                        [figwheel-sidecar "0.5.10"]
-                        [com.cemerick/piggieback "0.2.1"]
+                        [figwheel-sidecar "0.5.11"]
+                        [com.cemerick/piggieback "0.2.2"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
