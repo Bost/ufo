@@ -19,7 +19,7 @@
 
    [org.clojure/java.jdbc "0.6.1"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
-   [mysql/mysql-connector-java "6.0.6"]
+   [mysql/mysql-connector-java "8.0.7"]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.8.2"] ; JDBC connections pools
