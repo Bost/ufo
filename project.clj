@@ -10,14 +10,15 @@
    ;; webapp - begin
    [re-frame "0.9.4"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.671"]
-   [ring "1.6.1"]
-   [compojure "1.6.0"] ;; routing lib for Ring; dispatching of GET, PUT, etc.
+   [org.clojure/clojurescript "1.9.854"]
+   [ring "1.6.2"]
+   ;; Ring routing lib; dispatching of GET, PUT, etc.
+   [compojure "1.6.0"]
    [garden "1.3.2"] ; render CSS
-   [com.andrewmcveigh/cljs-time "0.5.0"] ;; (time/now) in cljs
+   [com.andrewmcveigh/cljs-time "0.5.1"] ;; (time/now) in cljs
    ;; webapp - end
 
-   [org.clojure/java.jdbc "0.6.1"]
+   [org.clojure/java.jdbc "0.7.0"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
    [mysql/mysql-connector-java "8.0.7"]
 
@@ -25,9 +26,9 @@
    [clj-dbcp "0.8.2"] ; JDBC connections pools
 
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
-   [clj-time "0.13.0"]]
+   [clj-time "0.14.0"]]
   :plugins
-  [[lein-cljsbuild "1.1.6"]
+  [[lein-cljsbuild "1.1.7"]
    [lein-garden "0.3.0"]
    [lein-figwheel "0.5.11" :exclusions [org.clojure/clojure]]]
 
