@@ -41,6 +41,14 @@ run ufo:
 lein repl
 ```
 
+then connect to REPL and run (in emacs M-x my/cider-figwheel-repl):
+```
+user> (require 'figwheel-sidecar.repl-api)
+;; start-figwheel can be repeatedly called (is idempotent)
+(figwheel-sidecar.repl-api/start-figwheel!)
+(figwheel-sidecar.repl-api/cljs-repl)
+```
+
 sql commands in emacs:
 ```sql
 (setq sql-user "root")
