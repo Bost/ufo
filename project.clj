@@ -8,9 +8,9 @@
    [org.clojure/clojure "1.9.0-alpha17"]
 
    ;; webapp - begin
-   [re-frame "0.9.4"]
+   [re-frame "0.10.1"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.854"]
+   [org.clojure/clojurescript "1.9.908"]
    [ring "1.6.2"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.0"]
@@ -23,14 +23,14 @@
    [mysql/mysql-connector-java "6.0.6"]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
-   [clj-dbcp "0.8.2"] ; JDBC connections pools
+   [clj-dbcp "0.9.0"] ; JDBC connections pools
 
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
    [clj-time "0.14.0"]]
   :plugins
   [[lein-cljsbuild "1.1.7"]
    [lein-garden "0.3.0"]
-   [lein-figwheel "0.5.11" :exclusions [org.clojure/clojure]]]
+   [lein-figwheel "0.5.13" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -71,7 +71,7 @@
   {:uberjar {:aot :all}
    :dev {:dependencies [[ns-tracker "0.3.1"]
                         [binaryage/devtools "0.9.4"]
-                        [figwheel-sidecar "0.5.11"]
+                        [figwheel-sidecar "0.5.13"]
                         [com.cemerick/piggieback "0.2.2"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
