@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies
   [
-   [org.clojure/clojure "1.9.0-alpha17"]
+   [org.clojure/clojure "1.9.0-alpha19"]
 
    ;; webapp - begin
    [re-frame "0.10.1"]
