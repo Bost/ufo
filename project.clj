@@ -18,6 +18,12 @@
    [com.andrewmcveigh/cljs-time "0.5.1"] ;; (time/now) in cljs
    ;; webapp - end
 
+   #_[com.rpl/specter "0.13.1"] ; overcome fear of nested data
+   ;; TODO see http://www.clodoc.org/doc/clojure.contrib.def/defn-memo
+   [org.clojure/core.memoize "0.5.9"]
+
+   ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
+
    [org.clojure/java.jdbc "0.7.0"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
    [mysql/mysql-connector-java "6.0.6"]
@@ -30,6 +36,9 @@
   :plugins
   [[lein-cljsbuild "1.1.7"]
    [lein-garden "0.3.0"]
+   ;; quartzite dependency on slf4j-api should be auto-resolved
+   ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
+
    [lein-figwheel "0.5.13" :exclusions [org.clojure/clojure]]]
 
   :source-paths ["src/clj" "src/cljs"]
@@ -69,10 +78,13 @@
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
-   :dev {:dependencies [[ns-tracker "0.3.1"]
-                        [binaryage/devtools "0.9.4"]
-                        [figwheel-sidecar "0.5.13"]
+   :dev {:dependencies [
+                        ;; com.cemerick/piggieback "0.2.13-SNAPSHOT" fixes:
+                        ;; Unable to resolve var: cemerick.piggieback/wrap-cljs-repl in this context
                         [com.cemerick/piggieback "0.2.2"]
+                        [figwheel-sidecar "0.5.13"]
+                        [ns-tracker "0.3.1"]
+                        [binaryage/devtools "0.9.4"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
