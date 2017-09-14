@@ -34,12 +34,14 @@
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
    [clj-time "0.14.0"]]
   :plugins
-  [[lein-cljsbuild "1.1.7"]
+  [
+   [lein-cljsbuild "1.1.7"]
    [lein-garden "0.3.0"]
    ;; quartzite dependency on slf4j-api should be auto-resolved
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
 
-   [lein-figwheel "0.5.13" :exclusions [org.clojure/clojure]]]
+   [lein-figwheel "0.5.13" :exclusions [org.clojure/clojure]]
+   ]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]

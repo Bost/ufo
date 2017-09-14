@@ -9,7 +9,7 @@
 (def id identity)
 
 (defmacro dbi
-  "Identity macro for convenience purposes"
+  "Identity macro. Meant to conveniently toggle the dbg macro"
   [body]
   `(let [x# ~body]
      x#))
