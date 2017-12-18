@@ -5,17 +5,17 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies
   [
-   [org.clojure/clojure "1.9.0-alpha19"]
+   [org.clojure/clojure "1.9.0"]
 
    ;; webapp - begin
-   [re-frame "0.10.1"]
+   [re-frame "0.10.2"]
    [secretary "1.2.3"]
-   [org.clojure/clojurescript "1.9.908"]
-   [ring "1.6.2"]
+   [org.clojure/clojurescript "1.9.946"]
+   [ring "1.6.3"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.0"]
-   [garden "1.3.2"] ; render CSS
-   [com.andrewmcveigh/cljs-time "0.5.1"] ;; (time/now) in cljs
+   [garden "1.3.3"] ; render CSS
+   [com.andrewmcveigh/cljs-time "0.5.2"] ;; (time/now) in cljs
    ;; webapp - end
 
    #_[com.rpl/specter "0.13.1"] ; overcome fear of nested data
@@ -24,7 +24,7 @@
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
-   [org.clojure/java.jdbc "0.7.0"]
+   [org.clojure/java.jdbc "0.7.4"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
    [mysql/mysql-connector-java "6.0.6"]
 
@@ -32,7 +32,7 @@
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
-   [clj-time "0.14.0"]]
+   [clj-time "0.14.2"]]
   :plugins
   [
    [lein-cljsbuild "1.1.7"]
@@ -40,7 +40,7 @@
    ;; quartzite dependency on slf4j-api should be auto-resolved
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
 
-   [lein-figwheel "0.5.13" :exclusions [org.clojure/clojure]]
+   [lein-figwheel "0.5.14" :exclusions [org.clojure/clojure]]
    ]
 
   :source-paths ["src/clj" "src/cljs"]
@@ -84,9 +84,9 @@
                         ;; com.cemerick/piggieback "0.2.13-SNAPSHOT" fixes:
                         ;; Unable to resolve var: cemerick.piggieback/wrap-cljs-repl in this context
                         [com.cemerick/piggieback "0.2.2"]
-                        [figwheel-sidecar "0.5.13"]
+                        [figwheel-sidecar "0.5.14"]
                         [ns-tracker "0.3.1"]
-                        [binaryage/devtools "0.9.4"]
+                        [binaryage/devtools "0.9.8"]
                         [org.clojure/tools.nrepl "0.2.13"]]
          :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
