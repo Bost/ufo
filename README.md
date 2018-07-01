@@ -39,6 +39,12 @@ lein garden auto
 run ufo:
 ```
 lein repl
+
+# activate the dev profile in addition to the default profiles
+lein with-profiles +dev repl
+
+# activate only the dev profile
+# lein with-profiles dev repl
 ```
 
 then connect to REPL and run (in emacs M-x my/cider-figwheel-repl):
