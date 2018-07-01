@@ -3,6 +3,13 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+
+  ;; :pedantic? :abort
+
+  :exclusions [
+               #_org.clojure/clojure
+               org.clojure/tools.nrepl]
+
   :dependencies
   [
    [org.clojure/clojure "1.9.0"]
@@ -28,9 +35,9 @@
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
-   [org.clojure/java.jdbc "0.7.7"]
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
-   ;; [mysql/mysql-connector-java "8.0.11"]
+   [org.clojure/java.jdbc "0.7.7"]
+   [mysql/mysql-connector-java "8.0.11" :exclusions [com.google.protobuf/protobuf-java]]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
@@ -38,11 +45,12 @@
    [clj-time-ext "0.13.0"] ;; (time/now) in clj
    [clj-time "0.14.4"]
    ]
+  ;; :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
   :plugins
   [
-   [lein-figwheel "0.5.16" :exclusions [[org.clojure/clojure]]]
-   [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]
-   [lein-garden "0.3.0"]
+   [lein-figwheel "0.5.16"]
+   [lein-cljsbuild "1.1.7"]
+   [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]
    ;; quartzite dependency on slf4j-api should be auto-resolved
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
    ]

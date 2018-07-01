@@ -1,5 +1,6 @@
 mysql:
 ```
+sudo apt-get install mysql-server mysql-client mysql-commons
 git clone https://github.com/datacharmer/test_db; and cd test_db
 
 # install:

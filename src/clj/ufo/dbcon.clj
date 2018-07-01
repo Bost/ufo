@@ -11,17 +11,16 @@
 ;; TODO DRY dbase connection
 (defn dbspec [dbuser]
   {:datasource (dbcp/make-datasource
-                {:classname "com.mysql.cj.jdbc.Driver"
-                 :subprotocol "mysql"
-                 :subname
+                {:classname "com.mysql.jdbc.Driver"
+                 :jdbc-url
                  (str
-                  "//127.0.0.1:3306/employees"
+                  "jdbc:mysql://localhost:3306/employees"
                   "?useUnicode=true"
                   "&useJDBCCompliantTimezoneShift=true"
                   "&useLegacyDatetimeCode=false"
                   "&serverTimezone=UTC")
-                 :user "root"
-                 :password "root"}
+                 :user "root" :password "root"
+                 :test-query "SELECT 1;"}
                 #_{:user "login" :password "password"
                    :database 'DBASE_NAME;; ' is for excatly quoted symbol-name
                    :adapter :db2 :host "127.0.0.1" :port 12345})})
