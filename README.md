@@ -1,9 +1,26 @@
 mysql:
 ```
-sudo apt-get install mysql-server mysql-client mysql-commons
-git clone https://github.com/datacharmer/test_db; and cd test_db
+# install mysql
+sudo apt-get install mysql-server mysql-client
 
-# install:
+# setup/change mysql root password
+sudo service mysql stop
+sudo killall mysqld_safe
+sudo killall mysqld
+sudo mkdir /var/run/mysqld; sudo chown mysql /var/run/mysqld
+sudo mysqld_safe --skip-grant-tables &
+mysql -u root
+update mysql.user
+    set authentication_string=PASSWORD("root"), plugin="mysql_native_password"
+    where User='root' and Host='localhost';
+flush privileges;
+quit;
+pgrep mysql
+sudo kill # <pid1> ... <pidN>
+sudo service mysql restart
+
+# download and install test data:
+git clone https://github.com/datacharmer/test_db; and cd test_db
 mysql --host=localhost --user=root --password=root < employees.sql
 
 # test

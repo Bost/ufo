@@ -22,3 +22,8 @@
  (fn [db]
    (:error db)))
 
+(re-frame/reg-sub
+ :active
+ (fn [db [_ k]]
+   (get-in db [k :active])))
+

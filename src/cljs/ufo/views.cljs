@@ -9,28 +9,36 @@
      (map-indexed (fn [i v]
                     [:th {:key i} (str v)]) cols)]))
 
+(defn td [i v loading?]
+  [:td (conj {:key (str "tr-" i "-" v)}
+             {:style {:border "1px" :borderStyle "solid"
+                      :backgroundColor
+                      (if @(re-frame/subscribe [:active v]) "red")
+                      }}
+             {:on-click #(when-not loading?
+                           (re-frame/dispatch [:toggle v]))})
+   v])
+
 (defn tbody []
   (fn []
     (let [loading? (re-frame/subscribe [:loading?])
           emps (re-frame/subscribe [:emps])]
       [:tbody
-       (map-indexed
-        (fn [i [id-val hm]]
-          [:tr {:key (str "tr-" i)}
-           (let [id (name id-val)
-                 salary-val (:salary hm)
-                 salary (if salary-val salary-val ;; auto-onclick
-                            (re-frame/dispatch [:id id]))
-                 abbrev-val (:abbrev hm)
-                 abbrev (if abbrev-val abbrev-val ;; auto-onclick
-                            (re-frame/dispatch [:id id]))]
-             (for [v (remove nil? [id salary abbrev])]
-               [:td (conj {:key (str "tr-" i "-" v)}
-                          {:style {:border "1px" :borderStyle "solid"}}
-                          {:on-click #(when-not @loading?
-                                        (println "on-click" v))})
-                v]))])
-        @emps)])))
+       (doall
+        (map-indexed
+         (fn [i [id-val hm]]
+           [:tr {:key (str "tr-" i)}
+            (let [id (name id-val)
+                  salary-val (:salary hm)
+                  salary (if salary-val salary-val ;; auto-onclick
+                             (re-frame/dispatch [:id id]))
+                  abbrev-val (:abbrev hm)
+                  abbrev (if abbrev-val abbrev-val ;; auto-onclick
+                             (re-frame/dispatch [:id id]))]
+              (doall
+               (map #(td i % @loading?)
+                    (remove nil? [id salary abbrev]))))])
+         @emps))])))
 
 (defn table [id]
   (let [table-def (re-frame/subscribe [:tables])]

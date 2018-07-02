@@ -1,6 +1,7 @@
 (ns ufo.handlers
   (:require [cljs.reader :as reader]
             [goog.events :as events]
+            [clojure.spec.alpha :as s]
             [re-frame.core :as re-frame]
             [ufo.db :as db])
   (:import goog.net.XhrIo))
@@ -104,3 +105,31 @@
            (assoc-in [:emps (keyword (str id)) :abbrev]
                      (str (abbrev fname) (abbrev lname))))))))
 
+(s/def ::db map?)
+
+;; (s/def ::db (s/keys :req-un [::toggle]))
+;; (s/valid? ::db {:toggle {}}) => true
+
+(defn check-and-throw
+  [a-spec db]
+  (when-not (s/valid? a-spec db)
+    (throw (ex-info (str "Data did not pass spec " a-spec)
+                    (s/explain-data a-spec db)))))
+
+(def check-spec-interceptor
+  (re-frame/after (partial check-and-throw ::db)))
+
+(def interceptors
+  [check-spec-interceptor
+   (when ^Boolean js/goog.DEBUG re-frame/debug)]
+
+  ;; print the diff of the before/after db states when an event got applied
+  ;; these prints disappear when compiled with advanced optimizations
+  #_[(when ^Boolean goog.DEBUG) rf/debug])
+
+(re-frame/reg-event-db
+ :toggle
+ interceptors
+ (fn [db [_ k]]
+   (assoc-in db [k :active]
+             (not (get-in db [k :active])))))
