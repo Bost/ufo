@@ -7,7 +7,7 @@
   ;; :pedantic? :abort
 
   :exclusions [
-               #_org.clojure/clojure
+               ;; org.clojure/clojure
                org.clojure/tools.nrepl]
 
   :dependencies
@@ -16,6 +16,12 @@
    [org.clojure/clojurescript "1.10.339"]
    [org.clojure/core.async  "0.4.474"]
    [nrepl "0.4.1"]
+
+   ;; leads to the WARNING: CIDER's version (0.17.0) does not match
+   ;; cider-nrepl's version (nil). Things will break!
+   ;; [org.clojure/core.typed "0.5.3"
+   ;;  ;; :exclusions [org.clojure/tools.nrepl]
+   ;;  ]
 
    [io.aviso/pretty "0.1.34"] ; print things, prettily
    ;; webapp - begin
@@ -37,7 +43,9 @@
 
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
    [org.clojure/java.jdbc "0.7.7"]
-   [mysql/mysql-connector-java "8.0.11" :exclusions [com.google.protobuf/protobuf-java]]
+   [mysql/mysql-connector-java "8.0.11"
+    :exclusions [com.google.protobuf/protobuf-java]
+    ]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
@@ -57,7 +65,8 @@
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
-  :clean-targets ^{:protect false} ["resources/public/js/out" "resources/public/js/main.js"]
+  :clean-targets ^{:protect false}
+  ["resources/public/js/out" "resources/public/js/main.js"]
 
   ;; figwheel server config
   :figwheel
@@ -84,7 +93,8 @@
                 :asset-path "js/out"
                 :source-map-timestamp true
                 :preloads             [devtools.preload]
-                :external-config      {:devtools/config {:features-to-install :all}}}}]}
+                :external-config      {:devtools/config
+                                       {:features-to-install :all}}}}]}
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}
@@ -93,16 +103,26 @@
           [binaryage/devtools "0.9.10"]
           [figwheel-sidecar "0.5.16"]
 
-          ;; nREPL middleware enabling the use of a ClojureScript REPL on top of an nREPL session
+          ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
+          ;; an nREPL session
           [cider/piggieback "0.3.6"]
 
-          ;; keeping track of changes to source files and their associated namespaces
-          ;; i.e. to auto-reload modified namespaces in a running Clojure application
+          ;; keeping track of changes to source files and their associated
+          ;; namespaces i.e. to auto-reload modified namespaces in a running
+          ;; Clojure application
           [ns-tracker "0.3.1"]]
          :plugins
          [
+          ;; provide refactoring support for clients such as clj-refactor.el
+          [refactor-nrepl "2.4.0-SNAPSHOT"
+           ;; :exclusions [org.clojure/tools.nrepl]
+           ]
+
           ;; collection of nREPL middleware designed to enhance CIDER
-          [cider/cider-nrepl "0.17.0"]]
+          [cider/cider-nrepl "0.17.0"
+           ;; :exclusions [org.clojure/tools.nrepl]
+           ]
+          ]
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
 
