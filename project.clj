@@ -44,24 +44,23 @@
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
    [org.clojure/java.jdbc "0.7.7"]
    [mysql/mysql-connector-java "8.0.11"
-    :exclusions [com.google.protobuf/protobuf-java]
-    ]
+    :exclusions [com.google.protobuf/protobuf-java]]
+
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
    [clj-time-ext "0.15.1"] ;; (time/now) in clj
-   [clj-time "0.14.4"]
-   ]
+   [clj-time "0.14.4"]]
+
   ;; :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
   :plugins
   [
    [lein-figwheel "0.5.16"]
    [lein-cljsbuild "1.1.7"]
-   [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]
    ;; quartzite dependency on slf4j-api should be auto-resolved
    ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
-   ]
+   [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -76,8 +75,8 @@
    ;; :server-ip "..."; default is "localhost"; see also :websocket-host
    :server-port 3450 ; default port 3449
    :http-server-root "public" ; css-dirs requires http-server-root specification
-   :css-dirs ["resources/public/css"]
-   }
+   :css-dirs ["resources/public/css"]}
+
   :cljsbuild
   {:builds
    [{:id "dev"
@@ -85,8 +84,8 @@
      ;; figwheel client config
      :figwheel {
                 ;; :websocket-host :js-client-host
-                :on-jsload "ufo.core/mount-root"
-                }
+                :on-jsload "ufo.core/mount-root"}
+
      :compiler {:output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js/out"
                 :main ufo.core
@@ -115,14 +114,13 @@
          [
           ;; provide refactoring support for clients such as clj-refactor.el
           [refactor-nrepl "2.4.0-SNAPSHOT"
-           ;; :exclusions [org.clojure/tools.nrepl]
-           ]
+           #_#_:exclusions [org.clojure/tools.nrepl]]
+
 
           ;; collection of nREPL middleware designed to enhance CIDER
-          [cider/cider-nrepl "0.17.0"
-           ;; :exclusions [org.clojure/tools.nrepl]
-           ]
-          ]
+          [cider/cider-nrepl "0.17.0"]
+          #_#_:exclusions [org.clojure/tools.nrepl]]
+
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
 
