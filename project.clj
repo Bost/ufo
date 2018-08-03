@@ -3,9 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-
   ;; :pedantic? :abort
-
   :exclusions [
                ;; org.clojure/clojure
                org.clojure/tools.nrepl]
@@ -15,7 +13,8 @@
    [org.clojure/clojure "1.9.0"]
    [org.clojure/clojurescript "1.10.339"]
    [org.clojure/core.async  "0.4.474"]
-   [nrepl "0.4.1"]
+   ;; provides REPL Srv, Cli and some common API for IDEs
+   [nrepl "0.4.4"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
@@ -43,7 +42,7 @@
 
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
    [org.clojure/java.jdbc "0.7.7"]
-   [mysql/mysql-connector-java "8.0.11"
+   [mysql/mysql-connector-java "8.0.12"
     :exclusions [com.google.protobuf/protobuf-java]]
 
 
@@ -51,7 +50,13 @@
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
    [clj-time-ext "0.15.1"] ;; (time/now) in clj
-   [clj-time "0.14.4"]]
+   [clj-time "0.14.4"]
+
+   ;; A Clojure(Script); debug single- and multi-threaded apps
+   [spyscope "0.1.6"]
+   ]
+
+  :injections [(require 'spyscope.core)]
 
   ;; :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
   :plugins
@@ -104,7 +109,7 @@
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
-          [cider/piggieback "0.3.6"]
+          [cider/piggieback "0.3.8"]
 
           ;; keeping track of changes to source files and their associated
           ;; namespaces i.e. to auto-reload modified namespaces in a running
