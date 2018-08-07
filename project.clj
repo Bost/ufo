@@ -45,7 +45,6 @@
    [mysql/mysql-connector-java "8.0.12"
     :exclusions [com.google.protobuf/protobuf-java]]
 
-
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
@@ -63,8 +62,7 @@
   [
    [lein-figwheel "0.5.16"]
    [lein-cljsbuild "1.1.7"]
-   ;; quartzite dependency on slf4j-api should be auto-resolved
-   ;; [org.slf4j/slf4j-nop "1.7.13"] ; Simple Logging Facade for Java
+   ;; render CSS
    [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
 
   :source-paths ["src/clj" "src/cljs"]
