@@ -32,10 +32,10 @@
              [:tr {:key (str "tr-" i)}
               (let [id (name id-val)
                     salary-val (:salary hm)
-                    salary (if salary-val salary-val ;; auto-onclick
+                    salary (or salary-val ;; auto-onclick
                                (re-frame/dispatch [:id id]))
                     abbrev-val (:abbrev hm)
-                    abbrev (if abbrev-val abbrev-val ;; auto-onclick
+                    abbrev (or abbrev-val ;; auto-onclick
                                (re-frame/dispatch [:id id]))]
                 (doall
                  (map #(td i % @loading?)
