@@ -48,7 +48,7 @@
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
-   [clj-time-ext "0.15.1"] ;; (time/now) in clj
+   [clj-time-ext "0.16.0"] ;; (time/now) in clj
    [clj-time "0.14.4"]
 
    ;; A Clojure(Script); debug single- and multi-threaded apps
@@ -121,7 +121,7 @@
 
 
           ;; collection of nREPL middleware designed to enhance CIDER
-          [cider/cider-nrepl "0.17.0"]
+          [cider/cider-nrepl "0.18.0"]
           #_#_:exclusions [org.clojure/tools.nrepl]]
 
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
