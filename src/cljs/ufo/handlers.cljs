@@ -42,6 +42,8 @@
           ;;.send  returns nil
           (.send xhr url opt_method opt_content opt_headers))))))
 
+#_(def interceptor ...)
+
 (re-frame/reg-event-db
  :initialize-db
  (fn  [_ _]
