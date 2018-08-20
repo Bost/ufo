@@ -1,4 +1,5 @@
 (defproject ufo "1.8.1"
+  ;; TODO look at devcards (figwheel) https://youtu.be/1YqnaUXcSl8?t=34m
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -14,7 +15,7 @@
    [org.clojure/clojurescript "1.10.339"]
    [org.clojure/core.async  "0.4.474"]
    ;; provides REPL Srv, Cli and some common API for IDEs
-   [nrepl "0.4.4"]
+   [nrepl "0.4.2"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
