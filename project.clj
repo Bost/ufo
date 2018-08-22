@@ -117,14 +117,14 @@
          :plugins
          [
           ;; provide refactoring support for clients such as clj-refactor.el
-          [refactor-nrepl "2.4.0-SNAPSHOT"
-           #_#_:exclusions [org.clojure/tools.nrepl]]
-
+          [refactor-nrepl
+           ;; "2.3.1" leads to: Unable to resolve var:
+           ;; refactor-nrepl.middleware/wrap-refactor
+           "2.4.0-SNAPSHOT"]
 
           ;; collection of nREPL middleware designed to enhance CIDER
           [cider/cider-nrepl "0.18.0"]
-          #_#_:exclusions [org.clojure/tools.nrepl]]
-
+          ]
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
 
