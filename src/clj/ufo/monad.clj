@@ -39,7 +39,9 @@
   (f (->> mv :body read-string)))
 
 ;; additive monad definition - must satisfy the monoid laws
-#_(def zero (list))
+#_
+(def zero (list))
 
-#_(defn m-plus [& mvs]
+#_
+(defn m-plus [& mvs]
   (apply concat mvs))
