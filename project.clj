@@ -1,5 +1,4 @@
 (defproject ufo "1.8.1"
-  ;; TODO look at devcards (figwheel) https://youtu.be/1YqnaUXcSl8?t=34m
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -15,7 +14,7 @@
    [org.clojure/clojurescript "1.10.339"]
    [org.clojure/core.async  "0.4.474"]
    ;; provides REPL Srv, Cli and some common API for IDEs
-   [nrepl "0.4.2"]
+   [nrepl "0.4.5"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
@@ -25,12 +24,12 @@
 
    [io.aviso/pretty "0.1.34"] ; print things, prettily
    ;; webapp - begin
-   [re-frame "0.10.5"]
+   [re-frame "0.10.6"]
    [secretary "1.2.3"]
-   [ring "1.6.3"]
+   [ring "1.7.0"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.1"]
-   [garden "1.3.5"] ; render CSS
+   [garden "1.3.6"] ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.2"] ;; (time/now) in cljs
    ;; webapp - end
 
@@ -42,7 +41,7 @@
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
-   [org.clojure/java.jdbc "0.7.7"]
+   [org.clojure/java.jdbc "0.7.8"]
    [mysql/mysql-connector-java "8.0.12"
     :exclusions [com.google.protobuf/protobuf-java]]
 
@@ -53,8 +52,7 @@
    [clj-time "0.14.4"]
 
    ;; A Clojure(Script); debug single- and multi-threaded apps
-   [spyscope "0.1.6"]
-   ]
+   [spyscope "0.1.6"]]
 
   :injections [(require 'spyscope.core)]
 
@@ -64,7 +62,9 @@
    [lein-figwheel "0.5.16"]
    [lein-cljsbuild "1.1.7"]
    ;; render CSS
-   [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
+   [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]
+   [lein-typed "0.4.6"]] ; generate specs
+
 
   :source-paths ["src/clj" "src/cljs"]
   :resource-paths ["resources"]
@@ -108,7 +108,7 @@
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
-          [cider/piggieback "0.3.8"]
+          [cider/piggieback "0.3.9"]
 
           ;; keeping track of changes to source files and their associated
           ;; namespaces i.e. to auto-reload modified namespaces in a running
@@ -117,14 +117,14 @@
          :plugins
          [
           ;; provide refactoring support for clients such as clj-refactor.el
-          [refactor-nrepl
-           ;; "2.3.1" leads to: Unable to resolve var:
-           ;; refactor-nrepl.middleware/wrap-refactor
-           "2.4.0-SNAPSHOT"]
+          [refactor-nrepl "2.4.0"
+           #_#_:exclusions [org.clojure/tools.nrepl]]
+
 
           ;; collection of nREPL middleware designed to enhance CIDER
           [cider/cider-nrepl "0.18.0"]
-          ]
+          #_#_:exclusions [org.clojure/tools.nrepl]]
+
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
 

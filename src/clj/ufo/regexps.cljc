@@ -42,13 +42,12 @@
     (let [s (if (in? collstr contract) (str "'" ret "'") ret)]
       (clojure.string/replace s #"(([\d']+, ){12})" "$1\n"))))
 
-#_
-(defn tnow []
+#_(defn tnow []
   (timef/unparse (timef/formatter "HHmmss.SSS") (time/now)))
-#_
-(defn fntime [v]
+#_(defn fntime [v]
   (timef/unparse (timef/formatter "HH:mm dd.MM.yy")
                  (time/date-time v)))
 
 (defn sjoin [coll] (s/join " " coll))
 (defn sfilter [pred coll] (seq (filter pred coll)))
+
