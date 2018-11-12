@@ -1,7 +1,8 @@
 (ns ufo.ping
   (:require
    [clojure.java.io :as io]
-   [dk.ative.docjure.spreadsheet :as excl]))   
+   [dk.ative.docjure.spreadsheet :as excl]
+   [utils.core :as ut :refer [in? not-empty? dbgv]]))
 
 (defn timed-ping
   "Time an .isReachable ping to a given domain. Doesn't work for hosts in DMZ
