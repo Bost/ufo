@@ -12,7 +12,7 @@
   :dependencies
   [
    [org.clojure/clojure "1.9.0"]
-   [org.clojure/clojurescript "1.10.339"]
+   [org.clojure/clojurescript "1.10.439"]
    [org.clojure/core.async  "0.4.474"]
    ;; provides REPL Srv, Cli and some common API for IDEs
    [nrepl "0.4.2"]
@@ -23,18 +23,18 @@
    ;;  ;; :exclusions [org.clojure/tools.nrepl]
    ;;  ]
 
-   [io.aviso/pretty "0.1.34"] ; print things, prettily
+   [io.aviso/pretty "0.1.35"] ; print things, prettily
    ;; webapp - begin
    [re-frame "0.10.5"]
    [secretary "1.2.3"]
-   [ring "1.6.3"]
+   [ring "1.7.1"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.1"]
    [garden "1.3.5"] ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.2"] ;; (time/now) in cljs
    ;; webapp - end
 
-   [dk.ative/docjure "1.12.0"] ;; parse excel files
+   [dk.ative/docjure "1.13.0"] ;; parse excel files
    #_[com.rpl/specter "0.13.1"] ; overcome fear of nested data
    ;; TODO see http://www.clodoc.org/doc/clojure.contrib.def/defn-memo
    [org.clojure/core.memoize "0.7.1"]
@@ -42,15 +42,15 @@
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
    [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
-   [org.clojure/java.jdbc "0.7.7"]
-   [mysql/mysql-connector-java "8.0.12"
+   [org.clojure/java.jdbc "0.7.8"]
+   [mysql/mysql-connector-java "8.0.13"
     :exclusions [com.google.protobuf/protobuf-java]]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
    [clj-time-ext "0.16.0"] ;; (time/now) in clj
-   [clj-time "0.14.4"]
+   [clj-time "0.15.1"]
 
    ;; A Clojure(Script); debug single- and multi-threaded apps
    [spyscope "0.1.6"]
@@ -61,7 +61,7 @@
   ;; :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
   :plugins
   [
-   [lein-figwheel "0.5.16"]
+   [lein-figwheel "0.5.17"]
    [lein-cljsbuild "1.1.7"]
    ;; render CSS
    [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
@@ -104,11 +104,11 @@
    :dev {:dependencies
          [
           [binaryage/devtools "0.9.10"]
-          [figwheel-sidecar "0.5.16"]
+          [figwheel-sidecar "0.5.17"]
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
-          [cider/piggieback "0.3.8"]
+          [cider/piggieback "0.3.10"]
 
           ;; keeping track of changes to source files and their associated
           ;; namespaces i.e. to auto-reload modified namespaces in a running
