@@ -49,7 +49,7 @@
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
-   [clj-time-ext "0.16.0"] ;; (time/now) in clj
+   [clj-time-ext "0.0.0-31-0x6e56"] ;; (time/now) in clj
    [clj-time "0.15.1"]
 
    ;; A Clojure(Script); debug single- and multi-threaded apps
@@ -114,17 +114,6 @@
           ;; namespaces i.e. to auto-reload modified namespaces in a running
           ;; Clojure application
           [ns-tracker "0.3.1"]]
-         :plugins
-         [
-          ;; provide refactoring support for clients such as clj-refactor.el
-          [refactor-nrepl
-           ;; "2.3.1" leads to: Unable to resolve var:
-           ;; refactor-nrepl.middleware/wrap-refactor
-           "2.4.0-SNAPSHOT"]
-
-          ;; collection of nREPL middleware designed to enhance CIDER
-          [cider/cider-nrepl "0.18.0"]
-          ]
          :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
          :source-paths ["src/cljs" "src/clj"]}}
 
