@@ -1,4 +1,4 @@
-(defproject ufo "1.8.1"
+(defproject ufo :lein-v
   ;; TODO look at devcards (figwheel) https://youtu.be/1YqnaUXcSl8?t=34m
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
@@ -11,11 +11,11 @@
 
   :dependencies
   [
-   [org.clojure/clojure "1.9.0"]
+   [org.clojure/clojure "1.10.0"]
    [org.clojure/clojurescript "1.10.439"]
-   [org.clojure/core.async  "0.4.474"]
+   [org.clojure/core.async  "0.4.490"]
    ;; provides REPL Srv, Cli and some common API for IDEs
-   [nrepl "0.4.2"]
+   [nrepl "0.5.3"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
@@ -23,14 +23,14 @@
    ;;  ;; :exclusions [org.clojure/tools.nrepl]
    ;;  ]
 
-   [io.aviso/pretty "0.1.35"] ; print things, prettily
+   [io.aviso/pretty "0.1.36"] ; print things, prettily
    ;; webapp - begin
-   [re-frame "0.10.5"]
+   [re-frame "0.10.6"]
    [secretary "1.2.3"]
    [ring "1.7.1"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.1"]
-   [garden "1.3.5"] ; render CSS
+   [garden "1.3.6"] ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.2"] ;; (time/now) in cljs
    ;; webapp - end
 
@@ -61,7 +61,9 @@
   ;; :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
   :plugins
   [
-   [lein-figwheel "0.5.17"]
+   ;; Drive leiningen project version from git instead of the other way around
+   [com.roomkey/lein-v "7.0.0"]
+   [lein-figwheel "0.5.18"]
    [lein-cljsbuild "1.1.7"]
    ;; render CSS
    [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
@@ -104,7 +106,7 @@
    :dev {:dependencies
          [
           [binaryage/devtools "0.9.10"]
-          [figwheel-sidecar "0.5.17"]
+          [figwheel-sidecar "0.5.18"]
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
