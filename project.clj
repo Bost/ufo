@@ -12,10 +12,9 @@
   :dependencies
   [
    [org.clojure/clojure "1.10.0"]
-   [org.clojure/clojurescript "1.10.439"]
+   [org.clojure/core.rrb-vector "0.0.14"]
+   [org.clojure/clojurescript "1.10.520"]
    [org.clojure/core.async  "0.4.490"]
-   ;; provides REPL Srv, Cli and some common API for IDEs
-   [nrepl "0.5.3"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
@@ -23,7 +22,7 @@
    ;;  ;; :exclusions [org.clojure/tools.nrepl]
    ;;  ]
 
-   [io.aviso/pretty "0.1.36"] ; print things, prettily
+   [io.aviso/pretty "0.1.37"] ; print things, prettily
    ;; webapp - begin
    [re-frame "0.10.6"]
    [secretary "1.2.3"]
@@ -41,15 +40,15 @@
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
-   [com.mchange/c3p0 "0.9.5.2"] ; db connection pooling
-   [org.clojure/java.jdbc "0.7.8"]
-   [mysql/mysql-connector-java "8.0.13"
+   [com.mchange/c3p0 "0.9.5.3"] ; db connection pooling
+   [org.clojure/java.jdbc "0.7.9"]
+   [mysql/mysql-connector-java "8.0.15"
     :exclusions [com.google.protobuf/protobuf-java]]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
-   [clj-time-ext "0.0.0-31-0x6e56"] ;; (time/now) in clj
+   [clj-time-ext "0.0.0-34-0x7939"] ;; (time/now) in clj
    [clj-time "0.15.1"]
 
    ;; A Clojure(Script); debug single- and multi-threaded apps
@@ -110,7 +109,7 @@
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
-          [cider/piggieback "0.3.10"]
+          [cider/piggieback "0.4.0"]
 
           ;; keeping track of changes to source files and their associated
           ;; namespaces i.e. to auto-reload modified namespaces in a running
