@@ -23,7 +23,8 @@
    :salaries {:db db/salaries :prm {}}})
 
 (defn doreq [{:keys [params edn-body] :as prm}]
-  (let [fnkw (:f edn-body)
+  (end-response {:data (slurp "resources/public/notes/logics.org")})
+  #_(let [fnkw (:f edn-body)
         dbfn (or (get-in fmap [fnkw :db])
                  (println "ERROR" fnkw "does not exist in the fmap"))
         dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]

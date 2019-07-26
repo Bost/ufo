@@ -3,6 +3,11 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
+ :resp
+ (fn [db]
+   (get-in db [:resp :data])))
+
+(re-frame/reg-sub
  :tables
  (fn [db]
    (:tables db)))

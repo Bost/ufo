@@ -13,7 +13,7 @@
     :salaries
     {:sqlfn :salaries
      :name "Salaries"
-     :cols [:id :salary :abbrev]}
+     :cols [:id :salary]}
 
     :users
     {:sqlfn :users

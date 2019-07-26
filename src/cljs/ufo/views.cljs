@@ -19,29 +19,10 @@
    v])
 
 (defn table [id]
-  (let [table-def (re-frame/subscribe [:tables])]
-    [:div
-     [:div (->> @table-def id :name)]
-     [:table
-      [:thead (thead (->> @table-def id :cols))]
-      [:tbody
-       (let [loading? (re-frame/subscribe [:loading?])]
-         (doall
-          (map-indexed
-           (fn [i [id-val hm]]
-             [:tr {:key (str "tr-" i)}
-              (let [id (name id-val)
-                    salary-val (:salary hm)
-                    salary (or salary-val ;; auto-onclick
-                               (re-frame/dispatch [:id id]))
-                    abbrev-val (:abbrev hm)
-                    abbrev (or abbrev-val ;; auto-onclick
-                               (re-frame/dispatch [:id id]))]
-                (doall
-                 (map #(td i % @loading?)
-                      (remove nil? [id salary abbrev]))))])
-           @(re-frame/subscribe [:emps]))))]
-      ]]))
+  (re-frame/dispatch [:id id])
+  (let [resp (re-frame/subscribe [:resp])]
+    (.log js/console "table" (type @resp))
+    [:div @resp]))
 
 (defn main-panel []
   (fn []

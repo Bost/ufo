@@ -52,7 +52,6 @@
 (re-frame/reg-event-db
  :id
  (fn [db [_ github-id]]
-   (re-frame/dispatch [:fetch-abbrevs github-id])
    (re-frame/dispatch [:fetch-salaries github-id])
    (assoc-in db [:user :github-id] github-id)))
 
@@ -62,50 +61,21 @@
    (let [id github-id]
      (ednxhr
       {:reqprm {:f :salaries :ids [id] :log true :nocache true}
-       :on-complete (fn [resp] (re-frame/dispatch [:emp-salaries resp]))
+       :on-complete (fn [resp]
+                      (.log js/console ":on-complete" (type resp))
+                      (re-frame/dispatch [:emp-salaries resp]))
        :on-error (fn [resp] (println ":on-error" resp))}))
    (-> db
        (assoc :loading? true)
        (assoc :error false))))
-
-(re-frame/reg-event-db
- :fetch-abbrevs
- (fn [db [_ github-id]]
-   (let [id github-id]
-     (ednxhr
-      {:reqprm {:f :users :ids [id] :log true :nocache true}
-       :on-complete (fn [resp] (re-frame/dispatch [:emp-abbrevs resp]))
-       :on-error (fn [resp] (println ":on-error" resp))}))
-   (-> db
-       (assoc :loading? true)
-       (assoc :error false))))
-
-(defn abbrev [name]
-  (if name
-    (subs name 0 (min 2 (count name)))))
 
 (re-frame/reg-event-db
  :emp-salaries
  (fn [db [_ resp]]
-   (let [row (->> resp :rows first)]
-     (let [id (->> row :id)
-           salary (->> row :salary)]
-       (-> db
-           (assoc :loading? false)
-           (assoc-in [:emps (keyword (str id)) :salary]
-                     salary))))))
-
-(re-frame/reg-event-db
- :emp-abbrevs
- (fn [db [_ resp]]
-   (let [row (->> resp :rows first)]
-     (let [id (->> row :id)
-           fname (->> row :fname)
-           lname (->> row :lname)]
-       (-> db
-           (assoc :loading? false)
-           (assoc-in [:emps (keyword (str id)) :abbrev]
-                     (str (abbrev fname) (abbrev lname))))))))
+   (.log js/console ":emp-salaries" (type resp))
+   (-> db
+       (assoc :loading? false)
+       (assoc-in [:resp] resp))))
 
 (s/def ::db map?)
 
