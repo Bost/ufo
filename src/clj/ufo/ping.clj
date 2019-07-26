@@ -17,7 +17,9 @@
 (defn host-up?
   ";; parallel execution FTW!
   (pmap (fn [{:keys [host port] :as prm}]
-                        (host-up? (conj prm {:timeout 500}))))"
+                        (host-up? (conj prm {:timeout 500})))
+  [{:host \"www.google.com\" :port 80}
+])"
   [{:keys [host timeout port] :as prm}]
   (conj prm
         (let [sock-addr (java.net.InetSocketAddress. host (Integer. port))
