@@ -1,0 +1,114 @@
+:Logic:
+Study of the principles of inference and reasoning. It's not about "what is true".
+
+Inductive inference:
+- We try to inference something about a phenomenon we don't understand. What properties it might have?
+Deductive inference:
+- Something is true. What else can we derive from it?
+
+Inference rules:
+  Premise
+------------
+ Conclusion
+
+From the fact(s) / premise above the line we can deduce / assert / derive the
+fact / conclusion below the line. It may contain are schematic variables.
+
+TODO List of Substructural logics
+:END:
+
+:Examples-of-Logics:
+| Logical Judgement   | Branch of Logic      | Computation phenomenon                                      |
+|---------------------+----------------------+-------------------------------------------------------------|
+|                     | Intuitionistic Logic | Curry-Howard Correspondance                                 |
+| K knows A           | Epistemic Logic      | Distributed Computing                                       |
+| A is true at time t | Temporal Logic       | Reactive Programming (partial evaluation)                   |
+| A is resource       | Linear Logic         | Concurrent Computation (π calculus)                         |
+| A is possible       | Monadic Lax Logic    | Generic effects (monads, state, exception)                  |
+| A is valid          | Modal Logic          | Runtime code generation, code & eval constructs in the lang |
+|                     |                      | Different modes of truth                                    |
+
+TODO difference between branches of logic
+:END:
+
+:Intuitionistic-Logic:
+ https://homepages.inf.ed.ac.uk/wadler/papers/lineartaste/lineartaste-revised.pdf
+  (based on Girard’s Logic of Unity)
+  https://news.ycombinator.com/item?id=17641476
+  In logic: terms encode proofs, In programming: terms are programming language
+ - a.k.a Traditional a.k.a Constructive Logic: endless resources, no need for construction / descruction
+ - Expressions:
+  | Expression      | Name / Logical Connective  | Explanation / Note                                |
+  |-----------------+----------------------------+---------------------------------------------------|
+  | A, B, C         | propositions               |                                                   |
+  | X               | propositional constant     |                                                   |
+  | Γ, ∆, Θ         | sequences of assumptions   | Gama, Delta, Theta                                |
+  | A → B           | implication in proposition | proposition A implies proposition B               |
+  | Γ ⊢ A           | implication in judgement   | from assumptions Γ one can conclude proposition A |
+  | <vertical line> | implication in rule        |                                                   |
+  | A × B           | product of propositions    | A and B; conjunction                              |
+  | A + B           | sum of propositions        | A or B; disjunction                               |
+
+- Grammar: A, B, C ::= X | A → B | A × B | A + B
+- Rules: Exchange, Contraction, Weakening, etc.
+:END:
+
+:Intuitionistic-Terms:
+  Expressions:
+  | Expression      | Name / Logical Connective  | Explanation / Note                                |
+  |-----------------+----------------------------+---------------------------------------------------|
+  | s,t,u,v,w       | terms                      |                                                   |
+  | x,y,z           | variables for terms        |                                                   |
+:END:
+
+* Linear Logic: state & limited resources: construction / descruction
+  ? Unique pointers in C++ ?, "Stuff moved from place to place and it cannot be used twice only once"
+** Grammar: A, B, C ::= X | A ⊸ B | A ⊗ B | A & B | A ⊕ B | !A
+
+** Expressions:
+  | Expression | Name                                                 | How to read it                                    |
+  |------------+------------------------------------------------------+---------------------------------------------------|
+  | A,B,C      | propositions                                         |                                                   |
+  | X          | propositional constant                               |                                                   |
+  | Γ, ∆, Θ    | sequences of assumptions                             | Gama, Delta, Theta                                |
+  | ⟨A⟩        | linear assumption - one occurence of A               | ⟨⟩ can appear only to the left of ⊢               |
+  | [Γ]        | sequences of zero or more Intuitionistic assumptions | [] can appear only to the left of ⊢               |
+  | [A]        | linear assumption - unlimited occurences of A        | [] can appear only to the left of ⊢               |
+  | Γ ⊢ A      | implication in judgement                             | from assumptions Γ one can conclude proposition A |
+  | A ⊸ B      | lollipop                                             | consuming A yields B                              |
+  | A ⊗ B      |                                                      | both A and B; tensor                              |
+  | A & B      |                                                      | choose from A and B; 'with'                       |
+  | A ⊕ B      |                                                      | either A or B; disjunction                        |
+  | !A         |                                                      | of course A; bang / pling                         |
+
+* Embedding intuitionistic logic into linear logic
+  A → B = !A ⊸ B
+  A × B =  A & B    alternativelly A × B = !A ⊗ !B
+  A + B = !A ⊕ !B
+ 
+* Propositional Logic: AND, OR, NOT, IF-THEN, IS-EQUIVALENT-TO
+* Predicate Logic: dependence on free variables, has Universal quantifiers, variables, functions
+* Higher order logic
+* Temporal Logic
+** Temporal Logic of Actions (developed by Leslie Lamport)
+   - Combines temporal logic with a logic of actions
+   - Describes behaviours of concurrent systems
+*** Thinking Above the Code https://www.youtube.com/watch?v=-4Yp3j_jk8Q&t
+*** The TLA+ Video Course http://lamport.azurewebsites.net/video/videos.html
+
+  Usefull models:
+*** functions: map input to output; set of ordered pairs; Operating System - not an in/out mapping; runs forever (see sequence of states)
+*** sequence of states == behavior
+   state: assignment of values to variables
+   programm is modeled by a set of behaviors representing all possible executions
+**** Theorem: intersection of behaviors satisfying properties:
+***** Liveness L: a complete behavior is needed
+***** Safety S: e.g. partial correctness
+****** Specification:
+******* a set of possible init states (described using math!): uprimed variables
+******* next state relation: describes all possible successor states using math(!): primed variables
+**** Nondeterminism: ~ multiple next states possible
+**** Formal specification: needed only to apply tools: TLA+ (? Temporal Logic of Actions ?): Temporal Logic is for liveness
+**** Model checking of TLA+ specs
+** Informal Specification: e.g. pretty-printing can't be exactly specified
+   Set of rules/requiremens/axioms is usually a bad spec: consequesces of rules are hard to understand

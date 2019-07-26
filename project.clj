@@ -99,7 +99,17 @@
                 :source-map-timestamp true
                 :preloads             [devtools.preload]
                 :external-config      {:devtools/config
-                                       {:features-to-install :all}}}}]}
+                                       {:features-to-install :all}}
+
+                :install-deps         true
+                :npm-deps {
+                           :jsonfile    "5.0.0"  ;; might not be needed
+                           :react       "16.8.6"
+                           :react-dom   "16.8.6"
+                           :katex       "0.10.1"
+                           :react-katex "2.0.2"
+                           }
+                }}]}
   ;; :main ufo.blogic
   :profiles
   {:uberjar {:aot :all}

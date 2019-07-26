@@ -1,0 +1,154 @@
+* org mode tagging                                                      :org:
+
+| col1    | col2          |
+|---------+---------------|
+| content | other content |
+
+
+#+BEGIN_SRC emacs-lisp
+  (message "Yeah from emacs-lisp!")
+#+END_SRC
+
+#+RESULTS:
+: Yeah from emacs-lisp!
+
+#+BEGIN_SRC sh :exports both
+echo "Hello World from sh" # evaluate: C-c
+#+END_SRC
+
+#+RESULTS:
+: Hello World
+
+#+begin_src clojure :results silent
+;; ":results silent" causes result to be displayed in the mini-buffer
+;; M-x cider-jack-in
+(+ 1 4)
+#+end_src
+
+#+BEGIN_SRC clojure
+(defproject my-project "0.1.0"
+  :description "My great Clojure project"
+  :dependencies
+  [[org.clojure/clojure "1.9.0"]])
+(println "Hello from clojure")
+#+END_SRC
+
+#+BEGIN_SRC python
+# Result displayed under '#+RESULTS:'
+return "Hello from Python" # evaluate: C-c
+#+END_SRC
+
+#+RESULTS:
+: Hello from Python
+
+#+RESULTS:
+: Hello from python
+
+:Compare-2-bitmaps:
+#+BEGIN_SRC
+// http://stackoverflow.com/questions/10487152/comparing-two-images-for-motion-detecting-purposes
+private int returnCountOfDifferentPixels(String pic1, String pic2) {
+        Bitmap i1 = loadBitmap(pic1);
+        Bitmap i2 = loadBitmap(pic2);
+
+        int count=0;
+        for (int y = 0; y < i1.getHeight(); ++y)
+               for (int x = 0; x < i1.getWidth(); ++x)
+                    if (i1.getPixel(x, y) != i2.getPixel(x, y)) {
+                        count++;
+                    }
+        return count;
+    }
+#+END_SRC
+:END:
+
+:Brick-à-Brack:
+"a selection of items of modest value, often sold in street markets and charity
+shops. In colloquial English: Knick knack."
+
+What is: David Allen's GTD (Getting Things Done) system
+yacy, opensearchserver.com
+SciFi literature
+speechace - accent recognition and correction software
+system for algorithm building blocks: don't reinvent the wheel
+Browser based Virtual Machines
+
+http://www.zdrojak.cz/clanky/tvorba-moderniho-e-shopu-dokonceni-uzivatelske-casti/
+Sequence of QR Codes/ graphical elements (pyramide, cube, sphere, toroid, etc.)
+Responsive, mobile-first web sites https://www.w3schools.com/bootstrap/
+
+Open Source Ecology: https://en.wikipedia.org/wiki/Open_Source_Ecology
+
+Smart the collective brain http://www.ted.com/talks/matt_ridley_when_ideas_have_sex.html
+time bank
+dokaz identity bez udania mena
+google lab tags http://www.chromeweblab.com/en-GB/lab-tag-explorer
+stuff to datomic - ?git has no services? http://www.youtube.com/watch?v=ROor6_NGIWU 58:00
+
+klipse
+GraphQL
+Pure vs. mostly harmless functions
+:END:
+
+:terminals:
+# A terminal for a more modern age
+https://github.com/Eugeny/terminus
+
+# electron-app terminal
+https://github.com/zeit/hyper
+:end:
+
+:Books-Amazon:
+Proofs, Formal Verification
+LaTTe
+SICP
+
+The Little Schemer
+The Seasoned Schemer
+The Reasoned Schemer
+The Little LISPer
+The Little Prover
+The Little MLer
+The Little Typer
+:END:
+
+:Lang:
+http://www.ted.com/talks/patricia_kuhl_the_linguistic_genius_of_babies.html?fb_ref=talk
+Learning pronounciation
+How much of a language is silent? What does it look like when you take the silence out? (Video 2 Min)
+http://www.theverge.com/2012/7/1/3129227/silenc-project-silent-letters
+http://golancourses.net/ciid/19/silenc/
+idioms, link sur FB, idioms - traduction + correcture
+spelling glyphs
+Comprehension - facile, s'exprimer - difficile
+linguee.com - eu-texts
+le Svejk, l'Etrangeur - examples
+Communication w-/wo- Letters
+:END:
+
+* android
+#+BEGIN_SRC fish
+  set cmd "ip address"
+  eval $cmd
+  #...
+
+  set host $USER@<ip address>
+  set src $host:/home/$USER
+  $src/dev/navig/Osmand
+  $src/dev/navig/osmand-api-demo
+
+  rsync -azv gradle-4.6-bin.zip $src/dev/navig/osmand-api-demo/gradle/wrapper
+  rsync -azv $src/.gradle ~/.gradle/
+  rsync -azv $src/.m2 ~/.m2/
+
+  # edit gradle-wrapper.properties
+  distributionUrl=gradle-4.6-bin.zip
+
+  inst android-sdk
+  $HOME/Downloads/android
+  # unzip and then
+  tools/bin/sdkmanager --licenses
+  sudo rsync -azv licenses/ $ANDROID_HOME/licenses/
+  sudo chown -R $USER:$USER /usr/lib/android-sdk/
+  rsync -azv $host:/usr/lib/android-sdk/ /usr/lib/
+#END_SRC

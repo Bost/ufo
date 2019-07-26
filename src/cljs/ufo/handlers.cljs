@@ -62,7 +62,6 @@
      (ednxhr
       {:reqprm {:f :salaries :ids [id] :log true :nocache true}
        :on-complete (fn [resp]
-                      (.log js/console ":on-complete" (type resp))
                       (re-frame/dispatch [:emp-salaries resp]))
        :on-error (fn [resp] (println ":on-error" resp))}))
    (-> db
@@ -72,7 +71,6 @@
 (re-frame/reg-event-db
  :emp-salaries
  (fn [db [_ resp]]
-   (.log js/console ":emp-salaries" (type resp))
    (-> db
        (assoc :loading? false)
        (assoc-in [:resp] resp))))

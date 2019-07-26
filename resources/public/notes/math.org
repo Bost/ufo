@@ -1,0 +1,188 @@
+* bric-à-brac
+  solution of a Differential Equations (DE) is a function, not value
+  The Little Typer; The Little Prover
+  National Renewable Energy Laboratory: Energy-Cell Efficiencies https://youtu.be/czL0ZSscbsM?t=709
+  Notes in mathematics lectures: LaTeX & Vim https://castel.dev/post/lecture-notes-1/
+  Fractals http://blog.sciencevsmagic.net/science/fractal-machine/
+  Go over the book from the Prof. from Karlsruhe
+  Tensor: most general bilinear operation; Notation ⊗
+  Bodil Stokke https://github.com/bodil
+
+* Statistics:
+** Data:
+   Nominal Data                Interval / Ratio Data
+   +━━━━━━━━━━━━━━━━━━━━━━+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   ┃  +-----------------+ ┃   ┃                                    +-------------------+ ┃
+   ┃  | Test for        | ┃   ┃                                    | Test for a mean   | ┃
+   ┃  | Proportion      | ┃   ┃                                    |                   | ┃
+   ┃  +-----------------+ ┃   ┃                                    +-------------------+ ┃
+   ┃                      ┃   ┃                                                          ┃
+   ┃  +-----------------+ ┃   ┃ +-------------------------+                              ┃
+   ┃  | Difference of   | ┃   ┃ | difference of two means |                              ┃
+   ┃  | two proportions | ┃   ┃ | (independent samples)   |                              ┃
+   ┃  +-----------------+ ┃   ┃ +-------------------------+                              ┃
+   ┃                      ┃   ┃                                                          ┃
+   ┃  +-----------------+ ┃   ┃ +-------------------------+        +-------------------+ ┃
+   ┃  | Chi-sq test for | ┃   ┃ | Regression analysis     |        | Difference of two | ┃
+   ┃  | independence    | ┃   ┃ |                         |        | means (paired)    | ┃
+   ┃  +-----------------+ ┃   ┃ +-------------------------+        +-------------------+ ┃
+   +━━━━━━━━━━━━━━━━━━━━━━+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+** Samples:
+   One Sample
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   ┃  +-----------------+                                          +-------------------+ ┃
+   ┃  | Test for        |                                          | Test for a mean   | ┃
+   ┃  | Proportion      |                                          |                   | ┃
+   ┃  +-----------------+                                          +-------------------+ ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   Two Samples   
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   ┃  +-----------------+       +-------------------------+                              ┃
+   ┃  | Difference of   |       | difference of two means |                              ┃
+   ┃  | two proportions |       | (independent samples)   |                              ┃
+   ┃  +-----------------+       +-------------------------+                              ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   One Sample, Two Measures      
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   ┃  +-----------------+       +-------------------------+        +-------------------+ ┃
+   ┃  | Chi-sq test for |       | Regression analysis     |        | Difference of two | ┃
+   ┃  | independence    |       |                         |        | means (paired)    | ┃
+   ┃  +-----------------+       +-------------------------+        +-------------------+ ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+** Purpose:
+   Testing against a value
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   ┃  +-----------------+                                          +-------------------+ ┃
+   ┃  | Test for        |                                          | Test for a mean   | ┃
+   ┃  | Proportion      |                                          |                   | ┃
+   ┃  +-----------------+                                          +-------------------+ ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+  
+   Comparing two statistics 
+   ┃                        ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+   ┃  +-----------------+       +-------------------------+  ┃  ┃                        ┃
+   ┃  | Difference of   |       | difference of two means |  ┃  ┃                        ┃
+   ┃  | two proportions |       | (independent samples)   |  ┃  ┃                        ┃
+   ┃  +-----------------+       +-------------------------+  ┃  ┃                        ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+                           ┃
+   Looking for relationships 
+   ┃                        ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  ┃                           ┃
+   ┃  +-----------------+       +-------------------------+  ┃  ┃  +-------------------+ ┃
+   ┃  | Chi-sq test for |       | Regression analysis     |  ┃  ┃  | Difference of two | ┃
+   ┃  | independence    |       |                         |  ┃  ┃  | means (paired)    | ┃
+   ┃  +-----------------+       +-------------------------+  ┃  ┃  +-------------------+ ┃
+   +━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━+
+
+* Hierarchy:
+** what is needed to understand X: a big tree and paths through this tree
+** where leads understanding of X1, X2, .. Xn:
+   prospects, applications in other science fields, everyday life etc.
+** what's the next step:
+   why to study Z and not W after understanding X1, X2 .. Xn in dependency of the field of some interest
+
+* Game Theory
+** Pure Strategy - set of decisions made with certitude
+** Mixed Strategy - distribution of probabilities over some set of pure strategies
+** Nash Equilibrum (NE)
+   Each player gives best response to the others
+   Nobody has an incentive to deviate from their actions if an equilibrum is played
+   Closing windows in order to make air conditioning working:
+   - everybody just gives up without trying to convince others to close the window
+   Party organisation - follow the majority:
+   - majority joins, those skipping are penalized "missed something"
+   - majority skips, those joining are penalized "booring"
+*** Nash Equilibrum TODOs:
+**** 1. Write action profiles for everyone (the matrix)
+**** 2. Calculate optimal mixed strategies for everyone in order to get Nash Equilibrum
+**** 3. Calculate maxmin strategy and maxmin value (i.e. when the other guys do max harm to the i-th guy)
+** Pareto Efficiency: whenever all agents agree on ordering of outcomes the social welfare function selects that ordering
+*** Independence of Irrelevant Alternatives
+    if the selected ordering between two outcomes depends only on the relative
+    ordering they are given by the agents
+*** Dictator: single agent whose preferencies always determine the social ordering
+*** Arrows Theorem
+    any social welfare function that is pareto efficient and independent of
+    irrelevant alternatives is dictatorial
+** Markov chain (model): Market transitions http://youtu.be/o-jdJxXL_W4?t=7m3s
+*** Dragan Djuric: Clojure on GPU
+*** Bayadera (Bayesian): very fast
+    Bayesian is hard to compute, multi model, many dimensional problem, complex hyperspace
+    Markov Chain Monte Carlo simulations (MCMC): difficult to parallelize
+*** JAGS/Stan (state-of-the-art bayesian C++ tools)
+** Games beyond 2x2 (See the 2-4 Hardness lecture):
+   Linear Complementarity formulation
+   Support Enumeration Method
+
+* Hypotheses, Conjectures & Theorems:
+** Goldbach conjencture: ∀ (Every) even integer ≧ 2 is a ∑ of two primes
+** Riemann hypothesis: The real part of every non-trivial zero of the Zeta function is 1/2 (prime numbers)
+** Poincare conjencture: ∀ (Every) simply connected, closed 3-manifold is homeomorfic to the 3-sphere (Donuts)
+** P vs. NP: ∀ problem whose solution can be quickly verified by a computer can also be quickly solved by a computer
+** Fermant's Last Theorem: ∀ n ≧ 2 there's no such x,y,z that xⁿ + yⁿ = zⁿ
+** Continuum Hypothesis: There is no set with cardinality strictly between the cardinalities of integers and real numbers.
+   Notes: R surj P(N) (Power series - Mocninovy rad)
+** Fundamental Theorem of Arithmetics: Every positive integer n can be written in a unique way as a product of primes.
+   Russells paradox - Barbiers dilema
+
+* Probability:
+** Rules:
+   Difference: P(B − A) = P(B) - P(A ∩ B)
+   Inclusion-Exclusion: P(A ∪ B) = P(A) + P(B) − P(A ∩ B)
+   Boole’s Inequality: P(A ∪ B) <= P(A) + P(B)
+   Monotonicity: If A ⊆ B then P(A) <= P(B)
+** Ordinary conditional probability P(A ∣ B) = P(A ∩ B) / P(B):
+| Objective Health | Objective Health | Test result  | Test result | Outcome probability | Event T ∩ H:                      |
+| ill / healthy    |      probability |              | probability |            P(T ∩ H) | P(T ∣ H ) =                       |
+| H                |             P(H) | T            |        P(T) |       (* P(H) P(T)) | (/ P(T ∩ H) P(H))                 |
+|------------------+------------------+--------------+-------------+---------------------+-----------------------------------|
+| really-ill       |              0.1 | test-ill     |         0.9 |                0.09 | (/ 0.09 (+ 0.09 0.27)) = 0.25     |
+| really-ill       |              0.1 | test-healthy |         0.1 |                0.01 | (/ 0.01 (+ 0.01 0.63)) = 0.015625 |
+| really-healthy   |              0.9 | test-ill     |         0.3 |                0.27 | (/ 0.27 (+ 0.09 0.27)) = 0.75     |
+| really-healthy   |              0.9 | test-healthy |         0.7 |                0.63 | (/ 0.63 (+ 0.01 0.63)) = 0.984375 |
+- Generall test correctness: 0.09 + 0.63 = 0.72 (i.e. proper results for ill + proper results for healthy persons)
+- Just guessing "everybody's healthy" gives 90% "generall test correctness" because the test is wrong only for ill patients and they make up 10% of the population.
+#                      +-- test positive 0.9: 0.1 * 0.9 = 0.09
+#                      |
+#    +-----  ill 0.1 --+
+#    |                 |
+#    |                 +-- test negative 0.1: 0.1 * 0.1 = 0.01
+# ---+
+#    |                 +-- test positive 0.3: 0.9 * 0.3 = 0.27
+#    |                 |
+#    +-- healthy 0.9 --+
+#                      |
+#                      +-- test negative 0.7: 0.9 * 0.7 = 0.63
+;; test is negative i.e. says "you're healthy" and the patient is really ill (has the condition)
+(/ 0.01 (+ 0.01 0.63)) = 0.015625
+;; test is positive i.e. says "you're ill" and the patient is really ill (has the condition)
+(/ 0.09 (+ 0.09 0.27)) = 0.25
+;; test is negative i.e. says "you're healthy" and the patient is really health (doesn't have the condition)y
+(/ 0.63 (+ 0.01 0.63)) = 0.984375
+;; test is posivite i.e. says "you're ill" and the patient is really healthy (doesn't have the condition)
+(/ 0.27 (+ 0.09 0.27)) = 0.75
+** A posteriori conditional probability P(B ∣ A) = P(A ∩ B) / P(B):
+   if event B precedes event A in time. Example: The probability it was cloudy this morning, given that it rained in the afternoon.
+#+BEGIN_SRC clojure
+(defn x [] (+ 1 2))
+(x)
+#+END_SRC
+#(reduce * (range 1 (inc %)))
+
+* Homology: higher dimensional analogues for studying loops = (alternative to) Homotopy groups
+  Simplices: analogs of triangles in higher dimensions
+
+* Fundamental group π₂: "loops of loops"
+  Loops around sphere: captuers 2-dimensional hole in the sphere
+  πₙ(S-k-upper-index) Homotopy group exists even if n > k; measuring higher dimensional holes in k dimensional sphere
+  "Patri" - containment relation
+
+* Homotopy Type Theory HoTT: https://homotopytypetheory.org/
+  - Notions of paths in a space; equality and equivalence
+  - Easier translation of mathematical proofs to a programming language of proof assistants (than before)
+** The Univalence Axiom: Identity is equivalent to equivalence, in particular: equivalent types are identical
+   For all types A,B: Π A,B : Type.(A = B) ≃ (A ≃ B)
+   - There's a function UA: (A ≃ B) -> (A = B) such that from a proof equivalence of A ≃ B it constructs a proof of equality A = B.
+     Moreover a proof equivalence of A ≃ B is equivalent to a proof of equality A = B. I.e. (A ≃ B) ≃ (A = B)
+   - it allows to create a homotopy calculus w/o introduction of differential variety and even w/o an introduction of real numbers
+   Entier Relativ i.e. Set of Integers ℤ
