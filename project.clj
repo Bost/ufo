@@ -24,7 +24,7 @@
 
    [io.aviso/pretty "0.1.37"] ; print things, prettily
    ;; webapp - begin
-   [re-frame "0.10.7"]
+   [re-frame "0.10.8"]
    [secretary "1.2.3"]
    [ring "1.7.1"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
@@ -42,7 +42,7 @@
 
    [com.mchange/c3p0 "0.9.5.4"] ; db connection pooling
    [org.clojure/java.jdbc "0.7.9"]
-   [mysql/mysql-connector-java "8.0.16"
+   [mysql/mysql-connector-java "8.0.17"
     :exclusions [com.google.protobuf/protobuf-java]]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
