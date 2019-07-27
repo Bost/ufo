@@ -3,6 +3,8 @@
    [clojure.tools.reader.edn :as edn]
    [clojure.algo.monads :as m]))
 
+(def max-cnt 4) ;; category-theory.org has about 48 expressions
+
 (m/defmonad parser-m
   ;; (fn [strn] ... ) is the monadic container
   [;; m-result is required. Type signature: m-result: a -> m a
@@ -39,8 +41,51 @@
             :when (pred c)]
            (str c)))
 
+(any-char "a")   ; (\a "")
+(any-char "abc") ; (\a "bc")
+
 (defn is-char [c]
   (char-test (partial = c)))
+
+((is-char \a) "abc") ; ("a" "bc")
+((is-char \x) "abc")
+
+(def is-1? (partial = 1))
+(is-1? 2) ; false
+(is-1? 1) ; true
+
+(defn regex-test [re]
+  (m/domonad parser-m
+             [matched-groups
+              (fn [s]
+                (let [match (re-find re s)]
+                  #_(println "s:" s)
+                  #_(println "match:" match)
+                  (if match
+                    (let [idx (.indexOf s match)]
+                      #_(println "idx:" idx)
+                      (let [head (.substring s 0 idx)
+                            tail (.substring s (+ idx (count match)))]
+                        #_(println "head:" head)
+                        #_(println "tail:" tail)
+                        #_(println "res:" (list (list head match) tail))
+                        #_(println "--------")
+                        (list [{:type :txt :val head}
+                               {:type :exp :val match}]
+                              tail)(list (list head match) tail)))
+                    (list [{:type :txt :val s} {:type :exp :val nil}]
+                          nil)(list (list s nil) nil))))]
+             matched-groups))
+
+(defn match-re [re]
+  (regex-test re))
+
+((match-re #"ab") "abc")
+;; ([{:type :txt, :val ""} {:type :exp, :val "ab"}] "c")
+((match-re #"ab") "xabc")
+;; ([{:type :txt, :val "x"} {:type :exp, :val "ab"}] "c")
+((match-re #"aa") "xx aa bb aa cc")
+;; ([{:type :txt, :val "xx "} {:type :exp, :val "aa"}] " bb aa cc")
 
 (defn one-of [target-strn]
   (let [str-chars
@@ -57,9 +102,12 @@
 (def double-quote "\"")
 (def left-bracket "[")
 (def right-bracket "]")
+(def whitespace (one-of " \n\r\t"))
 (def text
   #_(one-of " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_")
-  (none-of (str double-quote left-bracket right-bracket)))
+  (none-of
+   (str double-quote left-bracket right-bracket)
+   #_left-bracket))
 
 (m/with-monad parser-m
   (defn match-string [target-strn]
@@ -70,7 +118,7 @@
                 cs (match-string (. target-strn (substring 1)))]
                (str c cs) )))
 
-  (defn match-all [& parsers]
+  (defn match-all "(abcde...)" [& parsers]
     (m/m-fmap (partial apply str)
             (m/m-seq parsers)))
 
@@ -81,10 +129,10 @@
 
   (declare one-or-more)
 
-  (defn none-or-more [parser]
+  (defn none-or-more "(a*)" [parser]
     (optional (one-or-more parser)))
 
-  (defn one-or-more [parser]
+  (defn one-or-more "(a+) equals to (aa*)" [parser]
     (m/domonad
      [a parser
       as (none-or-more parser)]
@@ -93,22 +141,19 @@
 (def exp-parser
   ;; Parsing a character means separating it from the rest
   (m/domonad parser-m
-             [txt (none-or-more text)
-              exp
-              (none-or-more
-               (match-all
-                (match-string left-bracket)
-                (none-or-more whitespace)
-                (match-string "e")
-                (none-or-more whitespace)
-                (match-string double-quote)
-                ;;
-                (none-or-more text)
-                ;;
-                (match-string double-quote)
-                (none-or-more whitespace)
-                (match-string right-bracket)))]
-             [{:type :txt :val txt} {:type :exp :val exp}]))
+             [beg exp-beg-parser
+              exp (none-or-more text)
+              end exp-end-parser]
+             [{:type :exp :val exp}]))
+
+(def parser
+  ;; Parsing a character means separating it from the rest
+  (m/domonad parser-m
+             [res (match-re
+                   ;; #"\[e \"(.*?)\"\]"  ;; do not group inside
+                   #"\[e \".*?\"\]"
+                   )]
+             res))
 
 (defn search
   [file]
@@ -117,18 +162,29 @@
     ;; (slurp file) $
     (exp-parser $)))
 
-(def max-cnt 100) ;; category-theory.org has about 48 [e "..."]
+(defn parse [ss monadic-parser]
+  (loop [s ss
+         acc []
+         cnt 0]
+    (if (> cnt max-cnt)
+      (do
+        (println "Stopping at (>" cnt "max-cnt)")
+        acc)
+      (if (empty? s)
+        acc
+        (let [[txt-exp rest] (monadic-parser s)]
+          #_(do
+            (println "s:" s)
+            (println "txt-exp:" txt-exp)
+            (println "rest:" rest)
+            (println "---------"))
+          (recur rest (into acc txt-exp) (inc cnt)))))))
 
-(def parse
-  (fn [ss]
-    (loop [s ss
-           acc []
-           cnt 0]
-      (if (> cnt max-cnt)
-        (do
-          (println "Stopping at (>" cnt "max-cnt)")
-          acc)
-        (if (empty? s)
-          acc
-          (let [[txt-exp rest] (exp-parser s)]
-            (recur rest (into acc txt-exp) (inc cnt))))))))
+(defn prepare [vals]
+  (map (fn [hm]
+         (if (= :exp (:type hm))
+           (let [v (:val hm)]
+             (if v
+               {:type :exp :val (second (re-find #"\[e \"(.*)\"\]" v))}
+               {:type :exp :val ""})) hm))
+       vals))

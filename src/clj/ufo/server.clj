@@ -8,28 +8,24 @@
    [compojure.handler :as handler]
    [clojure.edn :as edn]
    [clojure.data.json :as json]
-   [ufo
-    [db :as db]
-    [sql :as sql]]
-   [clj-time-ext.core :as etime]))
+   [clj-time-ext.core :as etime]
+   [ufo.parser :as p]))
 
 (defn end-response [data & [status]]
   {:status (or status 200) ;; Status code: 200 'OK (The request was fulfilled)'
    :headers {"Content-Type" "application/edn; charset=UTF-8"}
    :body (pr-str data)})
 
-(def fmap
-  {:users    {:db db/users    :prm {}}
-   :salaries {:db db/salaries :prm {}}})
-
 (defn doreq [{:keys [params edn-body] :as prm}]
-  (end-response {:data (slurp "resources/public/notes/category-theory.org")})
-  #_(let [fnkw (:f edn-body)
-        dbfn (or (get-in fmap [fnkw :db])
-                 (println "ERROR" fnkw "does not exist in the fmap"))
-        dbfnprm (into edn-body (get-in fmap [fnkw :prm]))]
-    (let [{sql :sql rows :rows} (dbfn dbfnprm)]
-      (end-response {:sql sql :rows rows}))))
+  #_"resources/public/notes/category-theory.org"
+  (as-> "resources/public/notes/cat.org" $
+    (slurp $)
+    (do
+      (println "prepare:" (p/prepare (p/parse $ p/parser)))
+      (p/prepare (p/parse $ p/parser)))
+    {:data $}
+    (end-response $)))
+
 #_
 (defroutes myapp
   (GET "/"     [] "Show something")

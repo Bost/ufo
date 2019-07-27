@@ -108,11 +108,13 @@
                            (doall-render-math)
                            (re-frame/dispatch [:notes/toggle-render-math]))}
       "(doall-render-math)"]
-     (ui {:title "title" :content
-          [:div
-           "aaa "
-           #_[e "1 + 2"]
-           " bbb"
-           ]
-          #_@content})
+     (let [content-parsed
+           #_[:div "aaa " [e "1 + 2"] " bbb"]
+           (map (fn [hm] (if (= :exp (:type hm))
+                          [e (str (:val hm))]
+                          (:val hm)))
+                @content)]
+       #_(.log js/console content-parsed)
+       (ui {:title "title" :content
+            [:div content-parsed]}))
      #_[display-re-pressed-example]]))

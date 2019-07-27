@@ -1,0 +1,3 @@
+* Title: "Foo"
+  Category [e "C = (Obj, Hom, ◦, id)"]
+   - [e "Obj"] : Class of Objects
