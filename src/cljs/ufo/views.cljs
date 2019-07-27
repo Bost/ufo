@@ -110,8 +110,9 @@
       "(doall-render-math)"]
      (ui {:title "title" :content
           [:div
-           [:div "bla"]
-           [:div
-            [e "1 + 2"]]]
+           "aaa "
+           #_[e "1 + 2"]
+           " bbb"
+           ]
           #_@content})
      #_[display-re-pressed-example]]))
