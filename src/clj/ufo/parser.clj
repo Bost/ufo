@@ -117,20 +117,18 @@
     ;; (slurp file) $
     (exp-parser $)))
 
+(def max-cnt 100) ;; category-theory.org has about 48 [e "..."]
+
 (def parse
   (fn [ss]
     (loop [s ss
            acc []
            cnt 0]
-      (if (or (empty? s) (> cnt 4))
+      (if (> cnt max-cnt)
         (do
-          (if (> cnt 4) (println "(> cnt 4)"))
+          (println "Stopping at (>" cnt "max-cnt)")
           acc)
-        (let [result (exp-parser s)
-              [txt-exp rest] result]
-          ;; (println "s:       " s)
-          ;; (println "txt-exp: " txt-exp)
-          ;; (println "rest:    " rest)
-          ;; (println "(into acc txt-exp)" (into acc txt-exp))
-          ;; (println "---------------")
-          (recur rest (into acc txt-exp) (inc cnt)))))))
+        (if (empty? s)
+          acc
+          (let [[txt-exp rest] (exp-parser s)]
+            (recur rest (into acc txt-exp) (inc cnt))))))))
