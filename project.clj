@@ -15,6 +15,7 @@
    [org.clojure/core.rrb-vector "0.0.14"]
    [org.clojure/clojurescript "1.10.520"]
    [org.clojure/core.async "0.4.500"]
+   [org.clojure/algo.monads "0.1.6"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
@@ -24,35 +25,22 @@
 
    [io.aviso/pretty "0.1.37"] ; print things, prettily
    ;; webapp - begin
-   [re-frame "0.10.8"]
-   [secretary "1.2.3"]
-   [ring "1.7.1"]
-   ;; Ring routing lib; dispatching of GET, PUT, etc.
-   [compojure "1.6.1"]
-   [garden "1.3.9"] ; render CSS
-   [com.andrewmcveigh/cljs-time "0.5.2"] ;; (time/now) in cljs
+   [re-frame "0.10.8"]  ; Reagent Framework For Writing SPAs, in Clojurescript
+   [secretary "1.2.3"]  ; client-side router for clojurescript
+   [ring "1.7.1"]       ; HTTP server abstraction
+   [compojure "1.6.1"]  ; Ring routing lib; dispatching of GET, PUT, etc.
+   [garden "1.3.9"]     ; render CSS
+   [com.andrewmcveigh/cljs-time "0.5.2"] ; (time/now) in cljs
    ;; webapp - end
 
-   [dk.ative/docjure "1.13.0"] ;; parse excel files
-   #_[com.rpl/specter "0.13.1"] ; overcome fear of nested data
    ;; TODO see http://www.clodoc.org/doc/clojure.contrib.def/defn-memo
    [org.clojure/core.memoize "0.7.2"]
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
-
-   [com.mchange/c3p0 "0.9.5.4"] ; db connection pooling
-   [org.clojure/java.jdbc "0.7.9"]
-   [mysql/mysql-connector-java "8.0.17"
-    :exclusions [com.google.protobuf/protobuf-java]]
-
-   ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
-   [clj-dbcp "0.9.0"] ; JDBC connections pools
-
    [clj-time-ext "0.0.0-34-0x7939"] ;; (time/now) in clj
    [clj-time "0.15.1"]
 
-   ;; A Clojure(Script); debug single- and multi-threaded apps
-   [spyscope "0.1.6"]
+   [spyscope "0.1.6"] ; A Clojure(Script); debug single- & multi-threaded apps
    [utils "0.0.0-21-0xd148"]
    ]
 
@@ -106,7 +94,7 @@
                            :jsonfile    "5.0.0"  ;; might not be needed
                            :react       "16.8.6"
                            :react-dom   "16.8.6"
-                           :katex       "0.10.1"
+                           :katex       "0.10.2"
                            :react-katex "2.0.2"
                            }
                 }}]}
