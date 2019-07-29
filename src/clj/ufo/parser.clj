@@ -70,7 +70,7 @@
                       #_(println "--------")
                       (list (remove nil? [(if-not (empty? head)
                                             {:type :txt :val head})
-                                          {:type :exp :val match}])
+                                          {:type :match :val match}])
                             tail)))
                   (list [{:type :txt :val s}]
                         nil)))]
@@ -80,11 +80,11 @@
   (regex-test re))
 
 ((match-re #"ab") "abc")
-;; ([{:type :txt, :val ""} {:type :exp, :val "ab"}] "c")
+;; ([{:type :txt, :val ""} {:type :match, :val "ab"}] "c")
 ((match-re #"ab") "xabc")
-;; ([{:type :txt, :val "x"} {:type :exp, :val "ab"}] "c")
+;; ([{:type :txt, :val "x"} {:type :match, :val "ab"}] "c")
 ((match-re #"aa") "xx aa bb aa cc")
-;; ([{:type :txt, :val "xx "} {:type :exp, :val "aa"}] " bb aa cc")
+;; ([{:type :txt, :val "xx "} {:type :match, :val "aa"}] " bb aa cc")
 
 (defn one-of [target-strn]
   (let [str-chars
@@ -173,13 +173,12 @@
             (println "---------"))
           (recur rest (into acc txt-exp) (inc cnt)))))))
 
-(defn prepare
+(defn exp-transformer
   "Get the expression content: [e \"1 + 2 + 3\"] -> \"1 + 2 + 3\""
-  [vals]
-  (map (fn [hm]
-         (if (= :exp (:type hm))
-           (let [v (:val hm)]
-             (if v
-               {:type :exp :val (second (re-find #"\[e \"(.*)\"\]" v))}
-               {:type :exp :val ""})) hm))
-       vals))
+  [hms]
+  (->> hms
+    (map (fn [hm]
+           (if (= :match (:type hm))
+             (update hm :val (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
+             hm)))
+    (map (fn [hm] (clojure.set/rename-keys hm {:match :exp :val :val})))))

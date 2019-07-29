@@ -21,8 +21,8 @@
   (as-> "resources/public/notes/cat.org" $
     (slurp $)
     (do
-      #_(println "prepare:" (p/prepare (p/parse $ p/parser)))
-      (p/prepare (p/parse $ p/exp-parser)))
+      #_(println (p/exp-transformer (p/parse $ p/exp-parser)))
+      (p/exp-transformer (p/parse $ p/exp-parser)))
     {:data $}
     (end-response $)))
 
