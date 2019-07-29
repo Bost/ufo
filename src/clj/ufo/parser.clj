@@ -58,23 +58,22 @@
   (m/domonad parser-m
              [matched-groups
               (fn [s]
-                (let [match (re-find re s)]
-                  #_(println "s:" s)
-                  #_(println "match:" match)
-                  (if match
-                    (let [idx (.indexOf s match)]
-                      #_(println "idx:" idx)
-                      (let [head (.substring s 0 idx)
-                            tail (.substring s (+ idx (count match)))]
-                        #_(println "head:" head)
-                        #_(println "tail:" tail)
-                        #_(println "res:" (list (list head match) tail))
-                        #_(println "--------")
-                        (list [{:type :txt :val head}
-                               {:type :exp :val match}]
-                              tail)))
-                    (list [{:type :txt :val s} {:type :exp :val nil}]
-                          nil))))]
+                #_(println "s:" s)
+                (if-let [match (re-find re s)]
+                  (let [idx (.indexOf s match)]
+                    #_(println "idx:" idx)
+                    (let [head (.substring s 0 idx)
+                          tail (.substring s (+ idx (count match)))]
+                      #_(println "head:" head)
+                      #_(println "tail:" tail)
+                      #_(println "res:" (list (list head match) tail))
+                      #_(println "--------")
+                      (list (remove nil? [(if-not (empty? head)
+                                            {:type :txt :val head})
+                                          {:type :exp :val match}])
+                            tail)))
+                  (list [{:type :txt :val s}]
+                        nil)))]
              matched-groups))
 
 (defn match-re [re]
