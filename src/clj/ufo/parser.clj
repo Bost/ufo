@@ -72,9 +72,9 @@
                         #_(println "--------")
                         (list [{:type :txt :val head}
                                {:type :exp :val match}]
-                              tail)(list (list head match) tail)))
+                              tail)))
                     (list [{:type :txt :val s} {:type :exp :val nil}]
-                          nil)(list (list s nil) nil))))]
+                          nil))))]
              matched-groups))
 
 (defn match-re [re]
@@ -141,26 +141,20 @@
 (def exp-parser
   ;; Parsing a character means separating it from the rest
   (m/domonad parser-m
-             [beg exp-beg-parser
-              exp (none-or-more text)
-              end exp-end-parser]
-             [{:type :exp :val exp}]))
-
-(def parser
-  ;; Parsing a character means separating it from the rest
-  (m/domonad parser-m
              [res (match-re
                    ;; #"\[e \"(.*?)\"\]"  ;; do not group inside
                    #"\[e \".*?\"\]"
                    )]
              res))
 
-(defn search
-  [file]
-  (as->
-      "aaa [e \"1 + 2 + 3\"] bbb" $
-    ;; (slurp file) $
-    (exp-parser $)))
+(def title-content-parser
+  ;; Parsing a character means separating it from the rest
+  (m/domonad parser-m
+             [res (match-re
+                   ;; do not group inside
+                   #"\n*\*.*?\n"
+                   )]
+             res))
 
 (defn parse [ss monadic-parser]
   (loop [s ss
@@ -180,7 +174,9 @@
             (println "---------"))
           (recur rest (into acc txt-exp) (inc cnt)))))))
 
-(defn prepare [vals]
+(defn prepare
+  "Get the expression content: [e \"1 + 2 + 3\"] -> \"1 + 2 + 3\""
+  [vals]
   (map (fn [hm]
          (if (= :exp (:type hm))
            (let [v (:val hm)]

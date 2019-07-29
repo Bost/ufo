@@ -22,7 +22,7 @@
     (slurp $)
     (do
       #_(println "prepare:" (p/prepare (p/parse $ p/parser)))
-      (p/prepare (p/parse $ p/parser)))
+      (p/prepare (p/parse $ p/exp-parser)))
     {:data $}
     (end-response $)))
 
