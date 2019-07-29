@@ -146,6 +146,16 @@
                    )]
              res))
 
+(defn exp-transformer
+  "Get the expression content: [e \"1 + 2 + 3\"] -> \"1 + 2 + 3\""
+  [hms]
+  (->> hms
+       (map (fn [hm]
+              (if (= :match (:type hm))
+                (update hm :val (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
+                hm)))
+       (map (fn [hm] (clojure.set/rename-keys hm {:match :exp})))))
+
 (def title-content-parser
   ;; Parsing a character means separating it from the rest
   (m/domonad parser-m
@@ -154,6 +164,15 @@
                    #"\n*\*.*?\n"
                    )]
              res))
+
+(defn title-content-transformer
+  [hms]
+  (->> hms
+       #_(map (fn [hm]
+              (if (= :match (:type hm))
+                (update hm :val (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
+                hm)))
+       (map (fn [hm] (clojure.set/rename-keys hm {:match :title :txt :content})))))
 
 (defn parse [ss monadic-parser]
   (loop [s ss
@@ -173,12 +192,3 @@
             (println "---------"))
           (recur rest (into acc txt-exp) (inc cnt)))))))
 
-(defn exp-transformer
-  "Get the expression content: [e \"1 + 2 + 3\"] -> \"1 + 2 + 3\""
-  [hms]
-  (->> hms
-    (map (fn [hm]
-           (if (= :match (:type hm))
-             (update hm :val (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
-             hm)))
-    (map (fn [hm] (clojure.set/rename-keys hm {:match :exp :val :val})))))

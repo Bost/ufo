@@ -20,9 +20,12 @@
   #_"resources/public/notes/category-theory.org"
   (as-> "resources/public/notes/cat.org" $
     (slurp $)
-    (do
-      #_(println (p/exp-transformer (p/parse $ p/exp-parser)))
-      (p/exp-transformer (p/parse $ p/exp-parser)))
+    #_(let [res (p/exp-transformer (p/parse $ p/exp-parser))]
+      #_(println res)
+      res)
+    (let [res (p/title-content-transformer (p/parse $ p/title-content-parser))]
+      #_(println res)
+      res)
     {:data $}
     (end-response $)))
 
