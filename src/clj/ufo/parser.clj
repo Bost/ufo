@@ -3,7 +3,7 @@
    [clojure.tools.reader.edn :as edn]
    [clojure.algo.monads :as m]))
 
-(def max-cnt 4) ;; category-theory.org has about 48 expressions
+(def max-cnt 120) ;; category-theory.org has about 60 expressions
 
 (m/defmonad parser-m
   ;; (fn [strn] ... ) is the monadic container

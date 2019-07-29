@@ -6,11 +6,21 @@
 (enable-console-print!)
 
 (defn ex [txt ktx]
-  [:span {:class "m" :ktx (k/renderToString ktx) :txt txt} txt])
+  [:span {:class "m"
+          :ktx (k/renderToString ktx #_(clj->js {:strict false}))
+          :txt txt} txt])
+
+(def ring-operator-supported "∘")
+(def white-bullet-unsupported "◦")
+(def increment-unsupported "∆")
 
 (def replacements
   [
-   ["◦" "\\circ"]
+   [white-bullet-unsupported "\\circ"]
+   [ring-operator-supported "\\circ"]
+   #_[increment-unsupported "\\Delta"]
+   [increment-unsupported "Δ" #_"\\Delta"]
+   #_[white-bullet-unsupported ring-operator-supported]
    ["{" "\\{"]
    ["}" "\\}"]
    ["->" "\\rarr"]
@@ -110,9 +120,9 @@
       "(doall-render-math)"]
      (let [content-parsed
            #_[:div "aaa " [e "1 + 2"] " bbb"]
-           (map (fn [hm] (if (= :exp (:type hm))
-                          [e (str (:val hm))]
-                          (:val hm)))
+           (map-indexed (fn [i hm] (if (= :exp (:type hm))
+                                    [:span {:key i} [e (str (:val hm))]]
+                                    (:val hm)))
                 @content)]
        #_(.log js/console content-parsed)
        (ui {:title "title" :content
