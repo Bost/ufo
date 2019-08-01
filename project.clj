@@ -41,7 +41,7 @@
    [clj-time "0.15.1"]
 
    [spyscope "0.1.6"] ; A Clojure(Script); debug single- & multi-threaded apps
-   [utils "0.0.0-21-0xd148"]
+   [org.clojars.bost/utils "0.0.0-30-0x4b48"]
    ]
 
   :injections [(require 'spyscope.core)]

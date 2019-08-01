@@ -2,7 +2,7 @@
   "dependencies": {
     "@cljs-oss/module-deps": "^1.1.1",
     "jsonfile": "^5.0.0",
-    "katex": "^0.10.1",
+    "katex": "^0.10.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-katex": "^2.0.2"
