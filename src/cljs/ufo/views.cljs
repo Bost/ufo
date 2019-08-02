@@ -126,5 +126,18 @@
                                     (:val hm)))
                         @content)]
          (ui {:title "title" :content [:div content-parsed]}))
-     (map-indexed (fn [i hm] (ui (conj {:id i} hm))) @content)
+     (map-indexed (fn [i hm]
+                    (ui (conj {:id i}
+                              #_hm
+                              (let [r
+                                    (str hm)
+                                    #_(map (fn [[k v]]
+                                             (if (= :exp (:type hhm))
+                                               [:span {:key i} [e (str (:val hhm))]]
+                                               (:val hhm)))
+                                         hm)]
+                                (.log js/console "r" (str r)))
+                              hm
+                              )))
+                  @content)
      #_[display-re-pressed-example]]))

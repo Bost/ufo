@@ -21,9 +21,18 @@
   (as-> "resources/public/notes/cat.org" $
     (slurp $)
     ;; #spy/p
-    ;; (p/exp-transformer (p/parse $ p/exp-parser))
-    #spy/p
+    #_(p/exp-transformer (p/parse $ p/exp-parser))
     (p/title-content-transformer (p/parse $ p/title-content-parser))
+    (map (fn [hm]
+           (update hm :title (fn [val]
+                               (let [r (p/exp-transformer (p/parse val p/exp-parser))]
+                                 r))))
+         $)
+    (map (fn [hm]
+           (update hm :content (fn [val]
+                               (let [r (p/exp-transformer (p/parse val p/exp-parser))]
+                                 r))))
+         $)
     {:data $}
     (end-response $)))
 

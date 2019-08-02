@@ -137,6 +137,24 @@
       as (none-or-more parser)]
      (str a as))))
 
+(defn parse [ss monadic-parser]
+  (loop [s ss
+         acc []
+         cnt 0]
+    (if (> cnt max-cnt)
+      (do
+        (println "Stopping at (>" cnt "max-cnt)")
+        acc)
+      (if (empty? s)
+        acc
+        (let [[txt-exp rest] (monadic-parser s)]
+          #_(do
+              (println "s:" s)
+              (println "txt-exp:" txt-exp)
+              (println "rest:" rest)
+              (println "---------"))
+          (recur rest (into acc txt-exp) (inc cnt)))))))
+
 (def exp-parser
   ;; Parsing a character means separating it from the rest
   (m/domonad parser-m
@@ -175,6 +193,12 @@
                 (update hm :val
                         (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
                 hm)))
+       #_(map (fn [hm]
+              (update hm :val (fn [val]
+                                (do
+                                  (println "parsed" (parse val exp-parser))
+                                  (exp-transformer (parse val exp-parser)))
+                                #_val))))
        (map-indexed
         (fn [i hm]
           (if (= (:type hm) :match)
@@ -183,22 +207,3 @@
             ;; thus ignored
             )))
        (remove nil?)))
-
-(defn parse [ss monadic-parser]
-  (loop [s ss
-         acc []
-         cnt 0]
-    (if (> cnt max-cnt)
-      (do
-        (println "Stopping at (>" cnt "max-cnt)")
-        acc)
-      (if (empty? s)
-        acc
-        (let [[txt-exp rest] (monadic-parser s)]
-          #_(do
-            (println "s:" s)
-            (println "txt-exp:" txt-exp)
-            (println "rest:" rest)
-            (println "---------"))
-          (recur rest (into acc txt-exp) (inc cnt)))))))
-
