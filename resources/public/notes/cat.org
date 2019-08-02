@@ -1,3 +1,4 @@
 * Title: "Foo"
   Category [e "C = (Obj, Hom, ◦, id)"]
    - [e "Obj"] : Class of Objects
+  “The best way to understand something is to teach it to a computer”
