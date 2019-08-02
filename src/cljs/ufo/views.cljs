@@ -72,7 +72,7 @@
   #_(.log js/console "id" id)
   (let [open? @(re-frame/subscribe [:notes/panel-state id])]
     ;; (.log js/console "open?" open?)
-    [:details [:summary title] content]))
+    [:details {:key id} [:summary title] content]))
 
 #_(defn main-panel []
   (fn []
@@ -118,13 +118,13 @@
                            (doall-render-math)
                            (re-frame/dispatch [:notes/toggle-render-math]))}
       "(doall-render-math)"]
-     (let [content-parsed
+     (.log js/console "@content" @content)
+     #_(let [content-parsed
            #_[:div "aaa " [e "1 + 2"] " bbb"]
            (map-indexed (fn [i hm] (if (= :exp (:type hm))
                                     [:span {:key i} [e (str (:val hm))]]
                                     (:val hm)))
-                @content)]
-       #_(.log js/console content-parsed)
-       (ui {:title "title" :content
-            [:div content-parsed]}))
+                        @content)]
+         (ui {:title "title" :content [:div content-parsed]}))
+     (map-indexed (fn [i hm] (ui (conj {:id i} hm))) @content)
      #_[display-re-pressed-example]]))

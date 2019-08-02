@@ -152,17 +152,19 @@
   (->> hms
        (map (fn [hm]
               (if (= :match (:type hm))
-                (update hm :val (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
+                (update hm :val (fn [val]
+                                  (second (re-find #"\[e \"(.*)\"\]" val))))
                 hm)))
-       (map (fn [hm] (clojure.set/rename-keys hm {:match :exp})))))
+       (map (fn [hm] (update hm :type (fn [val] (condp = val
+                                                :match :exp
+                                                val)))))))
 
 (def title-content-parser
   ;; Parsing a character means separating it from the rest
   (m/domonad parser-m
              [res (match-re
                    ;; do not group inside
-                   #"\n*\*.*?\n"
-                   )]
+                   #"\n*\*.*?\n")]
              res))
 
 (defn title-content-transformer
@@ -170,9 +172,17 @@
   (->> hms
        #_(map (fn [hm]
               (if (= :match (:type hm))
-                (update hm :val (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
+                (update hm :val
+                        (fn [val] (second (re-find #"\[e \"(.*)\"\]" val))))
                 hm)))
-       (map (fn [hm] (clojure.set/rename-keys hm {:match :title :txt :content})))))
+       (map-indexed
+        (fn [i hm]
+          (if (= (:type hm) :match)
+            {:title (:val hm) :content (some->> (nth hms (inc i)) :val)}
+            ;; otherwise return nil, so it will be removed in the next step and
+            ;; thus ignored
+            )))
+       (remove nil?)))
 
 (defn parse [ss monadic-parser]
   (loop [s ss
