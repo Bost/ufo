@@ -20,7 +20,8 @@ sudo kill # <pid1> ... <pidN>
 sudo service mysql restart
 
 # download and install test data:
-git clone https://github.com/datacharmer/test_db; and cd test_db
+git clone https://github.com/datacharmer/test_db; and \
+cd test_db; and \
 mysql --host=localhost --user=root --password=root < employees.sql
 
 # test
