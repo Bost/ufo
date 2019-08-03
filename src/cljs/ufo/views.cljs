@@ -104,6 +104,11 @@
    ;; (.log js/console "db" (pr-str db))
    (get-in db [:open-panels id])))
 
+(defn adjust-exp [i vhm]
+  (if (= :exp (:type vhm))
+    [:span {:key i} [e (str (:val vhm))]]
+    (:val vhm)))
+
 (defn main-panel []
   #_[:div {:class "language-klipse"}
      [input-ui]
@@ -124,11 +129,8 @@
                                (->> hm
                                     (map (fn [[k val-hms]]
                                            {k (->> val-hms
-                                                   (map-indexed (fn [i vhm]
-                                                                  (if (= :exp (:type vhm))
-                                                                    [:span {:key i} [e (str (:val vhm))]]
-                                                                    (:val vhm))))
-                                                 (into [:span]))}))
+                                                   (map-indexed adjust-exp)
+                                                   (into [:span]))}))
                                     (reduce conj)))))
                    @content))
      #_[display-re-pressed-example]]))
