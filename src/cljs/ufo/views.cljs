@@ -118,26 +118,17 @@
                            (doall-render-math)
                            (re-frame/dispatch [:notes/toggle-render-math]))}
       "(doall-render-math)"]
-     (.log js/console "@content" @content)
-     #_(let [content-parsed
-           #_[:div "aaa " [e "1 + 2"] " bbb"]
-           (map-indexed (fn [i hm] (if (= :exp (:type hm))
-                                    [:span {:key i} [e (str (:val hm))]]
-                                    (:val hm)))
-                        @content)]
-         (ui {:title "title" :content [:div content-parsed]}))
-     (map-indexed (fn [i hm]
-                    (ui (conj {:id i}
-                              #_hm
-                              (let [r
-                                    (str hm)
-                                    #_(map (fn [[k v]]
-                                             (if (= :exp (:type hhm))
-                                               [:span {:key i} [e (str (:val hhm))]]
-                                               (:val hhm)))
-                                         hm)]
-                                (.log js/console "r" (str r)))
-                              hm
-                              )))
-                  @content)
+     (doall
+      (map-indexed (fn [i hm]
+                     (ui (conj {:id i}
+                               (->> hm
+                                    (map (fn [[k val-hms]]
+                                           {k (->> val-hms
+                                                   (map-indexed (fn [i vhm]
+                                                                  (if (= :exp (:type vhm))
+                                                                    [:span {:key i} [e (str (:val vhm))]]
+                                                                    (:val vhm))))
+                                                 (into [:span]))}))
+                                    (reduce conj)))))
+                   @content))
      #_[display-re-pressed-example]]))
