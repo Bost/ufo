@@ -10,3 +10,4 @@ resources/public/js/
 # editor backup files
 *~
 /TAGS
+package-lock.json
