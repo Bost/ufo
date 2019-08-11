@@ -24,14 +24,12 @@
     #_(p/exp-transformer (p/parse $ p/exp-parser))
     (p/title-content-transformer (p/parse $ p/title-content-parser))
     (map (fn [hm]
-           (update hm :title (fn [val]
-                               (let [r (p/exp-transformer (p/parse val p/exp-parser))]
-                                 r))))
+           (update hm :title
+                   (fn [v] (p/exp-transformer (p/parse v p/exp-parser)))))
          $)
     (map (fn [hm]
-           (update hm :content (fn [val]
-                               (let [r (p/exp-transformer (p/parse val p/exp-parser))]
-                                 r))))
+           (update hm :content
+                   (fn [v] (p/exp-transformer (p/parse v p/exp-parser)))))
          $)
     {:data $}
     (end-response $)))
