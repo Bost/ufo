@@ -38,7 +38,7 @@
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
    [clj-time-ext "0.0.0-34-0x7939"] ;; (time/now) in clj
-   [clj-time "0.15.1"]
+   [clj-time "0.15.2"]
 
    [spyscope "0.1.6"] ; A Clojure(Script); debug single- & multi-threaded apps
    [org.clojars.bost/utils "0.0.0-30-0x4b48"]
