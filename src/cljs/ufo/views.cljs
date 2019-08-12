@@ -68,25 +68,23 @@
        (.log js/console "render-math in" (count elems) "elems")
        (map #(render-math render-math? %) elems)))))
 
+(defn toggle-ui [id]
+  (let [elem         (js/document.getElementById id)
+        style        (.-style elem)
+        comp-style   (.getComputedStyle js/window elem)
+        comp-display (.-display comp-style)
+        new-display  (if (= "none" comp-display) "block" "none")]
+    (set! (.-display style) new-display)))
+
 (defn ui [{:keys [id title content]}]
   #_(.log js/console "id" id)
   (let [open? @(re-frame/subscribe [:notes/panel-state id])
         content-id (str "content" id)]
     ;; (.log js/console "open?" open?)
     [:div {:key id}
-     [:button
-      (conj
-       {:class "collapsible"}
-       {:on-click (fn [e]
-                    (let [elem         (js/document.getElementById content-id)
-                          style        (.-style elem)
-                          comp-style   (.getComputedStyle js/window elem)
-                          comp-display (.-display comp-style)
-                          new-display  (if (= "none" comp-display) "block" "none")]
-                      (set! (.-display style) new-display)))})
+     [:button {:class "collapsible" :on-click (fn [_] (toggle-ui content-id))}
       title]
-     [:span (conj {:id content-id}
-                  {:class "content"}) content]]))
+     [:span {:id content-id :class "content"} content]]))
 
 #_(defn main-panel []
   (fn []
