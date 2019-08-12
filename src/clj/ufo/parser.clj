@@ -179,10 +179,14 @@
 
 (def title-content-parser
   ;; Parsing a character means separating it from the rest
+  ;; do not group anything inside the regexes
   (m/domonad parser-m
-             [res (match-re
-                   ;; do not group inside
-                   #"\n*\*.*?\n")]
+             [bef (match-re #"\n{0,}")
+              res (->> (str
+                        "\\*.{0,}?\\n"
+                        "\\n{0,}?")
+                       (re-pattern)
+                       (match-re))]
              res))
 
 (defn title-content-transformer
@@ -202,7 +206,7 @@
        (map-indexed
         (fn [i hm]
           (if (= (:type hm) :match)
-            {:title (:val hm) :content (some->> (nth hms (inc i)) :val)}
+            {:title (:val hm) :content (some->> i (inc) (nth hms) :val)}
             ;; otherwise return nil, so it will be removed in the next step and
             ;; thus ignored
             )))

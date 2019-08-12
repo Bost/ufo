@@ -1,3 +1,66 @@
+* Abstract algebra of abstract functions: "The Arrows Count"
+  Category [e "C = (Obj, Hom, ◦, id)"]
+   - [e "Obj"] : Class of Objects: A, B, C, ... e.g. Types / Propositions / Algebras / Logic Formulas
+   - [e "Hom"] : Morphisms (arrows): f, g, h, ... e.g. Computation / Proofs / ??? / Implication between Log. Formulas
+   - [e "◦"] : Morphism composition - associative function [e "(f ◦ g) ◦ h = f ◦ (g ◦ h)"]
+        [e "Hom(A, B) × Hom(B, C) → Hom(A, C): g ◦ f"] ; it's a partialy binary operation on Mor(CAT::)
+        [e "(g ◦ f)(x) = g(f(x))"]
+   - [e "id"] : identity morphism on an object [e "A: id(A)"]
+
+** Category - informal description
+   A collection of arrows and morphism that can be composed if they are adjacent.
+   A structure packing structures of the same type (same category) and structure preserving mappings between them.
+
+*** Small Category: all objects and morphisms are sets
+
+*** Locally Small Category: all objects and morphisms are sets and it "doesn't have too many morphisms"
+    [e "∀ objects A,B: Hom(A, B)"] is a set
+
+    (TODO arrow weight = price of calculation; preference for compositions)
+
+*** Meaning of "Up to isomorphis" - any such things are isomorphic i.e.:
+    - structurally the same i.e.
+    - only formally different i.e.
+    - working via analogy i.e.
+    - X is just a renamed version of Y
+
+*** Meaning of "Commuting diagrams / It (i.e. a diagram) commutes"
+    no matter which way you go around you get the same thing
+
+** Cartesian Closed Category CCC: Usefull in programming
+*** Cartesian: has product [e "A × B"] (conjunction) for any pair of objs A, B
+*** Closed: has exponential [e "B^A"]  (functions A -> B) for any pair of objs A, B
+*** 0-th power of an obj: has terminal obj 1 (for all objs there exists an unique map [e "A → 1"] )
+   - multiplying by terminal obj 1 gives back the original obj
+   - initial obj - dual to terminal obj 1; Top and Bottom objs
+   i.e. any one-element set (= singleton) is terminal
+   DTTO for poset 1 is such an object that any other obj is below it
+   - ? monoindal structure on objs ?
+*** Locally Closed Cartesian Category LCCC: for every obj X sliced category is a CCC
+
+** Bi-Cartesian Closed Category BCCC: Algebra of Types can be made here
+*** has coproduct for every pair of objs
+*** has initial obj
+
+** Universal Mapping Property (UMP) - The 'double' triangle of Product
+   Consists of Initial and Terminal mapping (morphism)
+   Universal Construction - 3 steps (? the triangle ?):
+   1. Define a pattern:
+
+         Z'  (Z' x A) ---\\
+         ⎢       ⎢        \\
+       h ⎢       ⎢id       \\ g'
+         ⎢       ⎢          \\
+    a=>b ↓       ↓           ↘
+         Z   (Z x A) -------> B
+                 A      g
+
+    g' = g ∘ (h x id)
+
+   2. Define ranking between matches
+   3. The best match is "our guy"  
+
+
 * Title: "Foo"
   Category [e "C = (Obj, Hom, ◦, id)"]
    - [e "Obj"] : Class of Objects

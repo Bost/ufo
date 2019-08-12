@@ -70,9 +70,23 @@
 
 (defn ui [{:keys [id title content]}]
   #_(.log js/console "id" id)
-  (let [open? @(re-frame/subscribe [:notes/panel-state id])]
+  (let [open? @(re-frame/subscribe [:notes/panel-state id])
+        content-id (str "content" id)]
     ;; (.log js/console "open?" open?)
-    [:details {:key id} [:summary title] content]))
+    [:div {:key id}
+     [:button
+      (conj
+       {:class "collapsible"}
+       {:on-click (fn [e]
+                    (let [elem         (js/document.getElementById content-id)
+                          style        (.-style elem)
+                          comp-style   (.getComputedStyle js/window elem)
+                          comp-display (.-display comp-style)
+                          new-display  (if (= "none" comp-display) "block" "none")]
+                      (set! (.-display style) new-display)))})
+      title]
+     [:span (conj {:id content-id}
+                  {:class "content"}) content]]))
 
 #_(defn main-panel []
   (fn []
@@ -124,13 +138,11 @@
                            (re-frame/dispatch [:notes/toggle-render-math]))}
       "(doall-render-math)"]
      (doall
-      (map-indexed (fn [i hm]
-                     (ui (conj {:id i}
-                               (->> hm
-                                    (map (fn [[k val-hms]]
-                                           {k (->> val-hms
-                                                   (map-indexed adjust-exp)
-                                                   (into [:span]))}))
-                                    (reduce conj)))))
-                   @content))
+      (map-indexed
+       (fn [i hm] (ui (conj {:id i}
+                           (->> hm
+                                (map (fn [[k val-hms]]
+                                       {k (map-indexed adjust-exp val-hms)}))
+                                (reduce conj)))))
+       @content))
      #_[display-re-pressed-example]]))
