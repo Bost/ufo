@@ -1,5 +1,6 @@
 (ns ufo.parser
   (:require
+   #_[swiss.arrows :refer :all]
    [clojure.tools.reader.edn :as edn]
    [clojure.algo.monads :as m]))
 
@@ -19,16 +20,37 @@
                 (when (not= nil result)
                   ((func (first result)) (second result))))))
 
-   ;; m-zero is optional
+   ;; m-zero is optional; Type signature: m-zero: a -> m a
    m-zero (fn [strn]
             nil)
 
-   ;; m-plus is optional
+   ;; m-plus is optional; Type signature: m-plus: m a -> m a -> m a
    m-plus (fn [& parsers]
             (fn [strn]
               (first
                (drop-while nil?
                            (map #(% strn) parsers)))))])
+
+(defn f [x] (+ x x))
+(defn g [n] (+ 1 n))
+
+(defn mf [x] (unit (f x)))
+(defn mg [n] (unit (g n)))
+
+(defn test-monad-laws-assoc
+  "Associativity law: μ ∘ Tμ = μ ∘ μT"
+  []
+  (= ((m-bind (m-bind (m-result 3) mf) mg))
+     ((m-bind (m-result 3) (fn [x] (m-bind (mf x) mg))))))
+
+(defn test-monad-laws-identity
+  "Identity law: μ ∘ Tη = μ ∘ ηT = idT"
+  []
+  (and (= (eval (m-bind (m-result 3) f))
+          (eval (f 3)))
+       (= ((m-bind (m-result 3) m-result))
+          ((m-result 3)))))
+
 
 (defn any-char [strn]
   (if (= "" strn)

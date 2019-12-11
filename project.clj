@@ -42,6 +42,7 @@
 
    [spyscope "0.1.6"] ; A Clojure(Script); debug single- & multi-threaded apps
    [org.clojars.bost/utils "0.0.0-30-0x4b48"]
+   [swiss-arrows "1.0.0"]
    ]
 
   :injections [(require 'spyscope.core)]
