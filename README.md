@@ -83,7 +83,7 @@ then see emacs menu
 
 ## License
 
-Copyright © 2016
+Copyright © 2016, 2017, 2017, 2019, 2020
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

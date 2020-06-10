@@ -12,9 +12,9 @@
   :dependencies
   [
    [org.clojure/clojure "1.10.1"]
-   [org.clojure/core.rrb-vector "0.0.14"]
-   [org.clojure/clojurescript "1.10.520"]
-   [org.clojure/core.async "0.4.500"]
+   [org.clojure/core.rrb-vector "0.1.1"]
+   [org.clojure/clojurescript "1.10.773"]
+   [org.clojure/core.async "1.2.603"]
    [org.clojure/algo.monads "0.1.6"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
@@ -25,23 +25,23 @@
 
    [io.aviso/pretty "0.1.37"] ; print things, prettily
    ;; webapp - begin
-   [re-frame "0.10.8"]  ; Reagent Framework For Writing SPAs, in Clojurescript
+   [re-frame "0.12.0"]  ; Reagent Framework For Writing SPAs, in Clojurescript
    [secretary "1.2.3"]  ; client-side router for clojurescript
-   [ring "1.7.1"]       ; HTTP server abstraction
+   [ring "1.8.1"]       ; HTTP server abstraction
    [compojure "1.6.1"]  ; Ring routing lib; dispatching of GET, PUT, etc.
-   [garden "1.3.9"]     ; render CSS
+   [garden "1.3.10"]    ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.2"] ; (time/now) in cljs
    ;; webapp - end
 
    ;; TODO see http://www.clodoc.org/doc/clojure.contrib.def/defn-memo
-   [org.clojure/core.memoize "0.7.2"]
+   [org.clojure/core.memoize "1.0.236"]
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
-   [clj-time-ext "0.0.0-34-0x7939"] ;; (time/now) in clj
+   [org.clojars.bost/clj-time-ext "0.0.0-37-0x545c"] ;; (time/now) in clj
    [clj-time "0.15.2"]
 
    [spyscope "0.1.6"] ; A Clojure(Script); debug single- & multi-threaded apps
-   [org.clojars.bost/utils "0.0.0-30-0x4b48"]
+   [org.clojars.bost/utils "0.0.0-35-0x665f"]
    [swiss-arrows "1.0.0"]
    ]
 
@@ -51,9 +51,9 @@
   :plugins
   [
    ;; Drive leiningen project version from git instead of the other way around
-   [com.roomkey/lein-v "7.1.0"]
-   [lein-figwheel "0.5.19"]
-   [lein-cljsbuild "1.1.7"]
+   [com.roomkey/lein-v "7.2.0"]
+   [lein-figwheel "0.5.20"]
+   [lein-cljsbuild "1.1.8"]
    ;; render CSS
    [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
 
@@ -104,12 +104,12 @@
   {:uberjar {:aot :all}
    :dev {:dependencies
          [
-          [binaryage/devtools "0.9.10"]
-          [figwheel-sidecar "0.5.19"]
+          [binaryage/devtools "1.0.2"]
+          [figwheel-sidecar "0.5.20"]
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
-          [cider/piggieback "0.4.1"]
+          [cider/piggieback "0.5.0"]
 
           ;; keeping track of changes to source files and their associated
           ;; namespaces i.e. to auto-reload modified namespaces in a running
