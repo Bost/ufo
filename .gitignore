@@ -11,3 +11,4 @@ resources/public/js/
 *~
 /TAGS
 package-lock.json
+/test_db/

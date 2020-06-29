@@ -12,9 +12,9 @@
   :dependencies
   [
    [org.clojure/clojure "1.10.1"]
-   [org.clojure/core.rrb-vector "0.0.14"]
-   [org.clojure/clojurescript "1.10.520"]
-   [org.clojure/core.async "0.4.500"]
+   [org.clojure/core.rrb-vector "0.1.1"]
+   [org.clojure/clojurescript "1.10.773"]
+   [org.clojure/core.async "1.2.603"]
 
    ;; leads to the WARNING: CIDER's version (0.17.0) does not match
    ;; cider-nrepl's version (nil). Things will break!
@@ -24,36 +24,36 @@
 
    [io.aviso/pretty "0.1.37"] ; print things, prettily
    ;; webapp - begin
-   [re-frame "0.10.8"]
+   [re-frame "0.12.0"]
    [secretary "1.2.3"]
-   [ring "1.7.1"]
+   [ring "1.8.1"]
    ;; Ring routing lib; dispatching of GET, PUT, etc.
    [compojure "1.6.1"]
-   [garden "1.3.9"] ; render CSS
+   [garden "1.3.10"] ; render CSS
    [com.andrewmcveigh/cljs-time "0.5.2"] ;; (time/now) in cljs
    ;; webapp - end
 
-   [dk.ative/docjure "1.13.0"] ;; parse excel files
+   [dk.ative/docjure "1.14.0"] ;; parse excel files
    #_[com.rpl/specter "0.13.1"] ; overcome fear of nested data
    ;; TODO see http://www.clodoc.org/doc/clojure.contrib.def/defn-memo
-   [org.clojure/core.memoize "0.7.2"]
+   [org.clojure/core.memoize "1.0.236"]
 
    ;; [org.clojure/core.match "0.3.0-alpha4"] ; pattern matching library
 
-   [com.mchange/c3p0 "0.9.5.4"] ; db connection pooling
-   [org.clojure/java.jdbc "0.7.9"]
-   [mysql/mysql-connector-java "8.0.17"
+   [com.mchange/c3p0 "0.9.5.5"] ; db connection pooling
+   [org.clojure/java.jdbc "0.7.11"]
+   [mysql/mysql-connector-java "8.0.20"
     :exclusions [com.google.protobuf/protobuf-java]]
 
    ;; 0.9.0 requires new db2jcc4.jar and {:classname ... :jdbc-url ...}
    [clj-dbcp "0.9.0"] ; JDBC connections pools
 
-   [clj-time-ext "0.0.0-34-0x7939"] ;; (time/now) in clj
-   [clj-time "0.15.1"]
+   [org.clojars.bost/clj-time-ext "0.0.0-37-0x545c"]
+   [clj-time "0.15.2"]
 
    ;; A Clojure(Script); debug single- and multi-threaded apps
    [spyscope "0.1.6"]
-   [utils "0.0.0-21-0xd148"]
+   [org.clojars.bost/utils  "0.0.0-37-0xc96a"]
    ]
 
   :injections [(require 'spyscope.core)]
@@ -62,9 +62,9 @@
   :plugins
   [
    ;; Drive leiningen project version from git instead of the other way around
-   [com.roomkey/lein-v "7.1.0"]
-   [lein-figwheel "0.5.19"]
-   [lein-cljsbuild "1.1.7"]
+   [com.roomkey/lein-v "7.2.0"]
+   [lein-figwheel "0.5.20"]
+   [lein-cljsbuild "1.1.8"]
    ;; render CSS
    [lein-garden "0.3.0" :exclusions [org.apache.commons/commons-compress]]]
 
@@ -105,12 +105,12 @@
   {:uberjar {:aot :all}
    :dev {:dependencies
          [
-          [binaryage/devtools "0.9.10"]
-          [figwheel-sidecar "0.5.19"]
+          [binaryage/devtools "1.0.2"]
+          [figwheel-sidecar "0.5.20"]
 
           ;; nREPL middleware enabling the use of a ClojureScript REPL on top of
           ;; an nREPL session
-          [cider/piggieback "0.4.1"]
+          [cider/piggieback "0.5.0"]
 
           ;; keeping track of changes to source files and their associated
           ;; namespaces i.e. to auto-reload modified namespaces in a running
