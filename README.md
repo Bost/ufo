@@ -1,7 +1,7 @@
 mysql:
-```
+```fish
 # install mysql
-sudo apt-get install mysql-server mysql-client
+sudo apt install mysql-server mysql-client
 
 # setup/change mysql root password
 sudo service mysql stop
@@ -28,11 +28,13 @@ mysql --host=localhost --user=root --password=root < employees.sql
 mysql --host=localhost --user=root --password=root --table < test_employees_sha.sql
 
 mysql --host=localhost --user=root --password=root employees
-select * from employees where emp_no between 10001 and 10002 limit 5;
+```
+```sql
+mysql> select * from employees where emp_no between 10001 and 10002 limit 5;
 ```
 
 postgres:
-```
+```fish
 sudo apt install postgresql postgresql-contrib
 sudo -i -u postgres
 psql
@@ -46,7 +48,7 @@ lein install
 ```
 
 tools.nrepl:
-```
+```fish
 mkdir ~dev; and cd ~/dev
 git clone https://github.com/clojure/tools.nrepl.git; and cd tools.nrepl
 sudo apt install --yes maven
@@ -56,7 +58,7 @@ lein garden auto
 ```
 
 run ufo:
-```
+```fish
 lein repl
 
 # activate the dev profile in addition to the default profiles
@@ -67,7 +69,7 @@ lein with-profiles +dev repl
 ```
 
 then connect to REPL and run (in emacs M-x my/cider-figwheel-repl):
-```
+```clojure
 user> (require 'figwheel-sidecar.repl-api)
 ;; start-figwheel can be repeatedly called (is idempotent)
 (figwheel-sidecar.repl-api/start-figwheel!)
